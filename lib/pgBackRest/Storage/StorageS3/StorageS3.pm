@@ -16,7 +16,7 @@ use English '-no_match_vars';
 # use File::Path qw(make_path remove_tree);
 # use File::stat;
 # use IO::Handle;
-use Digest::SHA qw(hmac_sha256_hex sha256_hex);
+use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use POSIX qw(strftime);
 use WWW::Curl::Easy;
 
@@ -81,7 +81,7 @@ sub new
         # Create the canonical request
         my $strCanonicalRequest =
             "GET\n" .
-            "/${strBucket}\n" .
+            "/\n" .
             "${strQuery}\n" .
             "host:${strHost}\n" .
             "x-amz-content-sha256:${strPayloadHash}\n" .
@@ -89,29 +89,47 @@ sub new
             "\n" .
             "host;x-amz-content-sha256;x-amz-date\n" .
             "${strPayloadHash}";
+            # "GET\n/test.txt\n\n" .
+            # "host:examplebucket.s3.amazonaws.com\n" .
+            # "range:bytes=0-9\n" .
+            # "x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n" .
+            # "x-amz-date:20130524T000000Z\n\n" .
+            # "host;range;x-amz-content-sha256;x-amz-date\n" .
+            # "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
-        &log(WARN, "CANONICAL REQUEST: ${strCanonicalRequest}");
+        # &log(WARN, "CANONICAL REQUEST: ${strCanonicalRequest}");
 
         # Create the String to Sign
         my $strStringToSign =
             "AWS4-HMAC-SHA256\n" .
             "${strDateTime}\n" .
             "${strScope}\n" .
+            # "AWS4-HMAC-SHA256\n20130524T000000Z\n20130524/us-east-1/s3/aws4_request\n" .
             sha256_hex($strCanonicalRequest);
 
-        &log(WARN, "STRING TO SIGN: ${strStringToSign}");
+        # &log(WARN, "STRING TO SIGN: ${strStringToSign}");
 
         # Create signing key
-        &log(WARN, "ACCESS KEY: $self->{strAccessKeyId}, SECRET KEY: $self->{strSecretAccessKey}");
 
-        my $strDateKey = hmac_sha256_hex($strDate, "AWS4$self->{strSecretAccessKey}");
-        my $strRegionKey = hmac_sha256_hex($strRegion, $strDateKey);
-        my $strRegionServiceKey = hmac_sha256_hex($strRegionService, $strDateKey);
-        my $strSigningKey = hmac_sha256_hex("aws4_request", $strRegionServiceKey);
+        # TEMP
+        # $strDate = '20130524';
+        # $self->{strAccessKeyId} = 'AKIAIOSFODNN7EXAMPLE';
+        # $self->{strSecretAccessKey} = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
+
+        # &log(WARN, "ACCESS KEY: $self->{strAccessKeyId}, SECRET KEY: $self->{strSecretAccessKey}");
+
+        my $strDateKey = hmac_sha256($strDate, "AWS4$self->{strSecretAccessKey}");
+        my $strRegionKey = hmac_sha256($strRegion, $strDateKey);
+        my $strRegionServiceKey = hmac_sha256($strRegionService, $strRegionKey);
+        my $strSigningKey = hmac_sha256("aws4_request", $strRegionServiceKey);
+
+        # &log(WARN, "SIGNATURE: " . hmac_sha256_hex($strStringToSign, $strSigningKey) . ", SHOULD BE: f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41");
+
+        # exit 0;
 
         $oCurl->setopt(CURLOPT_HEADER, true);
         $oCurl->setopt(CURLOPT_VERBOSE, true);
-        $oCurl->setopt(CURLOPT_URL, "https://${strService}/${strBucket}?${strQuery}");
+        $oCurl->setopt(CURLOPT_URL, "https://${strService}?${strQuery}");
 
         my @myheaders;
         $myheaders[0] = "Host: ${strHost}";
