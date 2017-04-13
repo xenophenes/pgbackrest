@@ -231,7 +231,7 @@ my $oTestDef =
                 },
                 {
                     &TESTDEF_NAME => 's3-auth',
-                    &TESTDEF_TOTAL => 3,
+                    &TESTDEF_TOTAL => 4,
 
                     &TESTDEF_COVERAGE =>
                     {

@@ -58,14 +58,6 @@ sub new
 
         my $oCurl = WWW::Curl::Easy->new;
 
-        # my $strTest = hmac_sha256_hex('dude', 'dude');
-        # my $strTest = sha256_hex("GET\n/test.txt\n\nhost:examplebucket.s3.amazonaws.com\nrange:bytes=0-9\n" .
-        #     "x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n" .
-        #     "x-amz-date:20130524T000000Z\n\n" .
-        #     "host;range;x-amz-content-sha256;x-amz-date\n" .
-        #     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-        # confess $strTest;
-
         # Generate dates to be used
         my $strDate = strftime("%Y%m%d", gmtime);
         my $strDateTime = strftime("%Y%m%dT%k%M%SZ", gmtime);
@@ -75,66 +67,29 @@ sub new
         my $strService = 's3.amazonaws.com';
         my $strHost = "${strBucket}.${strService}";
         my $strQuery = 'list-type=2';
-        my $strPayloadHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
         my $strRegion = 'us-east-1';
-        my $strRegionService = 's3';
-        my $strScope = "${strDate}/${strRegion}/${strRegionService}/aws4_request";
-        #
-        # # Create the canonical request
-        # my $strCanonicalRequest =
-        #     ;
-
-        # &log(WARN, "CANONICAL REQUEST: ${strCanonicalRequest}");
-
-        # Create the String to Sign
-        # my $strStringToSign =
-        #     s3StringToSign($strDateTime, $strRegion, sha256_hex($strCanonicalRequest));
-
-        # &log(WARN, "STRING TO SIGN: ${strStringToSign}");
 
         # $oCurl->setopt(CURLOPT_HEADER, true);
         # $oCurl->setopt(CURLOPT_VERBOSE, true);
         $oCurl->setopt(CURLOPT_URL, "https://${strService}?${strQuery}");
 
         my @myheaders;
-        $myheaders[0] = "Host: ${strHost}";
-        $myheaders[1] = "x-amz-date: ${strDateTime}";
-        $myheaders[2] = "x-amz-content-sha256: ${strPayloadHash}";
+        $myheaders[0] = S3_HEADER_HOST . ": ${strHost}";
+        $myheaders[1] = S3_HEADER_DATE . ": ${strDateTime}";
+        $myheaders[2] = S3_HEADER_CONTENT_SHA256 . qw(:) . PAYLOAD_DEFAULT_HASH;
         $myheaders[3] =
-            "Authorization: AWS4-HMAC-SHA256 " .
-            "Credential=$self->{strAccessKeyId}/${strScope}," .
-            "SignedHeaders=host;x-amz-content-sha256;x-amz-date," .
-            "Signature=" .  hmac_sha256_hex(
-                s3StringToSign(
-                    $strDateTime, $strRegion, sha256_hex(s3CanonicalRequest($strHost, 'GET', '/', $strQuery, $strDateTime))),
-                s3SigningKey($strDate, $strRegion, $self->{strSecretAccessKey}));
-        # $myheaders[4] = "Content-Type: text/plain";
+            S3_HEADER_AUTHORIZATION . qw(:) . s3Authorization(
+                $strRegion, $strHost, 'GET', '/', $strQuery, $strDateTime, $self->{strAccessKeyId}, $self->{strSecretAccessKey});
 
         # &log(WARN, "HEADERS: " . join("\n", @myheaders));
 
         $oCurl->setopt(CURLOPT_HTTPHEADER, \@myheaders);
-
-        # eval
-        # {
-        #     &log(WARN, "GOT HERE");
-        #     $oCurl->setopt(
-        #         CURLOPT_HTTPHEADER,
-        #         "Host: pgbackrest-dev.s3.amazonaws.com");
-        #     # \nx-amz-date: 20160430T233541Z\nAuthorization: beepboop\nContent-Type: text/plain
-        #     return 1;
-        # } or do
-        # {
-        #     &log(WARN, "AND HERE");
-        #     # &log(WARN, $oCurl->errbuf);
-        #     exit 1;
-        # };
 
         # A filehandle, reference to a scalar or reference to a typeglob can be used here.
         my $response_body = '';
         $oCurl->setopt(CURLOPT_WRITEFUNCTION, sub {$response_body .= $_[0]; return length($_[0]) });
 
         # Starts the actual request
-        # print "DUDE\n";
         my $retcode = $oCurl->perform;
 
         # Looking at the results...

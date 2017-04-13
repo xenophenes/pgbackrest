@@ -1,7 +1,8 @@
 ####################################################################################################################################
 # STORAGE S3 AUTH MODULE
 #
-# http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html
+# This module contains the functions required to do S3 authentication.  It's a complicated topic and too much to cover here, but
+# there is excellent documentation at http://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html.
 ####################################################################################################################################
 package pgBackRest::Storage::StorageS3::StorageS3Auth;
 
@@ -12,24 +13,10 @@ use English '-no_match_vars';
 
 use Exporter qw(import);
     our @EXPORT = qw();
-# use Fcntl qw(:mode :flock O_RDONLY O_WRONLY O_CREAT);
-# use File::Basename qw(dirname basename);
-# use File::Copy qw(cp);
-# use File::Path qw(make_path remove_tree);
-# use File::stat;
-# use IO::Handle;
 use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use POSIX qw(strftime);
-# use WWW::Curl::Easy;
-# use XML::LibXML;
 
-# use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
-# use pgBackRest::Common::String;
-# use pgBackRest::Common::Wait;
-# use pgBackRest::FileCommon;
-# use pgBackRest::Protocol::Common;
-# use pgBackRest::Version;
 
 ####################################################################################################################################
 # Constants
@@ -39,16 +26,22 @@ use constant AWS4                                                   => 'AWS4';
 use constant AWS4_REQUEST                                           => 'aws4_request';
 use constant AWS4_HMAC_SHA256                                       => 'AWS4-HMAC-SHA256';
 
-use constant HEADER_DATE                                            => 'x-amz-date';
-use constant HEADER_CONTENT_SHA256                                  => 'x-amz-content-sha256';
-use constant HEADER_HOST                                            => 'host';
+use constant S3_HEADER_AUTHORIZATION                                => 'authorization';
+    push @EXPORT, qw(S3_HEADER_AUTHORIZATION);
+use constant S3_HEADER_DATE                                         => 'x-amz-date';
+    push @EXPORT, qw(S3_HEADER_DATE);
+use constant S3_HEADER_CONTENT_SHA256                               => 'x-amz-content-sha256';
+    push @EXPORT, qw(S3_HEADER_CONTENT_SHA256);
+use constant S3_HEADER_HOST                                         => 'host';
+    push @EXPORT, qw(S3_HEADER_HOST);
 
 use constant PAYLOAD_DEFAULT_HASH                                   => sha256_hex('');
+    push @EXPORT, qw(PAYLOAD_DEFAULT_HASH);
 
 ####################################################################################################################################
 # s3CanonicalRequest
 #
-#
+# Strictly formatted version of the HTTP request used for signing.
 ####################################################################################################################################
 sub s3CanonicalRequest
 {
@@ -77,10 +70,10 @@ sub s3CanonicalRequest
     # Create the canonical request
     my $strCanonicalRequest =
         "${strVerb}\n${strUri}\n${strQuery}\n" .
-        HEADER_HOST . ":${strHost}\n" .
-        HEADER_CONTENT_SHA256 . ":${strPayloadHash}\n" .
-        HEADER_DATE . ":${strDateTime}\n\n" .
-        HEADER_HOST . qw(;) . HEADER_CONTENT_SHA256 . qw(;) . HEADER_DATE . "\n" .
+        S3_HEADER_HOST . ":${strHost}\n" .
+        S3_HEADER_CONTENT_SHA256 . ":${strPayloadHash}\n" .
+        S3_HEADER_DATE . ":${strDateTime}\n\n" .
+        S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE . "\n" .
         "${strPayloadHash}";
 
     # Return from function and log return values if any
@@ -179,5 +172,59 @@ sub s3StringToSign
 }
 
 push @EXPORT, qw(s3StringToSign);
+
+####################################################################################################################################
+# s3Authorization
+#
+# Authorization string that will be used in the HTTP "authorization" header.
+####################################################################################################################################
+sub s3Authorization
+{
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strRegion,
+        $strHost,
+        $strVerb,
+        $strUri,
+        $strQuery,
+        $strDateTime,
+        $strAccessKeyId,
+        $strSecretAccessKey,
+        $strPayloadHash,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '::s3CanonicalRequest', \@_,
+            {name => 'strRegion', trace => true},
+            {name => 'strHost', trace => true},
+            {name => 'strVerb', trace => true},
+            {name => 'strUri', trace => true},
+            {name => 'strQuery', trace => true},
+            {name => 'strDateTime', trace => true},
+            {name => 'strAccessKeyId', trace => true},
+            {name => 'strSecretAccessKey', trace => true},
+            {name => 'strPayloadHash', optional => true, default => PAYLOAD_DEFAULT_HASH, trace => true},
+        );
+
+    my $strAuthorization =
+        AWS4_HMAC_SHA256 . " Credential=${strAccessKeyId}/" . substr($strDateTime, 0, 8) . "/${strRegion}/" . S3 . '/' .
+            AWS4_REQUEST . ",SignedHeaders=" . S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE .
+            ",Signature=" .  hmac_sha256_hex(
+                s3StringToSign(
+                    $strDateTime, $strRegion, sha256_hex(s3CanonicalRequest(
+                        $strHost, 'GET', '/', $strQuery, $strDateTime, {strPayloadHash => $strPayloadHash}))),
+                s3SigningKey(substr($strDateTime, 0, 8), $strRegion, $strSecretAccessKey));
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'strAuthorization', value => $strAuthorization, trace => true}
+    );
+}
+
+push @EXPORT, qw(s3Authorization);
 
 1;
