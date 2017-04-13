@@ -19,6 +19,7 @@ use English '-no_match_vars';
 use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use POSIX qw(strftime);
 use WWW::Curl::Easy;
+use XML::LibXML;
 
 # use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
@@ -110,25 +111,13 @@ sub new
         # &log(WARN, "STRING TO SIGN: ${strStringToSign}");
 
         # Create signing key
-
-        # TEMP
-        # $strDate = '20130524';
-        # $self->{strAccessKeyId} = 'AKIAIOSFODNN7EXAMPLE';
-        # $self->{strSecretAccessKey} = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY';
-
-        # &log(WARN, "ACCESS KEY: $self->{strAccessKeyId}, SECRET KEY: $self->{strSecretAccessKey}");
-
         my $strDateKey = hmac_sha256($strDate, "AWS4$self->{strSecretAccessKey}");
         my $strRegionKey = hmac_sha256($strRegion, $strDateKey);
         my $strRegionServiceKey = hmac_sha256($strRegionService, $strRegionKey);
         my $strSigningKey = hmac_sha256("aws4_request", $strRegionServiceKey);
 
-        # &log(WARN, "SIGNATURE: " . hmac_sha256_hex($strStringToSign, $strSigningKey) . ", SHOULD BE: f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41");
-
-        # exit 0;
-
-        $oCurl->setopt(CURLOPT_HEADER, true);
-        $oCurl->setopt(CURLOPT_VERBOSE, true);
+        # $oCurl->setopt(CURLOPT_HEADER, true);
+        # $oCurl->setopt(CURLOPT_VERBOSE, true);
         $oCurl->setopt(CURLOPT_URL, "https://${strService}?${strQuery}");
 
         my @myheaders;
@@ -140,9 +129,9 @@ sub new
             "Credential=$self->{strAccessKeyId}/${strScope}," .
             "SignedHeaders=host;x-amz-content-sha256;x-amz-date," .
             "Signature=" . hmac_sha256_hex($strStringToSign, $strSigningKey);
-        # $myheaders[3] = "Content-Type: text/plain";
+        # $myheaders[4] = "Content-Type: text/plain";
 
-        &log(WARN, "HEADERS: " . join("\n", @myheaders));
+        # &log(WARN, "HEADERS: " . join("\n", @myheaders));
 
         $oCurl->setopt(CURLOPT_HTTPHEADER, \@myheaders);
 
@@ -162,8 +151,8 @@ sub new
         # };
 
         # A filehandle, reference to a scalar or reference to a typeglob can be used here.
-        # my $response_body;
-        # $oCurl->setopt(CURLOPT_WRITEDATA,\$response_body);
+        my $response_body = '';
+        $oCurl->setopt(CURLOPT_WRITEFUNCTION, sub {$response_body .= $_[0]; return length($_[0]) });
 
         # Starts the actual request
         # print "DUDE\n";
@@ -172,7 +161,27 @@ sub new
         # Looking at the results...
         if ($retcode == 0) {
                 my $response_code = $oCurl->getinfo(CURLINFO_HTTP_CODE);
-                print("\nTransfer went ok [$response_code]\n");
+                print("\nOK [$response_code]\n");
+                # print("$response_body\n");
+                my $doc = XML::LibXML->load_xml(string => $response_body);
+                # use Data::Dumper; confess $doc->toString();
+                my $root = $doc->documentElement();
+                my @nodes = $root->getChildrenByTagName("Contents");
+                &log(WARN, "FOUND " . @nodes . " FILES");
+
+                my @truncated = $root->getElementsByTagName("IsTruncated");
+                &log(WARN, "TRUNCATED: " . $truncated[0]->textContent());
+                @truncated = $root->getElementsByTagName("NextContinuationToken");
+                &log(WARN, "TOKEN: " . $truncated[0]->textContent());
+                @truncated = $root->getElementsByTagName("KeyCount");
+                &log(WARN, "KEY COUNT: " . $truncated[0]->textContent());
+
+                foreach my $oFile (@nodes)
+                {
+                    my @name = $oFile->getElementsByTagName("Key");
+                    # &log(WARN, "FILE: " . $name[0]->textContent());
+                }
+
                 # judge result and next action based on $response_code
                 # print("Received response: $response_body\n");
         } else {

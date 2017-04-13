@@ -32,7 +32,7 @@ sub run
     ################################################################################################################################
     if ($self->begin('StorageS3->new()'))
     {
-        my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3();
+        my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3('AKIAISS77TLGHHQLM2CA', XXX);
     }
 }
 
