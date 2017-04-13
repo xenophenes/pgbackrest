@@ -34,7 +34,7 @@ Vagrant.configure(2) do |config|
 
         #---------------------------------------------------------------------------------------------------------------------------
         echo 'Install Perl Modules' && date
-        apt-get install -y libdbd-pg-perl libxml-checker-perl libperl-critic-perl libdevel-nytprof-perl
+        apt-get install -y libdbd-pg-perl libwww-curl-perl libxml-checker-perl libperl-critic-perl libdevel-nytprof-perl
 
         #---------------------------------------------------------------------------------------------------------------------------
         echo 'Install Build Tools' && date

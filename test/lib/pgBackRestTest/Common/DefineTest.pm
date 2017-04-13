@@ -88,6 +88,13 @@ use constant TESTDEF_MODULE_INFO                                    => 'Info';
 use constant TESTDEF_MODULE_STANZA                                  => 'Stanza';
     push @EXPORT, qw(TESTDEF_MODULE_STANZA);
 
+use constant TESTDEF_MODULE_STORAGE                                 => 'Storage';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE);
+use constant TESTDEF_MODULE_STORAGE_STORAGES3                       => TESTDEF_MODULE_STORAGE . '/StorageS3';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE_STORAGES3);
+use constant TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3             => TESTDEF_MODULE_STORAGE_STORAGES3 . '/StorageS3';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3);
+
 use constant TESTDEF_MODULE_EXPIRE                                  => 'Expire';
     push @EXPORT, qw(TESTDEF_MODULE_EXPIRE);
 
@@ -202,6 +209,24 @@ my $oTestDef =
                     &TESTDEF_NAME => 'copy',
                     &TESTDEF_TOTAL => 144,
                 }
+            ]
+        },
+        # Storage tests
+        {
+            &TESTDEF_NAME => 'storage',
+            &TESTDEF_CONTAINER => true,
+
+            &TESTDEF_TEST =>
+            [
+                {
+                    &TESTDEF_NAME => 's3',
+                    &TESTDEF_TOTAL => 1,
+
+                    &TESTDEF_COVERAGE =>
+                    {
+                        &TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3 => TESTDEF_COVERAGE_FULL,
+                    },
+                },
             ]
         },
         # Info tests
