@@ -23,6 +23,7 @@ use XML::LibXML;
 
 # use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
+use pgBackRest::Storage::StorageS3::StorageS3Auth;
 # use pgBackRest::Common::String;
 # use pgBackRest::Common::Wait;
 # use pgBackRest::FileCommon;
@@ -78,43 +79,18 @@ sub new
         my $strRegion = 'us-east-1';
         my $strRegionService = 's3';
         my $strScope = "${strDate}/${strRegion}/${strRegionService}/aws4_request";
-
-        # Create the canonical request
-        my $strCanonicalRequest =
-            "GET\n" .
-            "/\n" .
-            "${strQuery}\n" .
-            "host:${strHost}\n" .
-            "x-amz-content-sha256:${strPayloadHash}\n" .
-            "x-amz-date:${strDateTime}\n" .
-            "\n" .
-            "host;x-amz-content-sha256;x-amz-date\n" .
-            "${strPayloadHash}";
-            # "GET\n/test.txt\n\n" .
-            # "host:examplebucket.s3.amazonaws.com\n" .
-            # "range:bytes=0-9\n" .
-            # "x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n" .
-            # "x-amz-date:20130524T000000Z\n\n" .
-            # "host;range;x-amz-content-sha256;x-amz-date\n" .
-            # "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+        #
+        # # Create the canonical request
+        # my $strCanonicalRequest =
+        #     ;
 
         # &log(WARN, "CANONICAL REQUEST: ${strCanonicalRequest}");
 
         # Create the String to Sign
-        my $strStringToSign =
-            "AWS4-HMAC-SHA256\n" .
-            "${strDateTime}\n" .
-            "${strScope}\n" .
-            # "AWS4-HMAC-SHA256\n20130524T000000Z\n20130524/us-east-1/s3/aws4_request\n" .
-            sha256_hex($strCanonicalRequest);
+        # my $strStringToSign =
+        #     s3StringToSign($strDateTime, $strRegion, sha256_hex($strCanonicalRequest));
 
         # &log(WARN, "STRING TO SIGN: ${strStringToSign}");
-
-        # Create signing key
-        my $strDateKey = hmac_sha256($strDate, "AWS4$self->{strSecretAccessKey}");
-        my $strRegionKey = hmac_sha256($strRegion, $strDateKey);
-        my $strRegionServiceKey = hmac_sha256($strRegionService, $strRegionKey);
-        my $strSigningKey = hmac_sha256("aws4_request", $strRegionServiceKey);
 
         # $oCurl->setopt(CURLOPT_HEADER, true);
         # $oCurl->setopt(CURLOPT_VERBOSE, true);
@@ -128,7 +104,10 @@ sub new
             "Authorization: AWS4-HMAC-SHA256 " .
             "Credential=$self->{strAccessKeyId}/${strScope}," .
             "SignedHeaders=host;x-amz-content-sha256;x-amz-date," .
-            "Signature=" . hmac_sha256_hex($strStringToSign, $strSigningKey);
+            "Signature=" .  hmac_sha256_hex(
+                s3StringToSign(
+                    $strDateTime, $strRegion, sha256_hex(s3CanonicalRequest($strHost, 'GET', '/', $strQuery, $strDateTime))),
+                s3SigningKey($strDate, $strRegion, $self->{strSecretAccessKey}));
         # $myheaders[4] = "Content-Type: text/plain";
 
         # &log(WARN, "HEADERS: " . join("\n", @myheaders));

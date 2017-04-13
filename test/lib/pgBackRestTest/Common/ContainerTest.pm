@@ -314,11 +314,12 @@ sub perlInstall
         $strImage .=
             'RUN apt-get install -y libdbd-pg-perl libdbi-perl libnet-daemon-perl libplrpc-perl libhtml-parser-perl' .
                 ' libwww-curl-perl';
+                #  libxml-libxml-perl
     }
     elsif ($strOS eq VM_U16 || $strOS eq VM_D8)
     {
         $strImage .=
-            'RUN apt-get install -y libdbd-pg-perl libdbi-perl libhtml-parser-perl libwww-curl-perl';
+            'RUN apt-get install -y libdbd-pg-perl libdbi-perl libhtml-parser-perl libwww-curl-perl libxml-libxml-perl';
     }
     else
     {

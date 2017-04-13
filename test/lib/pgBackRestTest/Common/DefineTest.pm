@@ -94,6 +94,8 @@ use constant TESTDEF_MODULE_STORAGE_STORAGES3                       => TESTDEF_M
     push @EXPORT, qw(TESTDEF_MODULE_STORAGE_STORAGES3);
 use constant TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3             => TESTDEF_MODULE_STORAGE_STORAGES3 . '/StorageS3';
     push @EXPORT, qw(TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3);
+use constant TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3AUTH         => TESTDEF_MODULE_STORAGE_STORAGES3 . '/StorageS3Auth';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3AUTH);
 
 use constant TESTDEF_MODULE_EXPIRE                                  => 'Expire';
     push @EXPORT, qw(TESTDEF_MODULE_EXPIRE);
@@ -224,7 +226,16 @@ my $oTestDef =
 
                     &TESTDEF_COVERAGE =>
                     {
-                        &TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3 => TESTDEF_COVERAGE_FULL,
+                        &TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3 => TESTDEF_COVERAGE_PARTIAL,
+                    },
+                },
+                {
+                    &TESTDEF_NAME => 's3-auth',
+                    &TESTDEF_TOTAL => 3,
+
+                    &TESTDEF_COVERAGE =>
+                    {
+                        &TESTDEF_MODULE_STORAGE_STORAGES3_STORAGES3AUTH => TESTDEF_COVERAGE_FULL,
                     },
                 },
             ]
@@ -238,7 +249,6 @@ my $oTestDef =
             [
                 {
                     &TESTDEF_NAME => 'ini-unit',
-                    &TESTDEF_CONTAINER => true,
                     &TESTDEF_TOTAL => 10,
 
                     &TESTDEF_COVERAGE =>
