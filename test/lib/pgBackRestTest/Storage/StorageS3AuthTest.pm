@@ -12,7 +12,10 @@ use warnings FATAL => qw(all);
 use Carp qw(confess);
 use English '-no_match_vars';
 
+use POSIX qw(strftime);
+
 use pgBackRest::Common::Log;
+use pgBackRest::Common::Wait;
 use pgBackRest::Storage::StorageS3::StorageS3Auth;
 
 ####################################################################################################################################
@@ -21,6 +24,16 @@ use pgBackRest::Storage::StorageS3::StorageS3Auth;
 sub run
 {
     my $self = shift;
+
+    ################################################################################################################################
+    if ($self->begin('s3DateTime'))
+    {
+        $self->testResult(sub {s3DateTime(1492127085)}, '20170413T234445Z', 'format date/time');
+
+        #---------------------------------------------------------------------------------------------------------------------------
+        waitRemainder();
+        $self->testResult(sub {s3DateTime()}, strftime("%Y%m%dT%k%M%SZ", gmtime()), 'format current date/time');
+    }
 
     ################################################################################################################################
     if ($self->begin('s3CanonicalRequest'))
@@ -33,6 +46,7 @@ sub run
                 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             'canonical request');
 
+        #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
             sub {s3CanonicalRequest('bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z',
                 {strPayloadHash => '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9'})},
@@ -50,10 +64,12 @@ sub run
             sub {unpack('H*', s3SigningKey('20170412', 'us-east-1', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'))},
             '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9', 'signing key');
 
+        #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
             sub {unpack('H*', s3SigningKey('20170412', 'us-east-1', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'))},
             '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9', 'same signing key from cache');
 
+        #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
             sub {unpack('H*', s3SigningKey('20170505', 'us-west-1', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'))},
             'c1a1cb590bbc38ba789c8e5695a1ec0cd7fd44c6949f922e149005a221524c09', 'new signing key');
@@ -82,6 +98,7 @@ sub run
                 'Signature=cb03bf1d575c1f8904dabf0e573990375340ab293ef7ad18d049fc1338fd89b3',
             'canonical request');
 
+        #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
             sub {s3Authorization(
                 'us-east-1', 'bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z',

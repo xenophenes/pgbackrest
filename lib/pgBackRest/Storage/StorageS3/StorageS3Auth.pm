@@ -39,6 +39,35 @@ use constant PAYLOAD_DEFAULT_HASH                                   => sha256_he
     push @EXPORT, qw(PAYLOAD_DEFAULT_HASH);
 
 ####################################################################################################################################
+# s3DateTime
+#
+# Format date/time for authentication.
+####################################################################################################################################
+sub s3DateTime
+{
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $lTime,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '::s3DateTime', \@_,
+            {name => 'lTime', default => time(), trace => true},
+        );
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'strDateTime', value => strftime("%Y%m%dT%k%M%SZ", gmtime($lTime)), trace => true}
+    );
+}
+
+push @EXPORT, qw(s3DateTime);
+
+####################################################################################################################################
 # s3CanonicalRequest
 #
 # Strictly formatted version of the HTTP request used for signing.
@@ -208,6 +237,7 @@ sub s3Authorization
             {name => 'strPayloadHash', optional => true, default => PAYLOAD_DEFAULT_HASH, trace => true},
         );
 
+    # Create authorization string
     my $strAuthorization =
         AWS4_HMAC_SHA256 . " Credential=${strAccessKeyId}/" . substr($strDateTime, 0, 8) . "/${strRegion}/" . S3 . '/' .
             AWS4_REQUEST . ",SignedHeaders=" . S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE .

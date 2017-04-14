@@ -16,8 +16,8 @@ use English '-no_match_vars';
 # use File::Path qw(make_path remove_tree);
 # use File::stat;
 # use IO::Handle;
-use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
-use POSIX qw(strftime);
+# use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
+# use POSIX qw(strftime);
 use WWW::Curl::Easy;
 use XML::LibXML;
 
@@ -59,8 +59,7 @@ sub new
         my $oCurl = WWW::Curl::Easy->new;
 
         # Generate dates to be used
-        my $strDate = strftime("%Y%m%d", gmtime);
-        my $strDateTime = strftime("%Y%m%dT%k%M%SZ", gmtime);
+        my $strDateTime = s3DateTime;
 
         # Request info
         my $strBucket = 'pgbackrest-dev';
