@@ -65,7 +65,8 @@ sub new
         my $strBucket = 'pgbackrest-dev';
         my $strService = 's3.amazonaws.com';
         my $strHost = "${strBucket}.${strService}";
-        my $strQuery = 'list-type=2';
+        # my $strQuery = 'list-type=2&prefix=archive%2Fmain%2F9.5-1%2F0000000100000000%2F';
+        my $strQuery = 'delimiter=%2F&list-type=2&prefix=backup%2Fmain%2F20170215-151600F%2Fpg_data%2F';
         my $strRegion = 'us-east-1';
 
         # $oCurl->setopt(CURLOPT_HEADER, true);
@@ -95,24 +96,34 @@ sub new
         if ($retcode == 0) {
                 my $response_code = $oCurl->getinfo(CURLINFO_HTTP_CODE);
                 print("\nOK [$response_code]\n");
-                # print("$response_body\n");
+                # confess "RESPONSE: $response_body\n";
                 my $doc = XML::LibXML->load_xml(string => $response_body);
                 # use Data::Dumper; confess $doc->toString();
                 my $root = $doc->documentElement();
-                my @nodes = $root->getChildrenByTagName("Contents");
-                &log(WARN, "FOUND " . @nodes . " FILES");
 
                 my @truncated = $root->getElementsByTagName("IsTruncated");
                 &log(WARN, "TRUNCATED: " . $truncated[0]->textContent());
-                @truncated = $root->getElementsByTagName("NextContinuationToken");
-                &log(WARN, "TOKEN: " . $truncated[0]->textContent());
+                # @truncated = $root->getElementsByTagName("NextContinuationToken");
+                # &log(WARN, "TOKEN: " . $truncated[0]->textContent());
                 @truncated = $root->getElementsByTagName("KeyCount");
                 &log(WARN, "KEY COUNT: " . $truncated[0]->textContent());
+
+                my @nodes = $root->getChildrenByTagName("Contents");
+                &log(WARN, "FOUND " . @nodes . " FILES");
 
                 foreach my $oFile (@nodes)
                 {
                     my @name = $oFile->getElementsByTagName("Key");
-                    # &log(WARN, "FILE: " . $name[0]->textContent());
+                    &log(WARN, "FILE: " . $name[0]->textContent());
+                }
+
+                my @oyPath = $root->getChildrenByTagName("CommonPrefixes");
+                &log(WARN, "FOUND " . @oyPath . " PATHS");
+
+                foreach my $oPath (@oyPath)
+                {
+                    my @oPathKey = $oPath->getElementsByTagName("Prefix");
+                    &log(WARN, "PATH: " . $oPathKey[0]->textContent());
                 }
 
                 # judge result and next action based on $response_code
