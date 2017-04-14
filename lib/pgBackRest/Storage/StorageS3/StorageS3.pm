@@ -44,12 +44,16 @@ sub new
     # Assign function parameters, defaults, and log debug info
     (
         my $strOperation,
+        $self->{strEndPoint},
+        $self->{strRegion},
         $self->{strAccessKeyId},
         $self->{strSecretAccessKey},
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->new', \@_,
+            {name => 'strEndPoint'},
+            {name => 'strRegion'},
             {name => 'strAccessKeyId'},
             {name => 'strSecretAccessKey'},
         );
@@ -62,24 +66,20 @@ sub new
         my $strDateTime = s3DateTime;
 
         # Request info
-        my $strBucket = 'pgbackrest-dev';
-        my $strService = 's3.amazonaws.com';
-        my $strHost = "${strBucket}.${strService}";
-        # my $strQuery = 'list-type=2&prefix=archive%2Fmain%2F9.5-1%2F0000000100000000%2F';
         my $strQuery = 'delimiter=%2F&list-type=2&prefix=backup%2Fmain%2F20170215-151600F%2Fpg_data%2F';
-        my $strRegion = 'us-east-1';
 
         # $oCurl->setopt(CURLOPT_HEADER, true);
         # $oCurl->setopt(CURLOPT_VERBOSE, true);
-        $oCurl->setopt(CURLOPT_URL, "https://${strService}?${strQuery}");
+        $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}?${strQuery}");
 
         my @myheaders;
-        $myheaders[0] = S3_HEADER_HOST . ": ${strHost}";
+        $myheaders[0] = S3_HEADER_HOST . ": $self->{strEndPoint}";
         $myheaders[1] = S3_HEADER_DATE . ": ${strDateTime}";
         $myheaders[2] = S3_HEADER_CONTENT_SHA256 . qw(:) . PAYLOAD_DEFAULT_HASH;
         $myheaders[3] =
             S3_HEADER_AUTHORIZATION . qw(:) . s3Authorization(
-                $strRegion, $strHost, 'GET', '/', $strQuery, $strDateTime, $self->{strAccessKeyId}, $self->{strSecretAccessKey});
+                $self->{strRegion}, $self->{strEndPoint}, 'GET', '/', $strQuery, $strDateTime, $self->{strAccessKeyId},
+                $self->{strSecretAccessKey});
 
         # &log(WARN, "HEADERS: " . join("\n", @myheaders));
 

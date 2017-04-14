@@ -32,7 +32,8 @@ sub run
     ################################################################################################################################
     if ($self->begin('StorageS3->new()'))
     {
-        my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3('AKIAISS77TLGHHQLM2CA', XXX);
+        my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3(
+            'pgbackrest-dev.s3.amazonaws.com', 'us-east-1', 'AKIAISS77TLGHHQLM2CA', XXX);
     }
 }
 
