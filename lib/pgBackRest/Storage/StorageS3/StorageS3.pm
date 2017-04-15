@@ -42,6 +42,44 @@ use constant S3_QUERY_LIST_TYPE                                     => 'list-typ
 use constant S3_QUERY_PREFIX                                        => 'prefix';
 
 ####################################################################################################################################
+# put
+####################################################################################################################################
+sub put
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFile,
+        $rstrContent,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->put', \@_,
+            {name => 'strFile'},
+            {name => 'rstrContent', required => false},
+        );
+
+    # Make the content a reference if it is not already
+    if (defined($rstrContent) && !ref($rstrContent))
+    {
+        $rstrContent = \$rstrContent;
+    }
+
+    # Put a file
+    my $oResponse = $self->httpRequest(HTTP_VERB_PUT, $strFile, undef, $rstrContent);
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'bResult', value => true}
+    );
+}
+
+####################################################################################################################################
 # manifest
 ####################################################################################################################################
 sub manifest
@@ -60,6 +98,8 @@ sub manifest
             __PACKAGE__ . '->manifest', \@_,
             {name => 'strPath'},
             {name => 'bRecurse', optional => true, default => true},
+            # Optional parameters not part of the driver spec
+            # {name => 'bRecurse', optional => true, default => true},
         );
 
     # Determine the prefix (this is the search patch within the bucket
@@ -85,10 +125,6 @@ sub manifest
             {&S3_QUERY_LIST_TYPE => 2, &S3_QUERY_PREFIX => $strPrefix, &S3_QUERY_DELIMITER => $strDelimiter,
                 &S3_QUERY_CONTINUATION_TOKEN => $strContinuationToken});
 
-        # @truncated = $root->getElementsByTagName("NextContinuationToken");
-        # &log(WARN, "TOKEN: " . $truncated[0]->textContent());
-        # &log(WARN, "KEY COUNT: " . xmlTagInt($oReponse, "KeyCount"));
-
         foreach my $oFile (xmlTagChildren($oResponse, "Contents"))
         {
             my $strName = xmlTagText($oFile, "Key");
@@ -105,21 +141,8 @@ sub manifest
         }
 
         &log(WARN, "PATH = ${iPathTotal}, FILE = ${iFileTotal}");
-        #
-        # if (xmlTagBool($oResponse, "IsTruncated"))
-        # {
+
         $strContinuationToken = xmlTagText($oResponse, "NextContinuationToken", false);
-        #
-        # if (defined($strContinuationToken))
-        # {
-        #     &log(WARN, "LOOPING on $strContinuationToken");
-        # }
-        #     &log(WARN, "CONTINUE TOKEN = $strContinuationToken");
-        # }
-        # else
-        # {
-        #     $strContinuationToken = xmlTagText($oResponse, "NextContinuationToken")
-        # }
     }
     while (defined($strContinuationToken));
 

@@ -39,7 +39,9 @@ sub run
     {
         my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3($strEndPoint, $strRegion, $strAccessKeyId, $strSecretAccessKey);
 
-        my $hManifest = $oS3->manifest('archive', {bRecurse => false});
+        # $oS3->put('/dude.txt');
+
+        my $hManifest = $oS3->manifest('/', {bRecurse => false});
 
         foreach my $strName (sort(keys(%{$hManifest})))
         {

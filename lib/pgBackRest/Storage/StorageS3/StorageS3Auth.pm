@@ -11,9 +11,9 @@ use warnings FATAL => qw(all);
 use Carp qw(confess);
 use English '-no_match_vars';
 
+use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use Exporter qw(import);
     our @EXPORT = qw();
-use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use POSIX qw(strftime);
 
 use pgBackRest::Common::Log;
@@ -104,6 +104,8 @@ sub s3CanonicalRequest
         S3_HEADER_DATE . ":${strDateTime}\n\n" .
         S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE . "\n" .
         "${strPayloadHash}";
+
+    &log(WARN, "CANONICAL: $strCanonicalRequest");
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -234,7 +236,7 @@ sub s3Authorization
             {name => 'strDateTime', trace => true},
             {name => 'strAccessKeyId', trace => true},
             {name => 'strSecretAccessKey', trace => true},
-            {name => 'strPayloadHash', optional => true, default => PAYLOAD_DEFAULT_HASH, trace => true},
+            {name => 'strPayloadHash', default => PAYLOAD_DEFAULT_HASH, trace => true},
         );
 
     # Create authorization string
@@ -244,7 +246,7 @@ sub s3Authorization
             ",Signature=" .  hmac_sha256_hex(
                 s3StringToSign(
                     $strDateTime, $strRegion, sha256_hex(s3CanonicalRequest(
-                        $strHost, 'GET', '/', $strQuery, $strDateTime, {strPayloadHash => $strPayloadHash}))),
+                        $strHost, $strVerb, $strUri, $strQuery, $strDateTime, {strPayloadHash => $strPayloadHash}))),
                 s3SigningKey(substr($strDateTime, 0, 8), $strRegion, $strSecretAccessKey));
 
     # Return from function and log return values if any

@@ -8,6 +8,7 @@ use warnings FATAL => qw(all);
 use Carp qw(confess);
 use English '-no_match_vars';
 
+use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use Exporter qw(import);
     our @EXPORT = qw();
 use WWW::Curl::Easy;
@@ -22,6 +23,11 @@ use pgBackRest::Storage::StorageS3::StorageS3Auth;
 ####################################################################################################################################
 use constant HTTP_VERB_GET                                          => 'GET';
     push @EXPORT, qw(HTTP_VERB_GET);
+use constant HTTP_VERB_PUT                                          => 'PUT';
+    push @EXPORT, qw(HTTP_VERB_PUT);
+
+use constant S3_HEADER_CONTENT_LENGTH                               => 'content-length';
+    push @EXPORT, qw(S3_HEADER_CONTENT_LENGTH);
 
 ####################################################################################################################################
 # new
@@ -62,7 +68,7 @@ sub new
 ####################################################################################################################################
 # uriEncode
 #
-# Encode query values so to conform with URI specs
+# Encode query values to conform with URI specs.
 ####################################################################################################################################
 sub uriEncode
 {
@@ -78,18 +84,21 @@ sub uriEncode
         {
             my $cChar = substr($strString, $iIndex, 1);
 
+            # These characters are reproduced verbatim
             if (($cChar ge 'A' && $cChar le 'Z') || ($cChar ge 'a' && $cChar le 'z') || ($cChar ge '0' && $cChar le '9') ||
                 $cChar eq '_' || $cChar eq '-' || $cChar eq '~' || $cChar eq '.')
             {
                 $strEncodedString .= $cChar;
             }
+            # Forward slash is encoded
             elsif ($cChar eq '/')
             {
                 $strEncodedString .= '%2F';
             }
+            # All other characters are hex-encoded
             else
             {
-                $strEncodedString .= sprintf("%%%02X", ord($cChar));
+                $strEncodedString .= sprintf('%%%02X', ord($cChar));
             }
         }
     }
@@ -113,6 +122,7 @@ sub httpRequest
         $strVerb,
         $strUri,
         $hQuery,
+        $rstrContent,
     ) =
         logDebugParam
         (
@@ -120,6 +130,7 @@ sub httpRequest
             {name => 'strVerb', trace => true},
             {name => 'strUri', default => '/', trace => true},
             {name => 'hQuery', required => false, trace => true},
+            {name => 'rstrContent', required => false, trace => true},
         );
 
     my $oCurl = WWW::Curl::Easy->new;
@@ -137,18 +148,36 @@ sub httpRequest
         }
     }
 
-    $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}?${strQuery}");
+    $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}${strUri}?${strQuery}");
 
     my @myheaders;
-    $myheaders[0] = S3_HEADER_HOST . ": $self->{strEndPoint}";
-    $myheaders[1] = S3_HEADER_DATE . ": ${strDateTime}";
-    $myheaders[2] = S3_HEADER_CONTENT_SHA256 . qw(:) . PAYLOAD_DEFAULT_HASH;
-    $myheaders[3] =
-        S3_HEADER_AUTHORIZATION . qw(:) . s3Authorization(
-            $self->{strRegion}, $self->{strEndPoint}, 'GET', '/', $strQuery, $strDateTime, $self->{strAccessKeyId},
-            $self->{strSecretAccessKey});
+    $myheaders[@myheaders] = S3_HEADER_HOST . ": $self->{strEndPoint}";
+    $myheaders[@myheaders] = S3_HEADER_DATE . ": ${strDateTime}";
+
+    my $strContentHash = PAYLOAD_DEFAULT_HASH;
+    my $iContentLength = 0;
+
+    if (defined($rstrContent))
+    {
+        $iContentLength = length($rstrContent);
+        $strContentHash = sha256_hex($rstrContent);
+    }
+
+    $myheaders[@myheaders] = S3_HEADER_CONTENT_SHA256 . ": ${strContentHash}";
+    $myheaders[@myheaders] = S3_HEADER_CONTENT_LENGTH . ": ${iContentLength}";
+
+    $myheaders[@myheaders] =
+        S3_HEADER_AUTHORIZATION . ': ' . s3Authorization(
+            $self->{strRegion}, $self->{strEndPoint}, $strVerb, $strUri, $strQuery, $strDateTime, $self->{strAccessKeyId},
+            $self->{strSecretAccessKey}, $strContentHash);
+
+    if ($strVerb eq HTTP_VERB_PUT)
+    {
+        $oCurl->setopt(CURLOPT_PUT, true);
+    }
 
     $oCurl->setopt(CURLOPT_HTTPHEADER, \@myheaders);
+    &log(WARN, "HEADERS:\n" . join("\n", @myheaders));
 
     # A filehandle, reference to a scalar or reference to a typeglob can be used here.
     my $strResponse = '';
