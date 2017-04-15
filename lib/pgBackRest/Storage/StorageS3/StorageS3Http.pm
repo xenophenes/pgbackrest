@@ -14,6 +14,7 @@ use WWW::Curl::Easy;
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
+use pgBackRest::Common::Xml;
 use pgBackRest::Storage::StorageS3::StorageS3Auth;
 
 ####################################################################################################################################
@@ -59,6 +60,44 @@ sub new
 }
 
 ####################################################################################################################################
+# uriEncode
+#
+# Encode query values so to conform with URI specs
+####################################################################################################################################
+sub uriEncode
+{
+    my $strString = shift;
+
+    # Only encode if source string is defined
+    my $strEncodedString;
+
+    if (defined($strString))
+    {
+        # Iterate all characters in the string
+        for (my $iIndex = 0; $iIndex < length($strString); $iIndex++)
+        {
+            my $cChar = substr($strString, $iIndex, 1);
+
+            if (($cChar ge 'A' && $cChar le 'Z') || ($cChar ge 'a' && $cChar le 'z') || ($cChar ge '0' && $cChar le '9') ||
+                $cChar eq '_' || $cChar eq '-' || $cChar eq '~' || $cChar eq '.')
+            {
+                $strEncodedString .= $cChar;
+            }
+            elsif ($cChar eq '/')
+            {
+                $strEncodedString .= '%2F';
+            }
+            else
+            {
+                $strEncodedString .= sprintf("%%%02X", ord($cChar));
+            }
+        }
+    }
+
+    return $strEncodedString;
+}
+
+####################################################################################################################################
 # httpRequest
 #
 # Request data from S3.
@@ -73,18 +112,30 @@ sub httpRequest
         $strOperation,
         $strVerb,
         $strUri,
-        $strQuery,
+        $hQuery,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->httpRequest', \@_,
             {name => 'strVerb', trace => true},
             {name => 'strUri', default => '/', trace => true},
-            {name => 'strQuery', trace => true},
+            {name => 'hQuery', required => false, trace => true},
         );
 
     my $oCurl = WWW::Curl::Easy->new;
     my $strDateTime = s3DateTime();
+
+    # Generate the query string
+    my $strQuery = '';
+
+    foreach my $strParam (sort(keys(%{$hQuery})))
+    {
+        # Parameters may not be defined - this is OK
+        if (defined($hQuery->{$strParam}))
+        {
+            $strQuery .= ($strQuery eq '' ? '' : '&') . $strParam . '=' . uriEncode($hQuery->{$strParam});
+        }
+    }
 
     $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}?${strQuery}");
 
@@ -96,8 +147,6 @@ sub httpRequest
         S3_HEADER_AUTHORIZATION . qw(:) . s3Authorization(
             $self->{strRegion}, $self->{strEndPoint}, 'GET', '/', $strQuery, $strDateTime, $self->{strAccessKeyId},
             $self->{strSecretAccessKey});
-
-        # &log(WARN, "HEADERS: " . join("\n", @myheaders));
 
     $oCurl->setopt(CURLOPT_HTTPHEADER, \@myheaders);
 
@@ -129,7 +178,7 @@ sub httpRequest
     return logDebugReturn
     (
         $strOperation,
-        {name => 'rstrResponse', value => \$strResponse, trace => true, ref => true}
+        {name => 'oResponseXml', value => xmlParse(\$strResponse), trace => true, ref => true}
     );
 }
 

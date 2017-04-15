@@ -20,10 +20,11 @@ use English '-no_match_vars';
 # use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 # use POSIX qw(strftime);
 # use WWW::Curl::Easy;
-use XML::LibXML;
+# use XML::LibXML;
 
 # use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
+use pgBackRest::Common::Xml;
 # use pgBackRest::Storage::StorageS3::StorageS3Auth;
 use pgBackRest::Storage::StorageS3::StorageS3Http;
 # use pgBackRest::Common::String;
@@ -31,6 +32,13 @@ use pgBackRest::Storage::StorageS3::StorageS3Http;
 # use pgBackRest::FileCommon;
 # use pgBackRest::Protocol::Common;
 # use pgBackRest::Version;
+
+####################################################################################################################################
+# Query constants
+####################################################################################################################################
+use constant S3_QUERY_DELIMITER                                     => 'delimiter';
+use constant S3_QUERY_LIST_TYPE                                     => 'list-type';
+use constant S3_QUERY_PREFIX                                        => 'prefix';
 
 ####################################################################################################################################
 # manifest
@@ -50,43 +58,43 @@ sub manifest
         (
             __PACKAGE__ . '->manifest', \@_,
             {name => 'strPath'},
-            {name => 'bRecurse', optional => true},
+            {name => 'bRecurse', optional => true, default => true},
         );
 
-    # Generate the manifest
-    my $hManifest;
+    # Determine the prefix (this is the search patch within the bucket
+    my $strPrefix = $strPath eq '/' ? undef : "${strPath}/";
 
-    my $response_body = $self->httpRequest(
-        HTTP_VERB_GET, undef, 'delimiter=%2F&list-type=2&prefix=backup%2Fmain%2F20170215-151600F%2Fpg_data%2F');
+    # A delimiter must be used if recursion is not desired
+    my $strDelimiter = $bRecurse ? undef : '/';
+
+    my $oReponse = $self->httpRequest(
+        HTTP_VERB_GET, undef, {&S3_QUERY_LIST_TYPE => 2, &S3_QUERY_PREFIX => $strPrefix, &S3_QUERY_DELIMITER => $strDelimiter});
 
     # confess "RESPONSE: $response_body\n";
-    my $doc = XML::LibXML->load_xml(string => $response_body);
     # use Data::Dumper; confess $doc->toString();
-    my $root = $doc->documentElement();
 
-    my @truncated = $root->getElementsByTagName("IsTruncated");
-    &log(WARN, "TRUNCATED: " . $truncated[0]->textContent());
+    # Hash to hold the manifest
+    my $hManifest;
+
+    &log(WARN, "TRUNCATED: " . xmlTagContent($oReponse, "IsTruncated"));
     # @truncated = $root->getElementsByTagName("NextContinuationToken");
     # &log(WARN, "TOKEN: " . $truncated[0]->textContent());
-    @truncated = $root->getElementsByTagName("KeyCount");
-    &log(WARN, "KEY COUNT: " . $truncated[0]->textContent());
+    &log(WARN, "KEY COUNT: " . xmlTagContent($oReponse, "KeyCount"));
 
-    my @nodes = $root->getChildrenByTagName("Contents");
-    &log(WARN, "FOUND " . @nodes . " FILES");
+    my @oyFile = xmlTagChildren($oReponse, "Contents");
+    &log(WARN, "FOUND " . @oyFile . " FILES");
 
-    foreach my $oFile (@nodes)
+    foreach my $oFile (@oyFile)
     {
-        my @name = $oFile->getElementsByTagName("Key");
-        &log(WARN, "FILE: " . $name[0]->textContent());
+        &log(WARN, "FILE: " . xmlTagContent($oFile, "Key"));
     }
 
-    my @oyPath = $root->getChildrenByTagName("CommonPrefixes");
+    my @oyPath = xmlTagChildren($oReponse, "CommonPrefixes");
     &log(WARN, "FOUND " . @oyPath . " PATHS");
 
     foreach my $oPath (@oyPath)
     {
-        my @oPathKey = $oPath->getElementsByTagName("Prefix");
-        &log(WARN, "PATH: " . $oPathKey[0]->textContent());
+        &log(WARN, "PATH: " . xmlTagContent($oPath, "Prefix"));
     }
 
     # Return from function and log return values if any
