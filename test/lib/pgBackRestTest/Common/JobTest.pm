@@ -48,6 +48,7 @@ sub new
         $self->{strTestPath},
         $self->{strCoveragePath},
         $self->{oTest},
+        $self->{strTestData},
         $self->{bDryRun},
         $self->{bVmOut},
         $self->{iVmIdx},
@@ -67,6 +68,7 @@ sub new
             {name => 'strTestPath'},
             {name => 'strCoveragePath'},
             {name => 'oTest'},
+            {name => 'strTestData', required => false},
             {name => 'bDryRun'},
             {name => 'bVmOut'},
             {name => 'iVmIdx'},
@@ -174,6 +176,7 @@ sub run
             " --vm-id=$self->{iVmIdx}" .
             " --module=" . $self->{oTest}->{&TEST_MODULE} .
             ' --test=' . $self->{oTest}->{&TEST_NAME} .
+            (defined($self->{strTestData}) ? " --test-data=\"$self->{strTestData}\"" : '') .
             $strCommandRunParam .
             (defined($self->{oTest}->{&TEST_DB}) ? ' --db-version=' . $self->{oTest}->{&TEST_DB} : '') .
             (defined($self->{oTest}->{&TEST_PROCESS}) ? ' --process-max=' . $self->{oTest}->{&TEST_PROCESS} : '') .

@@ -63,6 +63,8 @@ test.pl [options]
  Test Options:
    --module             test module to execute
    --test               execute the specified test in a module
+   --test-data          pass data to the be used by the test
+   --test-data-file     read test data from specified file
    --run                execute only the specified test run
    --process-max        max processes to run for compression/transfer (default 1)
    --dry-run            show only the tests that would be executed but don't execute them
@@ -127,6 +129,8 @@ my $bNoPackage = false;
 my $bNoCiConfig = false;
 my $bDev = false;
 my $iRetry = 0;
+my $strTestData;
+my $strTestDataFile;
 
 GetOptions ('q|quiet' => \$bQuiet,
             'version' => \$bVersion,
@@ -141,6 +145,8 @@ GetOptions ('q|quiet' => \$bQuiet,
             'vm-force' => \$bVmForce,
             'module=s@' => \@stryModule,
             'test=s@' => \@stryModuleTest,
+            'test-data=s' => \$strTestData,
+            'test-data-file=s' => \$strTestDataFile,
             'run=s@' => \@iyModuleTestRun,
             'process-max=s' => \$iProcessMax,
             'vm-id=s' => \$iVmId,
@@ -253,6 +259,17 @@ eval
     if (!defined($strVm))
     {
         $strVm = VM_ALL;
+    }
+
+    # Get data from file if required
+    if (defined($strTestData) && defined($strTestDataFile))
+    {
+        confess &log(ERROR, 'cannot specify both --test-data and --test-data-file');
+    }
+
+    if (defined($strTestDataFile))
+    {
+        $strTestData = trim(fileStringRead($strTestDataFile));
     }
 
     # Get the base backrest path
@@ -661,8 +678,8 @@ eval
                 if (!defined($$oyProcess[$iVmIdx]) && $iTestIdx < @{$oyTestRun})
                 {
                     my $oJob = new pgBackRestTest::Common::JobTest(
-                        $strBackRestBase, $strTestPath, $strCoveragePath, $$oyTestRun[$iTestIdx], $bDryRun, $bVmOut, $iVmIdx,
-                        $iVmMax, $iTestIdx, $iTestMax, $strLogLevel, $bLogForce, $bShowOutputAsync, $bNoCleanup, $iRetry);
+                        $strBackRestBase, $strTestPath, $strCoveragePath, $$oyTestRun[$iTestIdx], $strTestData, $bDryRun, $bVmOut,
+                        $iVmIdx, $iVmMax, $iTestIdx, $iTestMax, $strLogLevel, $bLogForce, $bShowOutputAsync, $bNoCleanup, $iRetry);
                     $iTestIdx++;
 
                     if ($oJob->run())
@@ -843,6 +860,7 @@ eval
         $strDbVersion ne 'minimal' ? $strPgSqlBin: undef,           # Db bin path
         $strDbVersion ne 'minimal' ? $strDbVersion: undef,          # Db version
         $stryModule[0], $stryModuleTest[0], \@iyModuleTestRun,      # Module info
+        $strTestData,                                               # Data passed into the test
         $iProcessMax, $bVmOut, $bDryRun, $bNoCleanup, $bLogForce,   # Test options
         TEST_USER, BACKREST_USER, TEST_GROUP);                      # User/group info
 

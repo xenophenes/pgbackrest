@@ -115,6 +115,7 @@ sub process
         $self->{strModule},
         $self->{strModuleTest},
         $self->{iyModuleTestRun},
+        $self->{strTestData},
         $self->{iProcessMax},
         $self->{bOutput},
         $self->{bDryRun},
@@ -137,6 +138,7 @@ sub process
             {name => 'strModule'},
             {name => 'strModuleTest'},
             {name => 'iModuleTestRun', required => false},
+            {name => 'strTestData', required => false},
             {name => 'iProcessMax'},
             {name => 'bOutput'},
             {name => 'bDryRun'},
@@ -570,6 +572,7 @@ sub pgVersion {return shift->{strPgVersion}}
 sub processMax {return shift->{iProcessMax}}
 sub runCurrent {return shift->{iRun}}
 sub stanza {return 'db'}
+sub testData {return shift->{strTestData}}
 sub testPath {return shift->{strTestPath}}
 sub vm {return shift->{strVm}}
 sub vmId {return shift->{iVmId}}
