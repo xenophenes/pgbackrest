@@ -36,6 +36,7 @@ use pgBackRest::Storage::StorageS3::StorageS3Http;
 ####################################################################################################################################
 # Query constants
 ####################################################################################################################################
+use constant S3_QUERY_CONTINUATION_TOKEN                            => 'continuation-token';
 use constant S3_QUERY_DELIMITER                                     => 'delimiter';
 use constant S3_QUERY_LIST_TYPE                                     => 'list-type';
 use constant S3_QUERY_PREFIX                                        => 'prefix';
@@ -67,35 +68,60 @@ sub manifest
     # A delimiter must be used if recursion is not desired
     my $strDelimiter = $bRecurse ? undef : '/';
 
-    my $oReponse = $self->httpRequest(
-        HTTP_VERB_GET, undef, {&S3_QUERY_LIST_TYPE => 2, &S3_QUERY_PREFIX => $strPrefix, &S3_QUERY_DELIMITER => $strDelimiter});
-
-    # confess "RESPONSE: $response_body\n";
-    # use Data::Dumper; confess $doc->toString();
-
     # Hash to hold the manifest
     my $hManifest;
 
-    &log(WARN, "TRUNCATED: " . xmlTagContent($oReponse, "IsTruncated"));
-    # @truncated = $root->getElementsByTagName("NextContinuationToken");
-    # &log(WARN, "TOKEN: " . $truncated[0]->textContent());
-    &log(WARN, "KEY COUNT: " . xmlTagContent($oReponse, "KeyCount"));
+    # Continuation token - returned from requests where there is more data to be fetched
+    my $strContinuationToken;
 
-    my @oyFile = xmlTagChildren($oReponse, "Contents");
-    &log(WARN, "FOUND " . @oyFile . " FILES");
+    my $iFileTotal = 0;
+    my $iPathTotal = 0;
 
-    foreach my $oFile (@oyFile)
+    do
     {
-        &log(WARN, "FILE: " . xmlTagContent($oFile, "Key"));
-    }
+        # Get the file list
+        my $oResponse = $self->httpRequest(
+            HTTP_VERB_GET, undef,
+            {&S3_QUERY_LIST_TYPE => 2, &S3_QUERY_PREFIX => $strPrefix, &S3_QUERY_DELIMITER => $strDelimiter,
+                &S3_QUERY_CONTINUATION_TOKEN => $strContinuationToken});
 
-    my @oyPath = xmlTagChildren($oReponse, "CommonPrefixes");
-    &log(WARN, "FOUND " . @oyPath . " PATHS");
+        # @truncated = $root->getElementsByTagName("NextContinuationToken");
+        # &log(WARN, "TOKEN: " . $truncated[0]->textContent());
+        # &log(WARN, "KEY COUNT: " . xmlTagInt($oReponse, "KeyCount"));
 
-    foreach my $oPath (@oyPath)
-    {
-        &log(WARN, "PATH: " . xmlTagContent($oPath, "Prefix"));
+        foreach my $oFile (xmlTagChildren($oResponse, "Contents"))
+        {
+            my $strName = xmlTagText($oFile, "Key");
+            $hManifest->{$strName}->{type} = 'f';
+            $iFileTotal++;
+        }
+
+
+        foreach my $oPath (xmlTagChildren($oResponse, "CommonPrefixes"))
+        {
+            my $strName = xmlTagText($oPath, "Prefix");
+            $hManifest->{$strName}->{type} = 'd';
+            $iPathTotal++;
+        }
+
+        &log(WARN, "PATH = ${iPathTotal}, FILE = ${iFileTotal}");
+        #
+        # if (xmlTagBool($oResponse, "IsTruncated"))
+        # {
+        $strContinuationToken = xmlTagText($oResponse, "NextContinuationToken", false);
+        #
+        # if (defined($strContinuationToken))
+        # {
+        #     &log(WARN, "LOOPING on $strContinuationToken");
+        # }
+        #     &log(WARN, "CONTINUE TOKEN = $strContinuationToken");
+        # }
+        # else
+        # {
+        #     $strContinuationToken = xmlTagText($oResponse, "NextContinuationToken")
+        # }
     }
+    while (defined($strContinuationToken));
 
     # Return from function and log return values if any
     return logDebugReturn

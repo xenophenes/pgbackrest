@@ -43,9 +43,9 @@ sub xmlTagChildren
 push @EXPORT, qw(xmlTagChildren);
 
 ####################################################################################################################################
-# xmlTagContent - get the text content for a tag, error if the tag is required and does not exist.
+# xmlTagText - get the text content for a tag, error if the tag is required and does not exist.
 ####################################################################################################################################
-sub xmlTagContent
+sub xmlTagText
 {
     my $oXml = shift;
     my $strTag = shift;
@@ -60,9 +60,12 @@ sub xmlTagContent
     {
         confess &log(ERROR, @oyTag . " '${strTag}' tag(s) exist, but only one was expected", ERROR_FORMAT);
     }
-    elsif (@oyTag == 0 && (!defined($bRequired) || $bRequired))
+    elsif (@oyTag == 0)
     {
-        confess &log(ERROR, "tag '${strTag}' does not exist", ERROR_FORMAT);
+        if (!defined($bRequired) || $bRequired)
+        {
+            confess &log(ERROR, "tag '${strTag}' does not exist", ERROR_FORMAT);
+        }
     }
     else
     {
@@ -72,6 +75,71 @@ sub xmlTagContent
     return;
 }
 
-push @EXPORT, qw(xmlTagContent);
+push @EXPORT, qw(xmlTagText);
+
+####################################################################################################################################
+# xmlTagBool - get the boolean content for a tag, error if the tag is required and does not exist or is not boolean.
+####################################################################################################################################
+sub xmlTagBool
+{
+    my $oXml = shift;
+    my $strTag = shift;
+    my $bRequired = shift;
+    # my $strDefault = shift;
+
+    # Test content for boolean value
+    my $strContent = xmlTagText($oXml, $strTag, $bRequired);
+
+    if (defined($strContent))
+    {
+        if ($strContent eq 'true')
+        {
+            return true;
+        }
+        elsif ($strContent eq 'false')
+        {
+            return false;
+        }
+        else
+        {
+            confess &log(ERROR, "invalid boolean value '${strContent}' for tag '${strTag}'", ERROR_FORMAT);
+        }
+    }
+
+    return undef;
+}
+
+push @EXPORT, qw(xmlTagBool);
+
+####################################################################################################################################
+# xmlTagInt - get the integer content for a tag, error if the tag is required and does not exist or is not an integer.
+####################################################################################################################################
+sub xmlTagInt
+{
+    my $oXml = shift;
+    my $strTag = shift;
+    my $bRequired = shift;
+    # my $strDefault = shift;
+
+    # Test content for boolean value
+    my $iContent = xmlTagText($oXml, $strTag, $bRequired);
+
+    if (defined($iContent))
+    {
+        eval
+        {
+            $iContent = $iContent + 0;
+            return 1;
+        }
+        or do
+        {
+            confess &log(ERROR, "invalid integer value '${iContent}' for tag '${strTag}'", ERROR_FORMAT);
+        }
+    }
+
+    return $iContent;
+}
+
+push @EXPORT, qw(xmlTagInt);
 
 1;

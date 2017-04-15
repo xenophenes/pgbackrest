@@ -38,7 +38,20 @@ sub run
     if ($self->begin('StorageS3->new()'))
     {
         my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3($strEndPoint, $strRegion, $strAccessKeyId, $strSecretAccessKey);
-        $oS3->manifest('/', {bRecurse => true});
+
+        my $hManifest = $oS3->manifest('archive', {bRecurse => false});
+
+        foreach my $strName (sort(keys(%{$hManifest})))
+        {
+            if ($hManifest->{$strName}{type} eq 'd')
+            {
+                &log(WARN, "PATH: ${strName}");
+            }
+            else
+            {
+                &log(WARN, "FILE: ${strName}");
+            }
+        }
     }
 }
 
