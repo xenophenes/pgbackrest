@@ -24,7 +24,9 @@ sub run
     my $self = shift;
 
     # Get test data
-    if (!defined($self->testData()) || split(':', $self->testData()) != 4)
+    my @stryData = split(':', $self->testData());
+
+    if (!defined($self->testData()) || @stryData != 4)
     {
         confess &log(ERROR, 'test requires data: <endpoint>:<region>:<access-key-id>:<secret-access-key>');
     }
@@ -39,7 +41,8 @@ sub run
     {
         my $oS3 = new pgBackRest::Storage::StorageS3::StorageS3($strEndPoint, $strRegion, $strAccessKeyId, $strSecretAccessKey);
 
-        # $oS3->put('/dude.txt');
+        $oS3->put('/dude2.txt', 'DUDEMAN2');
+        $oS3->put('/dude3.txt', 'DUDEMAN33');
 
         my $hManifest = $oS3->manifest('/', {bRecurse => false});
 
@@ -51,7 +54,7 @@ sub run
             }
             else
             {
-                &log(WARN, "FILE: ${strName}");
+                &log(WARN, "FILE: ${strName}, size: " . $hManifest->{$strName}{size});
             }
         }
     }

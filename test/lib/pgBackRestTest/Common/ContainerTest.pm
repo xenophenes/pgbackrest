@@ -301,8 +301,8 @@ sub perlInstall
     if ($strOS eq VM_CO6)
     {
         $strImage .=
-            'RUN yum install -y perl perl-Time-HiRes perl-parent perl-JSON perl-Digest-SHA perl-DBD-Pg perl-WWW-Curl' .
-                ' perl-XML-LibXML';
+            'RUN yum install -y perl perl-Time-HiRes perl-parent perl-JSON perl-Digest-SHA perl-DBD-Pg' .
+                ' perl-XML-LibXML perl-libwww-perl perl-IO-Socket-SSL';
     }
     elsif ($strOS eq VM_CO7)
     {

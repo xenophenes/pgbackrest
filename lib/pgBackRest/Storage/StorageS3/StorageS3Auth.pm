@@ -105,8 +105,6 @@ sub s3CanonicalRequest
         S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE . "\n" .
         "${strPayloadHash}";
 
-    &log(WARN, "CANONICAL: $strCanonicalRequest");
-
     # Return from function and log return values if any
     return logDebugReturn
     (

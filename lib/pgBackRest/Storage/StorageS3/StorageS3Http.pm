@@ -11,7 +11,9 @@ use English '-no_match_vars';
 use Digest::SHA qw(hmac_sha256 hmac_sha256_hex sha256_hex);
 use Exporter qw(import);
     our @EXPORT = qw();
-use WWW::Curl::Easy;
+# use WWW::Curl::Easy;
+use LWP::UserAgent;
+use HTTP::Request;
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
@@ -133,9 +135,6 @@ sub httpRequest
             {name => 'rstrContent', required => false, trace => true},
         );
 
-    my $oCurl = WWW::Curl::Easy->new;
-    my $strDateTime = s3DateTime();
-
     # Generate the query string
     my $strQuery = '';
 
@@ -148,66 +147,66 @@ sub httpRequest
         }
     }
 
-    $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}${strUri}?${strQuery}");
+    # my $oCurl = WWW::Curl::Easy->new;
+    my $strDateTime = s3DateTime();
+    my $oRequest = new HTTP::Request($strVerb, "https://$self->{strEndPoint}${strUri}?${strQuery}");
 
-    my @myheaders;
-    $myheaders[@myheaders] = S3_HEADER_HOST . ": $self->{strEndPoint}";
-    $myheaders[@myheaders] = S3_HEADER_DATE . ": ${strDateTime}";
+    # $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}${strUri}?${strQuery}");
+
+    $oRequest->header(S3_HEADER_HOST, $self->{strEndPoint});
+    $oRequest->header(S3_HEADER_DATE, $strDateTime);
 
     my $strContentHash = PAYLOAD_DEFAULT_HASH;
     my $iContentLength = 0;
 
     if (defined($rstrContent))
     {
-        $iContentLength = length($rstrContent);
-        $strContentHash = sha256_hex($rstrContent);
+        $iContentLength = length($$rstrContent);
+        $strContentHash = sha256_hex($$rstrContent);
+        $oRequest->content($$rstrContent);
     }
 
-    $myheaders[@myheaders] = S3_HEADER_CONTENT_SHA256 . ": ${strContentHash}";
-    $myheaders[@myheaders] = S3_HEADER_CONTENT_LENGTH . ": ${iContentLength}";
+    $oRequest->header(S3_HEADER_CONTENT_SHA256, $strContentHash);
+    $oRequest->header(S3_HEADER_CONTENT_LENGTH, $iContentLength);
 
-    $myheaders[@myheaders] =
-        S3_HEADER_AUTHORIZATION . ': ' . s3Authorization(
+    $oRequest->header(
+        S3_HEADER_AUTHORIZATION, s3Authorization(
             $self->{strRegion}, $self->{strEndPoint}, $strVerb, $strUri, $strQuery, $strDateTime, $self->{strAccessKeyId},
-            $self->{strSecretAccessKey}, $strContentHash);
+            $self->{strSecretAccessKey}, $strContentHash));
 
-    if ($strVerb eq HTTP_VERB_PUT)
-    {
-        $oCurl->setopt(CURLOPT_PUT, true);
-    }
+    # confess "REQUEST:\n" . $oRequest->as_string();
 
-    $oCurl->setopt(CURLOPT_HTTPHEADER, \@myheaders);
-    &log(WARN, "HEADERS:\n" . join("\n", @myheaders));
-
-    # A filehandle, reference to a scalar or reference to a typeglob can be used here.
-    my $strResponse = '';
-    $oCurl->setopt(CURLOPT_WRITEFUNCTION, sub {$strResponse .= $_[0]; return length($_[0])});
-
-    # Starts the actual request
-    my $iCode = $oCurl->perform;
+    my $oUserAgent = LWP::UserAgent->new();
+    my $oResponse = $oUserAgent->request($oRequest);
 
     # Looking at the results...
-    if ($iCode == 0)
-    {
-        my $iResponseCode = $oCurl->getinfo(CURLINFO_HTTP_CODE);
+    my $iResponseCode = $oResponse->code();
+    my $strResponse = $oResponse->content();
 
-        if ($iResponseCode != 200)
-        {
-            confess &log(ERROR,
-                "S3 request error [$iResponseCode]" . (defined($strResponse) ? ": ${strResponse}" : ''), ERROR_PROTOCOL);
-        }
-    }
-    else
+    if ($iResponseCode != 200)
     {
         confess &log(ERROR,
-            "http request error [$iCode] " . $oCurl->strerror($iCode) . ': ' . $oCurl->errbuf, ERROR_HOST_CONNECT);
+            "S3 request error [$iResponseCode]" . (defined($strResponse) ? ": ${strResponse}" : ''), ERROR_PROTOCOL);
     }
+
+    my $oResponseXml;
+
+    if (defined($strResponse) && $strResponse ne '')
+    {
+        $oResponseXml = xmlParse($strResponse);
+    }
+
+    # else
+    # {
+    #     confess &log(ERROR,
+    #         "http request error [$iCode] " . $oCurl->strerror($iCode) . ': ' . $oCurl->errbuf, ERROR_HOST_CONNECT);
+    # }
 
     # Return from function and log return values if any
     return logDebugReturn
     (
         $strOperation,
-        {name => 'oResponseXml', value => xmlParse(\$strResponse), trace => true, ref => true}
+        {name => 'oResponseXml', value => $oResponseXml, trace => true, ref => true}
     );
 }
 

@@ -53,23 +53,18 @@ sub put
     (
         $strOperation,
         $strFile,
-        $rstrContent,
+        $strContent,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->put', \@_,
             {name => 'strFile'},
-            {name => 'rstrContent', required => false},
+            {name => 'strContent', required => false},
         );
 
-    # Make the content a reference if it is not already
-    if (defined($rstrContent) && !ref($rstrContent))
-    {
-        $rstrContent = \$rstrContent;
-    }
-
     # Put a file
-    my $oResponse = $self->httpRequest(HTTP_VERB_PUT, $strFile, undef, $rstrContent);
+    my $oResponse = $self->httpRequest(
+        HTTP_VERB_PUT, $strFile, undef, defined($strContent) ? (ref($strContent) ? $strContent : \$strContent) : undef);
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -129,6 +124,7 @@ sub manifest
         {
             my $strName = xmlTagText($oFile, "Key");
             $hManifest->{$strName}->{type} = 'f';
+            $hManifest->{$strName}->{size} = xmlTagText($oFile, "Size");
             $iFileTotal++;
         }
 
