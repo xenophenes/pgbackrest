@@ -14,6 +14,7 @@ use English '-no_match_vars';
 
 use POSIX qw(strftime);
 
+use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::Wait;
 use pgBackRest::Storage::StorageS3::StorageS3Auth;
@@ -39,22 +40,24 @@ sub run
     if ($self->begin('s3CanonicalRequest'))
     {
         $self->testResult(
-            sub {s3CanonicalRequest('bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z')},
-            "GET\n/\nlist-type=2\nhost:bucket.s3.amazonaws.com\n" .
-                "x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n" .
+            sub {s3CanonicalRequest(
+                'GET', qw(/), 'list-type=2',
+                {'host' => 'bucket.s3.amazonaws.com', 'x-amz-date' => '20170606T121212Z',
+                    'x-amz-content-sha256' => '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9'},
+                '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9')},
+            "(GET\n/\nlist-type=2\nhost:bucket.s3.amazonaws.com\n" .
+                "x-amz-content-sha256:705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9\n" .
                 "x-amz-date:20170606T121212Z\n\nhost;x-amz-content-sha256;x-amz-date\n" .
-                "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9' .
+                ', host;x-amz-content-sha256;x-amz-date)',
             'canonical request');
 
         #---------------------------------------------------------------------------------------------------------------------------
-        $self->testResult(
-            sub {s3CanonicalRequest('bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z',
-                {strPayloadHash => '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9'})},
-            "GET\n/\nlist-type=2\nhost:bucket.s3.amazonaws.com\n" .
-                "x-amz-content-sha256:705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9\n" .
-                "x-amz-date:20170606T121212Z\n\nhost;x-amz-content-sha256;x-amz-date\n" .
-                "705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9",
-            'canonical request with payload hash (instead of default)');
+        $self->testException(
+            sub {s3CanonicalRequest(
+                'GET', qw(/), 'list-type=2', {'Host' => 'bucket.s3.amazonaws.com'},
+                '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9')},
+            ERROR_ASSERT, "header 'Host' must be lower case");
     }
 
     ################################################################################################################################
@@ -87,27 +90,21 @@ sub run
     }
 
     ################################################################################################################################
-    if ($self->begin('s3Authorization'))
+    if ($self->begin('s3AuthorizationHeader'))
     {
         $self->testResult(
-            sub {s3Authorization(
+            sub {s3AuthorizationHeader(
                 'us-east-1', 'bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z',
-                'AKIAIOSFODNN7EXAMPLE', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY')},
-            'AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20170606/us-east-1/s3/aws4_request,' .
-                'SignedHeaders=host;x-amz-content-sha256;x-amz-date,' .
-                'Signature=cb03bf1d575c1f8904dabf0e573990375340ab293ef7ad18d049fc1338fd89b3',
-            'canonical request');
-
-        #---------------------------------------------------------------------------------------------------------------------------
-        $self->testResult(
-            sub {s3Authorization(
-                'us-east-1', 'bucket.s3.amazonaws.com', 'GET', qw(/), 'list-type=2', '20170606T121212Z',
+                {'host' => 'bucket.s3.amazonaws.com', 'x-amz-date' => '20170606T121212Z'},
                 'AKIAIOSFODNN7EXAMPLE', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
-                {strPayloadHash => '705636ecdedffc09f140497bcac3be1e8d069008ecc6a8029e104d6291b4e4e9'})},
-            'AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20170606/us-east-1/s3/aws4_request,' .
+                'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')},
+            '{authorization => AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20170606/us-east-1/s3/aws4_request,' .
                 'SignedHeaders=host;x-amz-content-sha256;x-amz-date,' .
-                'Signature=5f35b983c794fbb80b9b93d5f86145dfe8d65af34f50ef120ecf03d07193da5a',
-            'canonical request');
+                'Signature=cb03bf1d575c1f8904dabf0e573990375340ab293ef7ad18d049fc1338fd89b3,' .
+                ' host => bucket.s3.amazonaws.com,' .
+                ' x-amz-content-sha256 => e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,' .
+                ' x-amz-date => 20170606T121212Z}',
+            'authorization header request');
     }
 }
 
