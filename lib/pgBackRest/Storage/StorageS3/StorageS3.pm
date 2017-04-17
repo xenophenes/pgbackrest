@@ -137,7 +137,7 @@ sub putMulti
         HTTP_VERB_PUT, $strFile, {'partNumber' => $iPartNo, 'uploadId' => $strUploadId}, $rstrContent, $hHeader);
 
     # use Data::Dumper; confess Dumper($self->{hHeader});
-    my $strETag = $self->{hHeader}{'etag'};
+    my $strETag = $self->{hHeader}{&S3_HEADER_ETAG};
 
     if (!defined($strETag))
     {
@@ -187,18 +187,11 @@ sub putMultiComplete
 
     $strXml .= '</CompleteMultipartUpload>';
 
-    # confess "COMPLETE: " . $strXml;
-
     my $hHeader = {'content-md5' => md5_base64($strXml) . '=='};
 
     # Put a file
     my $oResponse = $self->httpRequest(HTTP_VERB_POST, $strFile, {'uploadId' => $strUploadId}, \$strXml, $hHeader);
     my $strETag = xmlTagText($oResponse, "ETag");
-    #
-    # if (!defined($strETag))
-    # {
-    #
-    # }
 
     # Return from function and log return values if any
     return logDebugReturn
