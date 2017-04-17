@@ -78,38 +78,46 @@ sub s3CanonicalRequest
     my
     (
         $strOperation,
-        $strHost,
         $strVerb,
         $strUri,
         $strQuery,
-        $strDateTime,
+        $hHeader,
         $strPayloadHash,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '::s3CanonicalRequest', \@_,
-            {name => 'strHost', trace => true},
             {name => 'strVerb', trace => true},
             {name => 'strUri', trace => true},
             {name => 'strQuery', trace => true},
-            {name => 'strDateTime', trace => true},
-            {name => 'strPayloadHash', optional => true, default => PAYLOAD_DEFAULT_HASH, trace => true},
+            {name => 'hHeader', trace => true},
+            {name => 'strPayloadHash', trace => true},
         );
 
     # Create the canonical request
     my $strCanonicalRequest =
-        "${strVerb}\n${strUri}\n${strQuery}\n" .
-        S3_HEADER_HOST . ":${strHost}\n" .
-        S3_HEADER_CONTENT_SHA256 . ":${strPayloadHash}\n" .
-        S3_HEADER_DATE . ":${strDateTime}\n\n" .
-        S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE . "\n" .
-        "${strPayloadHash}";
+        "${strVerb}\n${strUri}\n${strQuery}\n";
+    my $strSignedHeaders;
+
+    foreach my $strHeader (sort(keys(%{$hHeader})))
+    {
+        if (lc($strHeader) ne $strHeader)
+        {
+            confess &log(ASSERT, "header '${strHeader}' must be lower case");
+        }
+
+        $strCanonicalRequest .= $strHeader . ":$hHeader->{$strHeader}\n";
+        $strSignedHeaders .= (defined($strSignedHeaders) ? qw(;) : '') . lc($strHeader);
+    }
+
+    $strCanonicalRequest .= "\n${strSignedHeaders}\n${strPayloadHash}";
 
     # Return from function and log return values if any
     return logDebugReturn
     (
         $strOperation,
-        {name => 'strCanonicalRequest', value => $strCanonicalRequest, trace => true}
+        {name => 'strCanonicalRequest', value => $strCanonicalRequest, trace => true},
+        {name => 'strSignedHeaders', value => $strSignedHeaders, trace => true},
     );
 }
 
@@ -203,11 +211,11 @@ sub s3StringToSign
 push @EXPORT, qw(s3StringToSign);
 
 ####################################################################################################################################
-# s3Authorization
+# s3AuthorizationHeader
 #
 # Authorization string that will be used in the HTTP "authorization" header.
 ####################################################################################################################################
-sub s3Authorization
+sub s3AuthorizationHeader
 {
     # Assign function parameters, defaults, and log debug info
     my
@@ -219,6 +227,7 @@ sub s3Authorization
         $strUri,
         $strQuery,
         $strDateTime,
+        $hHeader,
         $strAccessKeyId,
         $strSecretAccessKey,
         $strPayloadHash,
@@ -232,29 +241,34 @@ sub s3Authorization
             {name => 'strUri', trace => true},
             {name => 'strQuery', trace => true},
             {name => 'strDateTime', trace => true},
+            {name => 'hHeader', required => false, trace => true},
             {name => 'strAccessKeyId', trace => true},
             {name => 'strSecretAccessKey', trace => true},
-            {name => 'strPayloadHash', default => PAYLOAD_DEFAULT_HASH, trace => true},
+            {name => 'strPayloadHash', trace => true},
         );
 
+    # Add s3 required headers
+    $hHeader->{&S3_HEADER_HOST} = $strHost;
+    $hHeader->{&S3_HEADER_CONTENT_SHA256} = $strPayloadHash;
+    $hHeader->{&S3_HEADER_DATE} = $strDateTime;
+
     # Create authorization string
-    my $strAuthorization =
-        AWS4_HMAC_SHA256 . " Credential=${strAccessKeyId}/" . substr($strDateTime, 0, 8) . "/${strRegion}/" . S3 . '/' .
-            AWS4_REQUEST . ",SignedHeaders=" . S3_HEADER_HOST . qw(;) . S3_HEADER_CONTENT_SHA256 . qw(;) . S3_HEADER_DATE .
-            ",Signature=" .  hmac_sha256_hex(
-                s3StringToSign(
-                    $strDateTime, $strRegion, sha256_hex(s3CanonicalRequest(
-                        $strHost, $strVerb, $strUri, $strQuery, $strDateTime, {strPayloadHash => $strPayloadHash}))),
+    my ($strCanonicalRequest, $strSignedHeaders) = s3CanonicalRequest($strVerb, $strUri, $strQuery, $hHeader, $strPayloadHash);
+
+    $hHeader->{&S3_HEADER_AUTHORIZATION} =
+        AWS4_HMAC_SHA256 . " Credential=${strAccessKeyId}/" . substr($strDateTime, 0, 8) . "/${strRegion}/" . S3 . qw(/) .
+            AWS4_REQUEST . ",SignedHeaders=${strSignedHeaders},Signature=" . hmac_sha256_hex(s3StringToSign(
+                $strDateTime, $strRegion, sha256_hex($strCanonicalRequest)),
                 s3SigningKey(substr($strDateTime, 0, 8), $strRegion, $strSecretAccessKey));
 
     # Return from function and log return values if any
     return logDebugReturn
     (
         $strOperation,
-        {name => 'strAuthorization', value => $strAuthorization, trace => true}
+        {name => 'hHeader', value => $hHeader, trace => true}
     );
 }
 
-push @EXPORT, qw(s3Authorization);
+push @EXPORT, qw(s3AuthorizationHeader);
 
 1;

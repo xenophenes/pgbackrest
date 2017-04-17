@@ -51,8 +51,14 @@ sub run
         #
         # &log(WARN, "STOP OBJECT CREATE");
 
+        $oS3->put('/dude1.txt', 'DUDEMAN1');
+        $oS3->put('/dude2.txt', 'DUDEMAN2');
+        $oS3->remove('/dude2.txt');
+
         &log(WARN, "START MANIFEST REQUEST");
-        my $hManifest = $oS3->manifest('archive', {bRecurse => false});
+        my $hManifest = $oS3->manifest('/', {bRecurse => false});
+
+        my @stryFile;
 
         foreach my $strName (sort(keys(%{$hManifest})))
         {
@@ -63,8 +69,12 @@ sub run
             else
             {
                 &log(WARN, "FILE: ${strName}, size: " . $hManifest->{$strName}{size});
+                push(@stryFile, "/${strName}");
             }
         }
+
+        # ---
+        $oS3->remove(\@stryFile);
     }
 }
 

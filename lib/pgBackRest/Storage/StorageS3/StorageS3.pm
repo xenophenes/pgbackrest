@@ -21,6 +21,7 @@ use English '-no_match_vars';
 # use POSIX qw(strftime);
 # use WWW::Curl::Easy;
 # use XML::LibXML;
+use Digest::MD5 qw(md5_base64);
 
 # use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
@@ -147,6 +148,59 @@ sub manifest
     (
         $strOperation,
         {name => 'hManifest', value => $hManifest}
+    );
+}
+
+####################################################################################################################################
+# remove
+####################################################################################################################################
+sub remove
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $rstryFile,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->put', \@_,
+            {name => 'rstryFile'},
+        );
+
+    # If stryFile is a scalar, convert to an array
+    my $rstryFileAll = ref($rstryFile) ? $rstryFile : [$rstryFile];
+
+    do
+    {
+        my $strFile = shift(@{$rstryFileAll});
+        my $iTotal = 0;
+        my $strXml = XML_HEADER . '<Delete><Quiet>true</Quiet>';
+
+        while (defined($strFile))
+        {
+            $iTotal++;
+            $strXml .= '<Object><Key>' . substr($strFile, 1) . '</Key></Object>';
+
+            $strFile = $iTotal < 1000 ? shift(@{$rstryFileAll}) : undef;
+        }
+
+        $strXml .= '</Delete>';
+
+        my $hHeader = {'content-md5' => md5_base64($strXml) . '=='};
+
+        # Put a file
+        my $oResponse = $self->httpRequest(HTTP_VERB_POST, undef, 'delete=', \$strXml, $hHeader);
+    }
+    while (@{$rstryFileAll} > 0);
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'bResult', value => true}
     );
 }
 

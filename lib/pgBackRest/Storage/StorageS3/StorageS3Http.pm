@@ -25,11 +25,15 @@ use pgBackRest::Storage::StorageS3::StorageS3Auth;
 ####################################################################################################################################
 use constant HTTP_VERB_GET                                          => 'GET';
     push @EXPORT, qw(HTTP_VERB_GET);
+use constant HTTP_VERB_POST                                         => 'POST';
+    push @EXPORT, qw(HTTP_VERB_POST);
 use constant HTTP_VERB_PUT                                          => 'PUT';
     push @EXPORT, qw(HTTP_VERB_PUT);
 
 use constant S3_HEADER_CONTENT_LENGTH                               => 'content-length';
     push @EXPORT, qw(S3_HEADER_CONTENT_LENGTH);
+use constant S3_HEADER_TRANSFER_ENCODING                            => 'transfer-encoding';
+    push @EXPORT, qw(S3_HEADER_TRANSFER_ENCODING);
 
 ####################################################################################################################################
 # new
@@ -125,6 +129,7 @@ sub httpRequest
         $strUri,
         $hQuery,
         $rstrContent,
+        $hHeader,
     ) =
         logDebugParam
         (
@@ -133,34 +138,39 @@ sub httpRequest
             {name => 'strUri', default => '/', trace => true},
             {name => 'hQuery', required => false, trace => true},
             {name => 'rstrContent', required => false, trace => true},
+            {name => 'hHeader', required => false, trace => true},
         );
 
     # Generate the query string
     my $strQuery = '';
 
-    foreach my $strParam (sort(keys(%{$hQuery})))
+    # If a hash (the normal case)
+    if (ref($hQuery))
     {
-        # Parameters may not be defined - this is OK
-        if (defined($hQuery->{$strParam}))
+        foreach my $strParam (sort(keys(%{$hQuery})))
         {
-            $strQuery .= ($strQuery eq '' ? '' : '&') . $strParam . '=' . uriEncode($hQuery->{$strParam});
+            # Parameters may not be defined - this is OK
+            if (defined($hQuery->{$strParam}))
+            {
+                $strQuery .= ($strQuery eq '' ? '' : '&') . $strParam . '=' . uriEncode($hQuery->{$strParam});
+            }
         }
     }
+    elsif (defined($hQuery))
+    {
+        # Else query string was passed directly as a scalar
+        $strQuery = $hQuery;
+    }
 
-    # my $oCurl = WWW::Curl::Easy->new;
     my $strDateTime = s3DateTime();
 
     my $oSocket = IO::Socket::SSL->new("$self->{strEndPoint}:443");
     my $oSocketIO = new pgBackRest::Protocol::IO::IO($oSocket, $oSocket, undef, 30, 4 * 1024 * 1024);
-    # my $oRequest = new HTTP::Request($strVerb, "https://$self->{strEndPoint}${strUri}?${strQuery}");
 
+    my $strRequestHeader = "${strVerb} ${strUri}?${strQuery} HTTP/1.1" . "\r\n";
 
-    my $strRequestHeader = "${strVerb} ${strUri}?${strQuery} HTTP/1.0" . "\r\n";
-
-    # $oCurl->setopt(CURLOPT_URL, "https://$self->{strEndPoint}${strUri}?${strQuery}");
-
-    $strRequestHeader .= S3_HEADER_HOST . ': ' . $self->{strEndPoint} . "\r\n";
-    $strRequestHeader .= S3_HEADER_DATE . ': ' . $strDateTime . "\r\n";
+    # $strRequestHeader .= S3_HEADER_HOST . ': ' . $self->{strEndPoint} . "\r\n";
+    # $strRequestHeader .= S3_HEADER_DATE . ': ' . $strDateTime . "\r\n";
 
     my $strContentHash = PAYLOAD_DEFAULT_HASH;
     my $iContentLength = 0;
@@ -171,13 +181,18 @@ sub httpRequest
         $strContentHash = sha256_hex($$rstrContent);
     }
 
-    $strRequestHeader .= S3_HEADER_CONTENT_SHA256 . ': ' . $strContentHash . "\r\n";
-    $strRequestHeader .= S3_HEADER_CONTENT_LENGTH . ': ' . $iContentLength . "\r\n";
+    $hHeader->{&S3_HEADER_CONTENT_SHA256} = $strContentHash;
+    $hHeader->{&S3_HEADER_CONTENT_LENGTH} = $iContentLength;
 
-    $strRequestHeader .=
-        S3_HEADER_AUTHORIZATION . ': ' . s3Authorization(
-            $self->{strRegion}, $self->{strEndPoint}, $strVerb, $strUri, $strQuery, $strDateTime, $self->{strAccessKeyId},
-            $self->{strSecretAccessKey}, $strContentHash) . "\r\n";
+    $hHeader = s3AuthorizationHeader(
+        $self->{strRegion}, $self->{strEndPoint}, $strVerb, $strUri, $strQuery, $strDateTime, $hHeader, $self->{strAccessKeyId},
+        $self->{strSecretAccessKey}, $strContentHash);
+
+    # Write headers
+    foreach my $strHeader (sort(keys(%{$hHeader})))
+    {
+        $strRequestHeader .= "${strHeader}: $hHeader->{$strHeader}\r\n";
+    }
 
     $strRequestHeader .= "\r\n";
 
@@ -203,21 +218,93 @@ sub httpRequest
     my ($strProtocol, $iResponseCode, $strResponseMessage) = split(' ', trim($oSocketIO->lineRead()));
 
     # Read the response headers
-    my $strResponseHeader = '';
-    my $strHeader = $oSocketIO->lineRead();
+    $self->{iContentLength} = undef;
 
-    while ($strHeader ne "\r")
+    my $strResponseHeader = '';
+    my $strHeader = trim($oSocketIO->lineRead());
+
+    while ($strHeader ne '')
     {
         $strResponseHeader .= "${strHeader}\n";
-        $strHeader = $oSocketIO->lineRead();
+
+        my $iColonPos = index($strHeader, ':');
+
+        if ($iColonPos == -1)
+        {
+            confess &log(ERROR, "http header '${strHeader}' requires colon separator", ERROR_PROTOCOL);
+        }
+
+        my $strHeaderKey = lc(substr($strHeader, 0, $iColonPos));
+        my $strHeaderValue = trim(substr($strHeader, $iColonPos + 1));
+
+        if ($strHeaderKey eq S3_HEADER_CONTENT_LENGTH)
+        {
+            $self->{iContentLength} = $strHeaderValue + 0;
+
+            if ($self->{iContentLength} > 0)
+            {
+                confess &log(ASSERT, "can't deal with content-length > 0");
+            }
+        }
+        elsif ($strHeaderKey eq S3_HEADER_TRANSFER_ENCODING)
+        {
+            if ($strHeaderValue eq 'chunked')
+            {
+                $self->{iContentLength} = -1;
+            }
+            else
+            {
+                confess &log(ERROR, "invalid value '${strHeaderValue} for http header '${strHeaderKey}'", ERROR_PROTOCOL);
+            }
+        }
+
+        # &log(WARN, "HEADER '$strHeader' - $iColonPos - '$strHeaderKey' = '$strHeaderValue'");
+        $strHeader = trim($oSocketIO->lineRead());
     }
 
     # &log(WARN, "RESPONSE HEADER:\n" . trim($strResponseHeader));
 
-    # &log(WARN, "START BODY READ");
+    # Content length should have been defined either by content-length or transfer encoding
+    if (!defined($self->{iContentLength}))
+    {
+        confess &log(ERROR, S3_HEADER_CONTENT_LENGTH . ' or ' . S3_HEADER_TRANSFER_ENCODING . ' must be defined', ERROR_PROTOCOL);
+    }
 
+    # &log(WARN, "START BODY READ");
+    my $oResponseXml;
     my $strResponseBody = '';
-    do {} while ($oSocketIO->bufferRead(\$strResponseBody, 1024 * 1024 * 4, length($strResponseBody)) != 0);
+
+
+    if ($self->{iContentLength} != 0)
+    {
+        my $iSize = 0;
+
+        while (1)
+        {
+            my $strChunkLength = trim($oSocketIO->lineRead());
+            my $iChunkLength = hex($strChunkLength);
+            # &log(WARN, "READ CHUNK $strChunkLength - $iChunkLength");
+
+            last if ($iChunkLength == 0);
+
+            my $strResponseChunk;
+            $oSocketIO->bufferRead(\$strResponseChunk, $iChunkLength, 0, true);
+            $strResponseBody .= $strResponseChunk;
+            $oSocketIO->lineRead();
+
+            $iSize += $iChunkLength;
+
+            # &log(WARN, "REPONSE BODY LENGTH: " . $iSize);
+        };
+
+        if (defined($strResponseBody) && $strResponseBody ne '')
+        {
+
+            $oResponseXml = xmlParse($strResponseBody);
+        }
+    }
+
+    # &log(WARN, "FINISHED READ");
 
     # &log(WARN, "STOP BODY READ");
 
@@ -230,12 +317,8 @@ sub httpRequest
     }
 
     # Create xml object if the response is xml
-    my $oResponseXml;
 
-    if (defined($strResponseBody) && $strResponseBody ne '')
-    {
-        $oResponseXml = xmlParse($strResponseBody);
-    }
+        # &log(WARN, "RESPONSE:\n${strResponseHeader}\n" . $strResponseBody);
 
     # Return from function and log return values if any
     return logDebugReturn
