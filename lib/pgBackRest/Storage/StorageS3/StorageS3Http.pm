@@ -206,8 +206,18 @@ sub httpRequest
 
     if (defined($rstrContent))
     {
+        my $iTotalSize = length($$rstrContent);
+        my $iTotalSent = 0;
+
+        do
+        {
+            my $strBufferWrite = substr($$rstrContent, $iTotalSent, $iTotalSize - $iTotalSent > 16384 ? 16384 : $iTotalSize - $iTotalSent);
+
+            $iTotalSent += $oSocketIO->bufferWrite(\$strBufferWrite);
+            # &log(WARN, "SENT:" . $iTotalSent);
+        } while ($iTotalSent < $iTotalSize);
+
         # &log(WARN, "START CONTENT WRITE");
-        $oSocketIO->bufferWrite($rstrContent);
     }
 
     # confess "REQUEST:\n" . $oRequest->as_string();
@@ -236,6 +246,9 @@ sub httpRequest
 
         my $strHeaderKey = lc(substr($strHeader, 0, $iColonPos));
         my $strHeaderValue = trim(substr($strHeader, $iColonPos + 1));
+
+        # Store the header
+        $self->{hHeader}{$strHeaderKey} = $strHeaderValue;
 
         if ($strHeaderKey eq S3_HEADER_CONTENT_LENGTH)
         {

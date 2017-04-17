@@ -76,6 +76,139 @@ sub put
 }
 
 ####################################################################################################################################
+# putMultiInit
+####################################################################################################################################
+sub putMultiInit
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFile,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->putMultiInit', \@_,
+            {name => 'strFile'},
+        );
+
+    my $oResponse = $self->httpRequest(HTTP_VERB_POST, $strFile, 'uploads=');
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'strUploadId', value => xmlTagText($oResponse, 'UploadId')}
+    );
+}
+
+####################################################################################################################################
+# putMulti
+####################################################################################################################################
+sub putMulti
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFile,
+        $strUploadId,
+        $iPartNo,
+        $rstrContent,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->putMulti', \@_,
+            {name => 'strFile'},
+            {name => 'strUploadId'},
+            {name => 'iPartNo'},
+            {name => 'rstrContent'},
+        );
+
+    # Put a file
+    my $hHeader = {'content-md5' => md5_base64($$rstrContent) . '=='};
+
+    # Put a file
+    $self->httpRequest(
+        HTTP_VERB_PUT, $strFile, {'partNumber' => $iPartNo, 'uploadId' => $strUploadId}, $rstrContent, $hHeader);
+
+    # use Data::Dumper; confess Dumper($self->{hHeader});
+    my $strETag = $self->{hHeader}{'etag'};
+
+    if (!defined($strETag))
+    {
+        confess &log(ERROR, 'etag header not defined');
+    }
+
+    push(@{$self->{hMultiPart}{$strUploadId}}, $strETag);
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'strETag', value => $strETag}
+    );
+}
+
+####################################################################################################################################
+# putMultiComplete
+####################################################################################################################################
+sub putMultiComplete
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFile,
+        $strUploadId,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->put', \@_,
+            {name => 'strFile'},
+            {name => 'strUploadId'},
+        );
+
+    my $strXml = XML_HEADER . '<CompleteMultipartUpload>';
+    my $iPartNo = 0;
+
+    foreach my $strETag (@{$self->{hMultiPart}{$strUploadId}})
+    {
+        $iPartNo++;
+
+        $strXml .= "<Part><PartNumber>${iPartNo}</PartNumber><ETag>${strETag}</ETag></Part>";
+    }
+
+    $strXml .= '</CompleteMultipartUpload>';
+
+    # confess "COMPLETE: " . $strXml;
+
+    my $hHeader = {'content-md5' => md5_base64($strXml) . '=='};
+
+    # Put a file
+    my $oResponse = $self->httpRequest(HTTP_VERB_POST, $strFile, {'uploadId' => $strUploadId}, \$strXml, $hHeader);
+    my $strETag = xmlTagText($oResponse, "ETag");
+    #
+    # if (!defined($strETag))
+    # {
+    #
+    # }
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'strETag', value => $strETag}
+    );
+}
+
+####################################################################################################################################
 # manifest
 ####################################################################################################################################
 sub manifest

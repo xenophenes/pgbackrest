@@ -438,6 +438,8 @@ sub bufferWrite
     {
         $self->error(ERROR_FILE_WRITE, "unable to write ${iWriteSize} bytes", $!);
     }
+
+    return $iWriteOut;
 }
 
 ####################################################################################################################################
