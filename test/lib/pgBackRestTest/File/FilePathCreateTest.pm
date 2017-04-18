@@ -39,7 +39,7 @@ sub run
     # Loop through mode (mode will be set on true)
     foreach my $strMode (undef, '0700')
     {
-        my $strPathType = PATH_BACKUP_CLUSTER;
+        my $strPathType = PATH_REPO_BACKUP;
 
         # Increment the run, log, and decide whether this unit test should be run
         if (!$self->begin("rmt ${bRemote}, err ${bError}, mode " . (defined($strMode) ? $strMode : 'undef'))) {next}

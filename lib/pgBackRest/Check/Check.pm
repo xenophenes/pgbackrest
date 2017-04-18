@@ -146,7 +146,7 @@ sub process
         {
             &log(INFO,
             "WAL segment ${strWalSegment} successfully stored in the archive at '" .
-            $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/$strArchiveId/${strArchiveFile}") . "'");
+            $oFile->pathGet(PATH_REPO_ARCHIVE . "/$strArchiveId/${strArchiveFile}") . "'");
         }
         else
         {
@@ -214,14 +214,14 @@ sub backupInfoCheck
         ($strDbVersion, $iControlVersion, $iCatalogVersion, $ullDbSysId) = dbMasterGet()->info();
     }
 
-    if ($oFile->isRemote(PATH_BACKUP))
+    if ($oFile->isRemote(PATH_REPO))
     {
         $iDbHistoryId = $oFile->{oProtocol}->cmdExecute(
             OP_CHECK_BACKUP_INFO_CHECK, [$strDbVersion, $iControlVersion, $iCatalogVersion, $ullDbSysId]);
     }
     else
     {
-        $iDbHistoryId = (new pgBackRest::BackupInfo($oFile->pathGet(PATH_BACKUP_CLUSTER)))->check(
+        $iDbHistoryId = (new pgBackRest::BackupInfo($oFile->pathGet(PATH_REPO_BACKUP)))->check(
             $strDbVersion, $iControlVersion, $iCatalogVersion, $ullDbSysId);
     }
 

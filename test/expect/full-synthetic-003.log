@@ -78,7 +78,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:cluster>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -106,21 +106,21 @@ P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDataba
 P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = [TEST_PATH]/db-master/db/pg_config/postgresql.conf
 P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <repo:tmp>
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->processManifest(): bCompress = true, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -197,13 +197,13 @@ P00   INFO: full backup size = 160KB
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemoteIdx = [undef], strRemoteType = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
 P00   INFO: new backup label = [BACKUP-FULL-1]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:tmp>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:tmp>/backup.manifest, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:BACKUP:TMP>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP:TMP>/backup.manifest, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/db-master/repo/temp/db.tmp to [TEST_PATH]/db-master/repo/backup/db/[BACKUP-FULL-1]
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <repo:cluster>/[BACKUP-FULL-1], strSourcePathExp = <repo:tmp>
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = false, strDestinationPathExp = <repo:cluster>/backup.history/2017/[BACKUP-FULL-1].manifest.gz, strSourcePathExp = <repo:cluster>/[BACKUP-FULL-1]/backup.manifest.gz
-P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <repo:cluster>/latest
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <REPO:BACKUP>/[BACKUP-FULL-1], strSourcePathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = false, strDestinationPathExp = <REPO:BACKUP>/backup.history/2017/[BACKUP-FULL-1].manifest.gz, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-1]/backup.manifest.gz
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <REPO:BACKUP>/latest
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = false
-P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <repo:cluster>/latest, strSourcePathExp = <repo:cluster>/[BACKUP-FULL-1]
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP>/latest, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-1]
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --buffer-size=16384 --config=[TEST_PATH]/db-master/pgbackrest.conf --lock-path=[TEST_PATH]/db-master/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/db-master/repo/log --repo-path=[TEST_PATH]/db-master/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
@@ -217,7 +217,7 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <repo:cluster>, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <REPO:BACKUP>, strSortOrder = reverse
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-FULL-1])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
@@ -357,7 +357,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:cluster>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -390,7 +390,7 @@ P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00   WARN: aborted backup of same type exists, will be cleaned to remove invalid files and resumed
 P00   TEST:         PgBaCkReStTeSt-BACKUP-RESUME-PgBaCkReStTeSt
 P00 DETAIL: clean backup temp path: [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = <repo:tmp>
+P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->fileNotInManifest=>: stryFile = (file.tmp.gz, pg_data/PG_VERSION.gz)
 P00  DEBUG:     Backup->tmpClean: remove file [TEST_PATH]/db-master/repo/temp/db.tmp/pg_data/PG_VERSION.gz
 P00  DEBUG:     Backup->tmpClean: remove file [TEST_PATH]/db-master/repo/temp/db.tmp/file.tmp.gz
@@ -399,15 +399,15 @@ P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx 
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:tmp>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, 6bf316f11d28c28914ea9be92c00de9bea6d9a6b, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, 21e2c7c1a326682c07053b7d6a5a40dbd49c2ec5, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, 4a383e4fb8b5cd2a4e8fab91ef63dce48e532a2f, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -469,16 +469,16 @@ P00  DEBUG:     Backup->processManifest=>: lSizeTotal = 163878
 P00   INFO: full backup size = 160KB
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemoteIdx = [undef], strRemoteType = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:tmp>
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP:TMP>
 P00   INFO: new backup label = [BACKUP-FULL-2]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:tmp>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:tmp>/backup.manifest, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:BACKUP:TMP>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP:TMP>/backup.manifest, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/db-master/repo/temp/db.tmp to [TEST_PATH]/db-master/repo/backup/db/[BACKUP-FULL-2]
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <repo:cluster>/[BACKUP-FULL-2], strSourcePathExp = <repo:tmp>
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <repo:cluster>/backup.history/2017/[BACKUP-FULL-2].manifest.gz, strSourcePathExp = <repo:cluster>/[BACKUP-FULL-2]/backup.manifest.gz
-P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <repo:cluster>/latest
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <REPO:BACKUP>/[BACKUP-FULL-2], strSourcePathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <REPO:BACKUP>/backup.history/2017/[BACKUP-FULL-2].manifest.gz, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-2]/backup.manifest.gz
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <REPO:BACKUP>/latest
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
-P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <repo:cluster>/latest, strSourcePathExp = <repo:cluster>/[BACKUP-FULL-2]
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:cluster>
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP>/latest, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-2]
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP>
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --config=[TEST_PATH]/db-master/pgbackrest.conf --lock-path=[TEST_PATH]/db-master/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/db-master/repo/log --repo-path=[TEST_PATH]/db-master/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
@@ -492,7 +492,7 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <repo:cluster>, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <REPO:BACKUP>, strSortOrder = reverse
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
@@ -634,16 +634,16 @@ P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/d
 P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/db/base/PG_VERSION
 P00  DEBUG:     Storage::Storage->exists=>: bExists = true
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = [TEST_PATH]/db-master/db/base/backup.info, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:cluster>/backup.info, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = [TEST_PATH]/db-master/db/base/backup.info, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP>/backup.info, strUser = [undef]
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = false, strBackupClusterPath = [TEST_PATH]/db-master/db/base
 P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = false, bPathSync = true, bTemp = [undef], strPathExp = [TEST_PATH]/db-master/db/base/backup.info
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00   INFO: restore backup set [BACKUP-FULL-2]
-P00  DEBUG:     Storage::Storage->exists(): strPathExp = <repo:cluster>/[BACKUP-FULL-2]
+P00  DEBUG:     Storage::Storage->exists(): strPathExp = <REPO:BACKUP>/[BACKUP-FULL-2]
 P00  DEBUG:     Storage::Storage->exists=>: bExists = true
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = [TEST_PATH]/db-master/db/base/backup.manifest, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:cluster>/[BACKUP-FULL-2]/backup.manifest, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = [TEST_PATH]/db-master/db/base/backup.manifest, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-2]/backup.manifest, strUser = [undef]
 P00  DEBUG:     Restore->manifestOwnershipCheck(): oManifest = [object]
 P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = true, bPathSync = <false>, bTemp = true, strPathExp = [TEST_PATH]/db-master/db/base/global/pg_control
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = false
@@ -972,7 +972,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:cluster>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1011,7 +1011,7 @@ P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabas
 P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = [TEST_PATH]/db-master/db/tablespace/ts1
 P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <repo:tmp>
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->processManifest(): bCompress = true, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = incr
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
@@ -1051,16 +1051,16 @@ P00  DEBUG:     Backup->processManifest=>: lSizeTotal = 18
 P00   INFO: incr backup size = 18B
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemoteIdx = [undef], strRemoteType = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:tmp>
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP:TMP>
 P00   INFO: new backup label = [BACKUP-INCR-1]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:tmp>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:tmp>/backup.manifest, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:BACKUP:TMP>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP:TMP>/backup.manifest, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/db-master/repo/temp/db.tmp to [TEST_PATH]/db-master/repo/backup/db/[BACKUP-INCR-1]
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <repo:cluster>/[BACKUP-INCR-1], strSourcePathExp = <repo:tmp>
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <repo:cluster>/backup.history/2017/[BACKUP-INCR-1].manifest.gz, strSourcePathExp = <repo:cluster>/[BACKUP-INCR-1]/backup.manifest.gz
-P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <repo:cluster>/latest
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <REPO:BACKUP>/[BACKUP-INCR-1], strSourcePathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <REPO:BACKUP>/backup.history/2017/[BACKUP-INCR-1].manifest.gz, strSourcePathExp = <REPO:BACKUP>/[BACKUP-INCR-1]/backup.manifest.gz
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <REPO:BACKUP>/latest
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
-P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <repo:cluster>/latest, strSourcePathExp = <repo:cluster>/[BACKUP-INCR-1]
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:cluster>
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP>/latest, strSourcePathExp = <REPO:BACKUP>/[BACKUP-INCR-1]
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP>
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --config=[TEST_PATH]/db-master/pgbackrest.conf --lock-path=[TEST_PATH]/db-master/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/db-master/repo/log --repo-path=[TEST_PATH]/db-master/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
@@ -1076,7 +1076,7 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <repo:cluster>, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <REPO:BACKUP>, strSortOrder = reverse
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-INCR-1], [BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
@@ -1224,7 +1224,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <repo:cluster>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1270,7 +1270,7 @@ P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00   WARN: aborted backup of same type exists, will be cleaned to remove invalid files and resumed
 P00   TEST:         PgBaCkReStTeSt-BACKUP-RESUME-PgBaCkReStTeSt
 P00 DETAIL: clean backup temp path: [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = <repo:tmp>
+P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->fileNotInManifest=>: stryFile = ()
 P00  DEBUG:     Backup->processManifest(): bCompress = true, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = incr
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
@@ -1320,16 +1320,16 @@ P00  DEBUG:     Backup->processManifest=>: lSizeTotal = 29
 P00   INFO: incr backup size = 29B
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemoteIdx = [undef], strRemoteType = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:tmp>
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP:TMP>
 P00   INFO: new backup label = [BACKUP-INCR-2]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:tmp>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <repo:tmp>/backup.manifest, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:BACKUP:TMP>/backup.manifest.gz, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = <REPO:BACKUP:TMP>/backup.manifest, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/db-master/repo/temp/db.tmp to [TEST_PATH]/db-master/repo/backup/db/[BACKUP-INCR-2]
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <repo:cluster>/[BACKUP-INCR-2], strSourcePathExp = <repo:tmp>
-P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <repo:cluster>/backup.history/2017/[BACKUP-INCR-2].manifest.gz, strSourcePathExp = <repo:cluster>/[BACKUP-INCR-2]/backup.manifest.gz
-P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <repo:cluster>/latest
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationPathExp = <REPO:BACKUP>/[BACKUP-INCR-2], strSourcePathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationPathExp = <REPO:BACKUP>/backup.history/2017/[BACKUP-INCR-2].manifest.gz, strSourcePathExp = <REPO:BACKUP>/[BACKUP-INCR-2]/backup.manifest.gz
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPathExp = <REPO:BACKUP>/latest
 P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
-P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <repo:cluster>/latest, strSourcePathExp = <repo:cluster>/[BACKUP-INCR-2]
-P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <repo:cluster>
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP>/latest, strSourcePathExp = <REPO:BACKUP>/[BACKUP-INCR-2]
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPathExp = <REPO:BACKUP>
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --config=[TEST_PATH]/db-master/pgbackrest.conf --lock-path=[TEST_PATH]/db-master/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/db-master/repo/log --repo-path=[TEST_PATH]/db-master/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
@@ -1345,7 +1345,7 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <repo:cluster>, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPathExp = <REPO:BACKUP>, strSortOrder = reverse
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-INCR-2], [BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true

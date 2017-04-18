@@ -116,7 +116,7 @@ sub run
             $strType = BACKUP_TYPE_FULL;
 
             # Remove the files in the archive directory
-            executeTest('sudo rm -rf ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE) . "/*");
+            executeTest('sudo rm -rf ' . $oFile->pathGet(PATH_REPO_ARCHIVE) . "/*");
             $oHostDbMaster->check(
                 'fail on missing archive.info file',
                 {iTimeout => 0.1, iExpectedExitStatus => ERROR_FILE_MISSING});
@@ -177,7 +177,7 @@ sub run
 
             # load the archive info file and munge it for testing by breaking the database version
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
+                $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                 {&INFO_ARCHIVE_SECTION_DB => {&INFO_ARCHIVE_KEY_DB_VERSION => '8.0'}});
 
             $oHostDbMaster->check($strComment, {iTimeout => 0.1, iExpectedExitStatus => ERROR_ARCHIVE_MISMATCH});
@@ -189,7 +189,7 @@ sub run
             }
 
             # Restore the file to its original condition
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
+            $oHostBackup->infoRestore($oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
 
             # Check archive_timeout error when WAL segment is not found
             $strComment = 'fail on archive timeout';
@@ -215,7 +215,7 @@ sub run
 
             # Load the backup.info file and munge it for testing by breaking the database version and system id
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
+                $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO),
                 {&INFO_BACKUP_SECTION_DB =>
                     {&INFO_BACKUP_KEY_DB_VERSION => '8.0', &INFO_BACKUP_KEY_SYSTEM_ID => 6999999999999999999}});
 
@@ -229,7 +229,7 @@ sub run
             }
 
             # Restore the file to its original condition
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
+            $oHostBackup->infoRestore($oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO));
 
             # Providing a sufficient archive-timeout, verify that the check command runs successfully now with valid
             # archive.info and backup.info files

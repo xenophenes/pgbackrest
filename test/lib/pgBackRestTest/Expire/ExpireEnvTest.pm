@@ -107,8 +107,8 @@ sub stanzaSet
     $$oStanza{iCatalogVersion} = $oStanzaCreate->{oDb}{iCatalogVersion};
     $$oStanza{iControlVersion} = $oStanzaCreate->{oDb}{iControlVersion};
 
-    my $oArchiveInfo = new pgBackRest::Archive::ArchiveInfo($self->{oFile}->pathGet(PATH_BACKUP_ARCHIVE));
-    my $oBackupInfo = new pgBackRest::BackupInfo($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER));
+    my $oArchiveInfo = new pgBackRest::Archive::ArchiveInfo($self->{oFile}->pathGet(PATH_REPO_ARCHIVE));
+    my $oBackupInfo = new pgBackRest::BackupInfo($self->{oFile}->pathGet(PATH_REPO_BACKUP));
 
     if ($bStanzaUpgrade)
     {
@@ -122,8 +122,8 @@ sub stanzaSet
     }
 
     # Get the archive and directory paths for the stanza
-    $$oStanza{strArchiveClusterPath} = $self->{oFile}->pathGet(PATH_BACKUP_ARCHIVE) . '/' . ($oArchiveInfo->archiveId());
-    $$oStanza{strBackupClusterPath} = $self->{oFile}->pathGet(PATH_BACKUP_CLUSTER);
+    $$oStanza{strArchiveClusterPath} = $self->{oFile}->pathGet(PATH_REPO_ARCHIVE) . '/' . ($oArchiveInfo->archiveId());
+    $$oStanza{strBackupClusterPath} = $self->{oFile}->pathGet(PATH_REPO_BACKUP);
     filePathCreate($$oStanza{strArchiveClusterPath}, undef, undef, true);
 
     $self->{oStanzaHash}{$strStanza} = $oStanza;

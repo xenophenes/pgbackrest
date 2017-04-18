@@ -221,12 +221,12 @@ sub backupLabel
     # clocks.  In practice this is most useful for making offline testing faster since it allows the wait after manifest build to
     # be skipped by dealing with any backup label collisions here.
     if (fileList(
-        $oFile->pathGet(PATH_BACKUP_CLUSTER),
+        $oFile->pathGet(PATH_REPO_BACKUP),
         {strExpression =>
             ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
             ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)$')}) ||
         fileList(
-            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . PATH_BACKUP_HISTORY . qw{/} . timestampFormat('%4d', $lTimestampStop)),
+            $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . qw{/} . timestampFormat('%4d', $lTimestampStop)),
             {strExpression =>
                 ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
                 ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)\.manifest\.' . $oFile->{strCompressExtension}),

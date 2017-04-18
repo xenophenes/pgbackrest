@@ -80,7 +80,7 @@ sub process
     {
         # Get the spool path
         $self->{strSpoolPath} = (new pgBackRest::Storage::Storage(
-            optionGet(OPTION_STANZA), optionGet(OPTION_SPOOL_PATH), protocolGet(NONE)))->pathGet(PATH_BACKUP_ARCHIVE_OUT);
+            optionGet(OPTION_STANZA), optionGet(OPTION_SPOOL_PATH), protocolGet(NONE)))->pathGet(PATH_SPOOL_ARCHIVE_OUT);
 
         # Loop to check for status files and launch async process
         my $bPushed = false;

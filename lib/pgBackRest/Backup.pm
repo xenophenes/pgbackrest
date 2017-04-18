@@ -194,14 +194,14 @@ sub tmpClean
         {name => 'oAbortedManifest', trace => true}
     );
 
-    &log(DETAIL, 'clean backup temp path: ' . $oFileLocal->pathGet(PATH_BACKUP_TMP));
+    &log(DETAIL, 'clean backup temp path: ' . $oFileLocal->pathGet(PATH_REPO_BACKUP_TMP));
 
     # Get the list of files that should be deleted from temp
-    my @stryFile = $self->fileNotInManifest($oFileLocal, PATH_BACKUP_TMP, $oManifest, $oAbortedManifest);
+    my @stryFile = $self->fileNotInManifest($oFileLocal, PATH_REPO_BACKUP_TMP, $oManifest, $oAbortedManifest);
 
     foreach my $strFile (sort {$b cmp $a} @stryFile)
     {
-        my $strDelete = $oFileLocal->pathGet(PATH_BACKUP_TMP . "/${strFile}");
+        my $strDelete = $oFileLocal->pathGet(PATH_REPO_BACKUP_TMP . "/${strFile}");
 
         # If a path then delete it, all the files should have already been deleted since we are going in reverse order
         if (!-X $strDelete && -d $strDelete)
@@ -288,7 +288,7 @@ sub processManifest
         # Create paths
         foreach my $strPath ($oBackupManifest->keys(MANIFEST_SECTION_TARGET_PATH))
         {
-            $oFileMaster->pathCreate(PATH_BACKUP_TMP . "/${strPath}", undef, true);
+            $oFileMaster->pathCreate(PATH_REPO_BACKUP_TMP . "/${strPath}", undef, true);
         }
 
         if (optionGet(OPTION_REPO_LINK))
@@ -298,7 +298,7 @@ sub processManifest
                 if ($oBackupManifest->isTargetTablespace($strTarget))
                 {
                     $oFileMaster->linkCreate(
-                        PATH_BACKUP_TMP . "/${strTarget}", PATH_BACKUP_TMP . qw{/} . MANIFEST_TARGET_PGDATA . "/${strTarget}",
+                        PATH_REPO_BACKUP_TMP . "/${strTarget}", PATH_REPO_BACKUP_TMP . qw{/} . MANIFEST_TARGET_PGDATA . "/${strTarget}",
                         false, true);
                 }
             }
@@ -330,7 +330,7 @@ sub processManifest
                 logDebugMisc($strOperation, "hardlink ${strRepoFile} to ${strReference}");
 
                 $oFileMaster->linkCreate(
-                    PATH_BACKUP_CLUSTER . "/${strReference}/${strRepoFile}", PATH_BACKUP_TMP . "/${strRepoFile}",
+                    PATH_REPO_BACKUP . "/${strReference}/${strRepoFile}", PATH_REPO_BACKUP_TMP . "/${strRepoFile}",
                     true, false, true);
             }
             # Else log the reference
@@ -473,14 +473,14 @@ sub process
     my $bHardLink = optionGet(OPTION_HARDLINK);
 
     # Create the cluster backup and history path
-    $oFileLocal->pathCreate(PATH_BACKUP_CLUSTER . qw(/) . PATH_BACKUP_HISTORY, undef, true, true, optionGet(OPTION_REPO_SYNC));
+    $oFileLocal->pathCreate(PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY, undef, true, true, optionGet(OPTION_REPO_SYNC));
 
     # Load the backup.info
-    my $oBackupInfo = new pgBackRest::BackupInfo($oFileLocal->pathGet(PATH_BACKUP_CLUSTER));
+    my $oBackupInfo = new pgBackRest::BackupInfo($oFileLocal->pathGet(PATH_REPO_BACKUP));
 
     # Build backup tmp and config
-    my $strBackupTmpPath = $oFileLocal->pathGet(PATH_BACKUP_TMP);
-    my $strBackupConfFile = $oFileLocal->pathGet(PATH_BACKUP_TMP . '/' . FILE_MANIFEST);
+    my $strBackupTmpPath = $oFileLocal->pathGet(PATH_REPO_BACKUP_TMP);
+    my $strBackupConfFile = $oFileLocal->pathGet(PATH_REPO_BACKUP_TMP . '/' . FILE_MANIFEST);
 
     # Declare the backup manifest
     my $oBackupManifest = new pgBackRest::Manifest($strBackupConfFile, false);
@@ -527,7 +527,7 @@ sub process
         if (defined($strBackupLastPath) && $oBackupInfo->confirmDb($strBackupLastPath, $strDbVersion, $ullDbSysId))
         {
             $oLastManifest = new pgBackRest::Manifest(
-                $oFileLocal->pathGet(PATH_BACKUP_CLUSTER . "/${strBackupLastPath}/" . FILE_MANIFEST));
+                $oFileLocal->pathGet(PATH_REPO_BACKUP . "/${strBackupLastPath}/" . FILE_MANIFEST));
 
             &log(INFO, 'last backup label = ' . $oLastManifest->get(MANIFEST_SECTION_BACKUP, MANIFEST_KEY_LABEL) .
                        ', version = ' . $oLastManifest->get(INI_SECTION_BACKREST, INI_KEY_VERSION));
@@ -815,16 +815,16 @@ sub process
             &log(WARN, "aborted backup exists, but cannot be resumed (${strReason}) - will be dropped and recreated");
             &log(TEST, TEST_BACKUP_NORESUME);
 
-            remove_tree($oFileLocal->pathGet(PATH_BACKUP_TMP))
+            remove_tree($oFileLocal->pathGet(PATH_REPO_BACKUP_TMP))
                 or confess &log(ERROR, "unable to delete tmp path: ${strBackupTmpPath}");
-            $oFileLocal->pathCreate(PATH_BACKUP_TMP, undef, false, true);
+            $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, undef, false, true);
         }
     }
     # Else create the backup tmp path
     else
     {
         logDebugMisc($strOperation, "create temp backup path ${strBackupTmpPath}");
-        $oFileLocal->pathCreate(PATH_BACKUP_TMP, undef, false, true);
+        $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, undef, false, true);
     }
 
     # Save the backup manifest
@@ -858,7 +858,7 @@ sub process
             # Only save the file if it has content
             if (defined($$oFileHash{$strFile}))
             {
-                my $strFileName = $oFileLocal->pathGet(PATH_BACKUP_TMP . "/${strFile}");
+                my $strFileName = $oFileLocal->pathGet(PATH_REPO_BACKUP_TMP . "/${strFile}");
 
                 # Write content out to a file
                 fileStringWrite($strFileName, $$oFileHash{$strFile}, false);
@@ -920,7 +920,7 @@ sub process
 
                 my ($bCopyResult, $strCopyChecksum, $lCopySize) =
                     $oFileLocal->copy(
-                        PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strArchiveFile}", PATH_BACKUP_TMP . "/${strDestinationFile}",
+                        PATH_REPO_ARCHIVE . "/${strArchiveId}/${strArchiveFile}", PATH_REPO_BACKUP_TMP . "/${strDestinationFile}",
                         $bArchiveCompressed, $bCompress, undef, $lModificationTime, undef, true);
 
                 # Add the archive file to the manifest so it can be part of the restore and checked in validation
@@ -954,31 +954,31 @@ sub process
     # Sync all paths in the backup tmp path
     if (optionGet(OPTION_REPO_SYNC))
     {
-        $oFileLocal->pathSync(PATH_BACKUP_TMP, undef, true);
+        $oFileLocal->pathSync(PATH_REPO_BACKUP_TMP, undef, true);
     }
 
     &log(INFO, "new backup label = ${strBackupLabel}");
 
     # Make a compressed copy of the manifest for history
-    $oFileLocal->copy(PATH_BACKUP_TMP . qw{/} . FILE_MANIFEST, PATH_BACKUP_TMP . qw{/} . FILE_MANIFEST . '.gz', undef, true);
+    $oFileLocal->copy(PATH_REPO_BACKUP_TMP . qw{/} . FILE_MANIFEST, PATH_REPO_BACKUP_TMP . qw{/} . FILE_MANIFEST . '.gz', undef, true);
 
     # Move the backup tmp path to complete the backup
-    logDebugMisc($strOperation, "move ${strBackupTmpPath} to " . $oFileLocal->pathGet(PATH_BACKUP_CLUSTER . "/${strBackupLabel}"));
-    $oFileLocal->move(PATH_BACKUP_TMP, PATH_BACKUP_CLUSTER . "/${strBackupLabel}");
+    logDebugMisc($strOperation, "move ${strBackupTmpPath} to " . $oFileLocal->pathGet(PATH_REPO_BACKUP . "/${strBackupLabel}"));
+    $oFileLocal->move(PATH_REPO_BACKUP_TMP, PATH_REPO_BACKUP . "/${strBackupLabel}");
 
     # Copy manifest to history
     $oFileLocal->move(
-        PATH_BACKUP_CLUSTER . "/${strBackupLabel}/" . FILE_MANIFEST . '.gz',
-        PATH_BACKUP_CLUSTER . qw{/} . PATH_BACKUP_HISTORY . qw{/} . substr($strBackupLabel, 0, 4) .
+        PATH_REPO_BACKUP . "/${strBackupLabel}/" . FILE_MANIFEST . '.gz',
+        PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . qw{/} . substr($strBackupLabel, 0, 4) .
             "/${strBackupLabel}.manifest.gz",
         true, optionGet(OPTION_REPO_SYNC));
 
     # Create a link to the most recent backup
-    $oFileLocal->remove(PATH_BACKUP_CLUSTER . qw(/) . LINK_LATEST);
+    $oFileLocal->remove(PATH_REPO_BACKUP . qw(/) . LINK_LATEST);
 
     if (optionGet(OPTION_REPO_LINK))
     {
-        $oFileLocal->linkCreate(PATH_BACKUP_CLUSTER . "/${strBackupLabel}", PATH_BACKUP_CLUSTER . qw{/} . LINK_LATEST, undef, true);
+        $oFileLocal->linkCreate(PATH_REPO_BACKUP . "/${strBackupLabel}", PATH_REPO_BACKUP . qw{/} . LINK_LATEST, undef, true);
     }
 
     # Save backup info
@@ -987,7 +987,7 @@ sub process
     # Sync the cluster path
     if (optionGet(OPTION_REPO_SYNC))
     {
-        $oFileLocal->pathSync(PATH_BACKUP_CLUSTER);
+        $oFileLocal->pathSync(PATH_REPO_BACKUP);
     }
 
     # Return from function and log return values if any

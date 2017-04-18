@@ -120,7 +120,7 @@ sub process
         }
         else
         {
-            syswrite(*STDOUT, 'No stanzas exist in ' . $oFile->pathGet(PATH_BACKUP) . ".\n");
+            syswrite(*STDOUT, 'No stanzas exist in ' . $oFile->pathGet(PATH_REPO) . ".\n");
         }
     }
     elsif (optionTest(OPTION_OUTPUT, INFO_OUTPUT_JSON))
@@ -338,14 +338,14 @@ sub stanzaList
     my @oyStanzaList;
 
     # Run remotely
-    if ($oFile->isRemote(PATH_BACKUP))
+    if ($oFile->isRemote(PATH_REPO))
     {
         @oyStanzaList = @{$oFile->{oProtocol}->cmdExecute(OP_INFO_STANZA_LIST, [$strStanza], true)};
     }
     # Run locally
     else
     {
-        my @stryStanza = $oFile->list(PATH_BACKUP . qw{/} . CMD_BACKUP, {bIgnoreMissing => true});
+        my @stryStanza = $oFile->list(PATH_REPO . qw{/} . CMD_BACKUP, {bIgnoreMissing => true});
 
         foreach my $strStanzaFound (@stryStanza)
         {
@@ -387,15 +387,15 @@ sub stanzaList
             {
                 my $strArchivePath = "archive/${strStanzaFound}/" . $hDbInfo->{&INFO_KEY_VERSION} . '-' . $hDbInfo->{&INFO_KEY_ID};
 
-                if ($oFile->exists(PATH_BACKUP . "/${strArchivePath}"))
+                if ($oFile->exists(PATH_REPO . "/${strArchivePath}"))
                 {
-                    my @stryWalMajor = $oFile->list(PATH_BACKUP, $strArchivePath, {strExpression => '^[0-F]{16}$'});
+                    my @stryWalMajor = $oFile->list(PATH_REPO . "/${strArchivePath}", {strExpression => '^[0-F]{16}$'});
 
                     # Get first WAL segment
                     foreach my $strWalMajor (@stryWalMajor)
                     {
                         my @stryWalFile = $oFile->list(
-                            PATH_BACKUP, "${strArchivePath}/${strWalMajor}",
+                            PATH_REPO . "/${strArchivePath}/${strWalMajor}",
                             {strExpression => "^[0-F]{24}-[0-f]{40}(\\." . COMPRESS_EXT . "){0,1}\$"});
 
                         if (@stryWalFile > 0)
@@ -409,7 +409,7 @@ sub stanzaList
                     foreach my $strWalMajor (sort({$b cmp $a} @stryWalMajor))
                     {
                         my @stryWalFile = $oFile->list(
-                            PATH_BACKUP, "${strArchivePath}/${strWalMajor}",
+                            PATH_REPO . "/${strArchivePath}/${strWalMajor}",
                             {strExpression => "^[0-F]{24}-[0-f]{40}(\\." . COMPRESS_EXT . "){0,1}\$", strSortOrder => 'reverse'});
 
                         if (@stryWalFile > 0)
@@ -479,7 +479,7 @@ sub backupList
         );
 
     # Load the backup.info but do not attempt to validate it or confirm it's existence
-    my $oBackupInfo = new pgBackRest::BackupInfo($oFile->pathGet(PATH_BACKUP . qw{/} . CMD_BACKUP . "/${strStanza}"), false, false);
+    my $oBackupInfo = new pgBackRest::BackupInfo($oFile->pathGet(PATH_REPO . qw{/} . CMD_BACKUP . "/${strStanza}"), false, false);
 
     # Build the db list
     my @oyDbList;

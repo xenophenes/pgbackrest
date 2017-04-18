@@ -102,7 +102,7 @@ sub get
         $oFile, undef, undef, walIsSegment($strSourceArchive) ? $strSourceArchive : undef);
 
     if (!defined($strArchiveFile) && !walIsSegment($strSourceArchive) &&
-        $oFile->exists(PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strSourceArchive}"))
+        $oFile->exists(PATH_REPO_ARCHIVE . "/${strArchiveId}/${strSourceArchive}"))
     {
         $strArchiveFile = $strSourceArchive;
     }
@@ -126,7 +126,7 @@ sub get
 
         # Copy the archive file to the requested location
         $oFile->copy(
-            PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strArchiveFile}", # Source file
+            PATH_REPO_ARCHIVE . "/${strArchiveId}/${strArchiveFile}", # Source file
             $strDestinationFile,                                        # Destination file
             $bSourceCompressed,                                         # Source compression based on detection
             false);                                                     # Destination is not compressed
@@ -157,13 +157,13 @@ sub getArchiveId
 
     my $strArchiveId;
 
-    if ($oFile->isRemote(PATH_BACKUP_ARCHIVE))
+    if ($oFile->isRemote(PATH_REPO_ARCHIVE))
     {
         $strArchiveId = $oFile->{oProtocol}->cmdExecute(OP_ARCHIVE_GET_ARCHIVE_ID, undef, true);
     }
     else
     {
-        $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_BACKUP_ARCHIVE), true))->archiveId();
+        $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_REPO_ARCHIVE), true))->archiveId();
     }
 
     # Return from function and log return values if any

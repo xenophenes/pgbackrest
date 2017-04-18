@@ -106,7 +106,7 @@ sub run
                 HOST_PROTOCOL_TIMEOUT                       # Protocol timeout
             ));
 
-        my $strArchivePath = $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/${strArchiveId}");
+        my $strArchivePath = $oFile->pathGet(PATH_REPO_ARCHIVE . "/${strArchiveId}");
 
         #---------------------------------------------------------------------------------------------------------------------------
         my $strWalSegment = '000000010000000100000001ZZ';

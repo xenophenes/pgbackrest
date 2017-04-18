@@ -137,7 +137,7 @@ sub restoreFile
     if ($bCopy)
     {
         my ($bCopyResult, $strCopyChecksum, $lCopySize) = $oFile->copy(
-            PATH_BACKUP_CLUSTER . qw(/) . (defined($strReference) ? $strReference : $strBackupPath) .
+            PATH_REPO_BACKUP . qw(/) . (defined($strReference) ? $strReference : $strBackupPath) .
                 "/${strRepoFile}" . ($bSourceCompressed ? '.' . $oFile->{strCompressExtension} : ''),
             $strDbFile,
             $bSourceCompressed,

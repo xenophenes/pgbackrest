@@ -226,14 +226,14 @@ sub manifestLoad
     my ($strOperation) = logDebugParam (__PACKAGE__ . '->manifestLoad');
 
     # Error if the backup set does not exist
-    if (!$self->{oFile}->exists(PATH_BACKUP_CLUSTER . "/$self->{strBackupSet}"))
+    if (!$self->{oFile}->exists(PATH_REPO_BACKUP . "/$self->{strBackupSet}"))
     {
         confess &log(ERROR, 'backup ' . $self->{strBackupSet} . ' does not exist');
     }
 
     # Copy the backup manifest to the db cluster path
     $self->{oFile}->copy(
-        PATH_BACKUP_CLUSTER . "/$self->{strBackupSet}/" . FILE_MANIFEST, $self->{strDbClusterPath} . '/' . FILE_MANIFEST);
+        PATH_REPO_BACKUP . "/$self->{strBackupSet}/" . FILE_MANIFEST, $self->{strDbClusterPath} . '/' . FILE_MANIFEST);
 
     # Load the manifest into a hash
     my $oManifest = new pgBackRest::Manifest($self->{oFile}->pathGet($self->{strDbClusterPath} . '/' . FILE_MANIFEST));
@@ -1070,7 +1070,7 @@ sub process
 
     # Copy backup info, load it, then delete
     $self->{oFile}->copy(
-        PATH_BACKUP_CLUSTER . qw(/) . FILE_BACKUP_INFO, $self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO);
+        PATH_REPO_BACKUP . qw(/) . FILE_BACKUP_INFO, $self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO);
 
     my $oBackupInfo = new pgBackRest::BackupInfo($self->{strDbClusterPath}, false);
 

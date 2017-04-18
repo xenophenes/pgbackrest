@@ -26,20 +26,18 @@ use pgBackRest::Protocol::Common;
 use pgBackRest::Version;
 
 ####################################################################################################################################
-# PATH_GET constants
+# PATH Constants
 ####################################################################################################################################
-use constant PATH_DB                                                => '<db>';
-    push @EXPORT, qw(PATH_DB);
-use constant PATH_BACKUP                                            => '<repo>';
-    push @EXPORT, qw(PATH_BACKUP);
-use constant PATH_BACKUP_CLUSTER                                    => '<repo:cluster>';
-    push @EXPORT, qw(PATH_BACKUP_CLUSTER);
-use constant PATH_BACKUP_TMP                                        => '<repo:tmp>';
-    push @EXPORT, qw(PATH_BACKUP_TMP);
-use constant PATH_BACKUP_ARCHIVE                                    => '<repo:archive>';
-    push @EXPORT, qw(PATH_BACKUP_ARCHIVE);
-use constant PATH_BACKUP_ARCHIVE_OUT                                => '<spool:archive:out>';
-    push @EXPORT, qw(PATH_BACKUP_ARCHIVE_OUT);
+use constant PATH_REPO                                              => '<REPO>';
+    push @EXPORT, qw(PATH_REPO);
+use constant PATH_REPO_BACKUP                                       => '<REPO:BACKUP>';
+    push @EXPORT, qw(PATH_REPO_BACKUP);
+use constant PATH_REPO_BACKUP_TMP                                   => '<REPO:BACKUP:TMP>';
+    push @EXPORT, qw(PATH_REPO_BACKUP_TMP);
+use constant PATH_REPO_ARCHIVE                                      => '<REPO:ARCHIVE>';
+    push @EXPORT, qw(PATH_REPO_ARCHIVE);
+use constant PATH_SPOOL_ARCHIVE_OUT                                 => '<SPOOL:ARCHIVE:OUT>';
+    push @EXPORT, qw(PATH_SPOOL_ARCHIVE_OUT);
 
 ####################################################################################################################################
 # STD pipe constants
@@ -153,8 +151,8 @@ sub pathGet
     # Make sure a temp file is valid for this type and file
     if ($bTemp)
     {
-        # Only allow temp files for PATH_BACKUP_ARCHIVE, PATH_BACKUP_ARCHIVE_OUT, PATH_BACKUP_TMP and any absolute path
-        if (!($bAbsolute || $strType eq PATH_BACKUP_ARCHIVE || $strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_TMP))
+        # Only allow temp files for PATH_REPO_ARCHIVE, PATH_SPOOL_ARCHIVE_OUT, PATH_REPO_BACKUP_TMP and any absolute path
+        if (!($bAbsolute || $strType eq PATH_REPO_ARCHIVE || $strType eq PATH_SPOOL_ARCHIVE_OUT || $strType eq PATH_REPO_BACKUP_TMP))
         {
             confess &log(ASSERT, "temp file not supported for path type ${strType}");
         }
@@ -169,7 +167,7 @@ sub pathGet
     if (!$bAbsolute)
     {
         # Get backup path
-        if ($strType eq PATH_BACKUP)
+        if ($strType eq PATH_REPO)
         {
             $strPath = $self->{strRepoPath};
 
@@ -188,17 +186,17 @@ sub pathGet
             }
 
             # Get the backup tmp path
-            if ($strType eq PATH_BACKUP_TMP)
+            if ($strType eq PATH_REPO_BACKUP_TMP)
             {
                 $strPath .= "/temp/$self->{strStanza}.tmp";
             }
             # Else get archive paths
-            elsif ($strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_ARCHIVE)
+            elsif ($strType eq PATH_SPOOL_ARCHIVE_OUT || $strType eq PATH_REPO_ARCHIVE)
             {
                 $strPath .= "/archive/$self->{strStanza}";
 
                 # Get archive path
-                if ($strType eq PATH_BACKUP_ARCHIVE)
+                if ($strType eq PATH_REPO_ARCHIVE)
                 {
                     # If file is not defined nothing further to do
                     if (defined($strFile))
@@ -228,7 +226,7 @@ sub pathGet
                 }
             }
             # Else get backup cluster
-            elsif ($strType eq PATH_BACKUP_CLUSTER)
+            elsif ($strType eq PATH_REPO_BACKUP)
             {
                 $strPath .= "/backup/$self->{strStanza}";
             }
@@ -307,12 +305,6 @@ sub linkCreate
             {name => 'bRelative', default => false},
             {name => 'bPathCreate', default => true}
         );
-
-    # Source and destination path types must be the same (e.g. both PATH_DB or both PATH_BACKUP, etc.)
-    # if ($self->pathTypeGet($strSourcePathType) ne $self->pathTypeGet($strDestinationPathType))
-    # {
-    #     confess &log(ASSERT, 'path types must be equal in link create');
-    # }
 
     # Generate source and destination files
     my $strSource = $self->pathGet($strSourcePathExp);

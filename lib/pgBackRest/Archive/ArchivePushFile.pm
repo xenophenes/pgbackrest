@@ -55,7 +55,7 @@ sub archivePushCheck
     # WAL file is segment?
     my $bWalSegment = walIsSegment($strArchiveFile);
 
-    if ($oFile->isRemote(PATH_BACKUP_ARCHIVE))
+    if ($oFile->isRemote(PATH_REPO_ARCHIVE))
     {
         # Execute the command
         ($strArchiveId, $strChecksum) = $oFile->{oProtocol}->cmdExecute(
@@ -67,7 +67,7 @@ sub archivePushCheck
         if ($bWalSegment)
         {
             # If the info file exists check db version and system-id else error
-            $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_BACKUP_ARCHIVE)))->check(
+            $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_REPO_ARCHIVE)))->check(
                 $strDbVersion, $ullDbSysId);
 
             # Check if the WAL segment already exists in the archive
@@ -81,7 +81,7 @@ sub archivePushCheck
         # Else just get the archive id
         else
         {
-            $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_BACKUP_ARCHIVE)))->archiveId();
+            $strArchiveId = (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_REPO_ARCHIVE)))->archiveId();
         }
     }
 
@@ -170,7 +170,7 @@ sub archivePushFile
         # Copy the WAL segment
         $oFile->copy(
             "${strWalPath}/${strWalFile}",                          # Source type/file
-            PATH_BACKUP_ARCHIVE . "/${strArchiveFile}",             # Destination type/file
+            PATH_REPO_ARCHIVE . "/${strArchiveFile}",             # Destination type/file
             false,                                                  # Source is not compressed
             walIsSegment($strWalFile) && $bCompress,                # Destination compress is configurable
             undef, undef, undef,                                    # Unused params

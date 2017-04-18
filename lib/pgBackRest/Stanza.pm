@@ -115,8 +115,8 @@ sub stanzaCreate
     );
 
     # Get the parent paths (create if not exist)
-    my $strParentPathArchive = $self->parentPathGet($oFile, PATH_BACKUP_ARCHIVE);
-    my $strParentPathBackup = $self->parentPathGet($oFile, PATH_BACKUP_CLUSTER);
+    my $strParentPathArchive = $self->parentPathGet($oFile, PATH_REPO_ARCHIVE);
+    my $strParentPathBackup = $self->parentPathGet($oFile, PATH_REPO_BACKUP);
 
     # Get a listing of files in the directory, ignoring if any are missing
     my @stryFileListArchive = fileList($strParentPathArchive, {bIgnoreMissing => true});
@@ -143,14 +143,14 @@ sub stanzaCreate
     # Create the archive.info file and local variables
     my ($iResult, $strResultMessage) =
         $self->infoFileCreate((new pgBackRest::Archive::ArchiveInfo($strParentPathArchive, false)), $oFile,
-            PATH_BACKUP_ARCHIVE, $strParentPathArchive, \@stryFileListArchive);
+            PATH_REPO_ARCHIVE, $strParentPathArchive, \@stryFileListArchive);
 
     if ($iResult == 0)
     {
         # Create the backup.info file
         ($iResult, $strResultMessage) =
             $self->infoFileCreate((new pgBackRest::BackupInfo($strParentPathBackup, false, false)), $oFile,
-                PATH_BACKUP_CLUSTER, $strParentPathBackup, \@stryFileListBackup);
+                PATH_REPO_BACKUP, $strParentPathBackup, \@stryFileListBackup);
     }
 
     if ($iResult != 0)
@@ -189,17 +189,17 @@ sub stanzaUpgrade
     );
 
     # Get the archive info and backup info files; if either does not exist an error will be thrown
-    my $oArchiveInfo = new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_BACKUP_ARCHIVE));
-    my $oBackupInfo = new pgBackRest::BackupInfo($oFile->pathGet(PATH_BACKUP_CLUSTER));
+    my $oArchiveInfo = new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_REPO_ARCHIVE));
+    my $oBackupInfo = new pgBackRest::BackupInfo($oFile->pathGet(PATH_REPO_BACKUP));
     my $bBackupUpgraded = false;
     my $bArchiveUpgraded = false;
 
     # If the DB section does not match, then upgrade
-    if ($self->upgradeCheck($oBackupInfo, PATH_BACKUP_CLUSTER, ERROR_BACKUP_MISMATCH))
+    if ($self->upgradeCheck($oBackupInfo, PATH_REPO_BACKUP, ERROR_BACKUP_MISMATCH))
     {
         # Determine if it is necessary to reconstruct the file
         my ($bReconstruct, $strWarningMsgArchive) =
-            $self->reconstructCheck($oBackupInfo, PATH_BACKUP_CLUSTER, $oFile, $oFile->pathGet(PATH_BACKUP_CLUSTER));
+            $self->reconstructCheck($oBackupInfo, PATH_REPO_BACKUP, $oFile, $oFile->pathGet(PATH_REPO_BACKUP));
 
         # If reconstruction was required then save the reconstructed file
         if ($bReconstruct)
@@ -209,11 +209,11 @@ sub stanzaUpgrade
         }
     }
 
-    if ($self->upgradeCheck($oArchiveInfo, PATH_BACKUP_ARCHIVE, ERROR_ARCHIVE_MISMATCH))
+    if ($self->upgradeCheck($oArchiveInfo, PATH_REPO_ARCHIVE, ERROR_ARCHIVE_MISMATCH))
     {
         # Determine if it is necessary to reconstruct the file
         my ($bReconstruct, $strWarningMsgArchive) =
-            $self->reconstructCheck($oArchiveInfo, PATH_BACKUP_ARCHIVE, $oFile, $oFile->pathGet(PATH_BACKUP_ARCHIVE));
+            $self->reconstructCheck($oArchiveInfo, PATH_REPO_ARCHIVE, $oFile, $oFile->pathGet(PATH_REPO_ARCHIVE));
 
         # If reconstruction was required then save the reconstructed file
         if ($bReconstruct)
@@ -316,7 +316,7 @@ sub infoFileCreate
     # This should also be performed by the calling routine before this function is called, so this is just a safety check
     if (!optionGet(OPTION_FORCE) && !$oInfo->{bExists} && @$stryFileList)
     {
-        confess &log(ERROR, ($strPathType eq PATH_BACKUP_CLUSTER ? 'backup directory ' : 'archive directory ') .
+        confess &log(ERROR, ($strPathType eq PATH_REPO_BACKUP ? 'backup directory ' : 'archive directory ') .
             $strStanzaCreateErrorMsg, ERROR_PATH_NOT_EMPTY);
     }
 
@@ -334,7 +334,7 @@ sub infoFileCreate
             {
                 $iResult = ERROR_FILE_INVALID;
                 $strResultMessage =
-                    ($strPathType eq PATH_BACKUP_CLUSTER ? 'backup file ' : 'archive file ') . "invalid\n" .
+                    ($strPathType eq PATH_REPO_BACKUP ? 'backup file ' : 'archive file ') . "invalid\n" .
                     'HINT: use stanza-upgrade if the database has been upgraded or use --force';
             }
         }
@@ -443,7 +443,7 @@ sub reconstructCheck
     my $strWarningMsgArchive = undef;
 
     # Reconstruct the file from the data in the directory if there is any else initialize the file
-    if ($strPathType eq PATH_BACKUP_CLUSTER)
+    if ($strPathType eq PATH_REPO_BACKUP)
     {
         $oInfo->reconstruct(false, false, $self->{oDb}{strDbVersion}, $self->{oDb}{ullDbSysId}, $self->{oDb}{iControlVersion},
             $self->{oDb}{iCatalogVersion});
@@ -458,7 +458,7 @@ sub reconstructCheck
     if ($oInfo->{bExists})
     {
         my $oInfoOnDisk =
-            ($strPathType eq PATH_BACKUP_CLUSTER ? new pgBackRest::BackupInfo($strParentPath)
+            ($strPathType eq PATH_REPO_BACKUP ? new pgBackRest::BackupInfo($strParentPath)
             : new pgBackRest::Archive::ArchiveInfo($strParentPath));
 
         # If the hashes are the same, then no need to reconstruct the file since it already exists and is valid
@@ -510,7 +510,7 @@ sub upgradeCheck
 
     eval
     {
-        ($strPathType eq PATH_BACKUP_CLUSTER)
+        ($strPathType eq PATH_REPO_BACKUP)
             ? $oInfo->check($self->{oDb}{strDbVersion}, $self->{oDb}{iControlVersion}, $self->{oDb}{iCatalogVersion},
                 $self->{oDb}{ullDbSysId}, true)
             : $oInfo->check($self->{oDb}{strDbVersion}, $self->{oDb}{ullDbSysId}, true);

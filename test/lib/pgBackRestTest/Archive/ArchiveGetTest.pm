@@ -78,7 +78,7 @@ sub run
 
         if (defined($self->expect()))
         {
-            $self->expect()->supplementalAdd($oFile->pathGet(PATH_BACKUP_ARCHIVE) . '/archive.info');
+            $self->expect()->supplementalAdd($oFile->pathGet(PATH_REPO_ARCHIVE) . '/archive.info');
         }
 
         if ($bExists)
@@ -107,14 +107,14 @@ sub run
                 }
 
                 # Change the directory permissions to enable file creation
-                executeTest('sudo chmod 770 ' . dirname($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . '-1')));
+                executeTest('sudo chmod 770 ' . dirname($oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . PG_VERSION_94 . '-1')));
                 filePathCreate(
                     dirname(
-                        $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . "-1/${strSourceFile}")), '0770', true, true);
+                        $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . PG_VERSION_94 . "-1/${strSourceFile}")), '0770', true, true);
 
                 $oFile->copy(
                     $strArchiveTestFile,                            # Source file $strArchiveTestFile
-                    PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 .   # Destination file
+                    PATH_REPO_ARCHIVE . qw{/} . PG_VERSION_94 .   # Destination file
                         "-1/${strSourceFile}",
                     false,                                          # Source is not compressed
                     $bCompress,                                     # Destination compress based on test

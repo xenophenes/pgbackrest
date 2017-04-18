@@ -74,7 +74,7 @@ sub run
         $oHostDbMaster->executeSimple($strCommand . " ${strSourceFile}", {oLogTest => $self->expect()});
 
         # With data existing in the archive dir, remove the info file and confirm failure
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         $oHostBackup->stanzaCreate('fail on archive info file missing from non-empty dir',
             {iExpectedExitStatus => ERROR_PATH_NOT_EMPTY, strOptionalParam => '--no-' . OPTION_ONLINE});
 
@@ -99,14 +99,14 @@ sub run
 
         # Remove the backup info file and confirm success with backup dir empty
         # Backup Full tests will confirm failure when backup dir not empty
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO));
         $oHostBackup->stanzaCreate('force not needed when backup dir empty, archive.info exists but backup.info is missing',
             {strOptionalParam => '--no-' . OPTION_ONLINE});
 
         # Remove the backup.info file then munge and save the archive info file
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO));
         $oHostBackup->infoMunge(
-            $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
+            $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
             {&INFO_BACKUP_SECTION_DB => {&INFO_BACKUP_KEY_DB_VERSION => '8.0'}});
 
         $oHostBackup->stanzaCreate('hash check fails requiring force',
@@ -116,7 +116,7 @@ sub run
             {strOptionalParam => '--no-' . OPTION_ONLINE . ' --' . OPTION_FORCE});
 
         # Cleanup the global hash but don't save the file (permission issues may prevent it anyway)
-        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE), false);
+        $oHostBackup->infoRestore($oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE), false);
 
         # Change the database version by copying a new pg_control file
         executeTest('sudo rm ' . $oHostDbMaster->dbBasePath() . '/' . DB_FILE_PGCONTROL);
@@ -140,14 +140,14 @@ sub run
         # Remove the uncompressed WAL archive file and archive.info
         executeTest('sudo rm ' . $oHostBackup->repoPath() . '/archive/' . $self->stanza() . '/' . PG_VERSION_94 . '-1/' .
             substr($strArchiveFile, 0, 16) . "/${strArchiveFile}-1e34fa1c833090d94b9bb14f2a8d3153dca6ea27");
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         $oHostBackup->stanzaCreate('force with missing WAL archive file',
             {strOptionalParam => '--no-' . OPTION_ONLINE . ' --' . OPTION_FORCE});
 
         # Remove the WAL archive directory
         executeTest('sudo rm -rf ' . $oHostBackup->repoPath() . '/archive/' . $self->stanza() . '/' . PG_VERSION_94 . '-1/' .
             substr($strArchiveFile, 0, 16));
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         $oHostBackup->stanzaCreate('force with missing WAL archive directory',
             {strOptionalParam => '--no-' . OPTION_ONLINE . ' --' . OPTION_FORCE});
     }

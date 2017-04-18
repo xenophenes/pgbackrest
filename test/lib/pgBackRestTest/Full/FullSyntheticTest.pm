@@ -599,7 +599,7 @@ sub run
 
         # Break the database version
         $oHostBackup->infoMunge(
-            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
+            $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO),
             {&INFO_BACKUP_SECTION_DB => {&INFO_BACKUP_KEY_DB_VERSION => '8.0'}});
 
         $oHostBackup->backup(
@@ -609,7 +609,7 @@ sub run
 
         # Break the database system id
         $oHostBackup->infoMunge(
-            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
+            $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO),
             {&INFO_BACKUP_SECTION_DB => {&INFO_BACKUP_KEY_SYSTEM_ID => 6999999999999999999}});
 
         $oHostBackup->backup(
@@ -619,7 +619,7 @@ sub run
 
         # Break the control version
         $oHostBackup->infoMunge(
-            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
+            $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO),
             {&INFO_BACKUP_SECTION_DB => {&INFO_BACKUP_KEY_CONTROL => 842}});
 
         $oHostBackup->backup(
@@ -629,7 +629,7 @@ sub run
 
         # Break the catalog version
         $oHostBackup->infoMunge(
-            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
+            $oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO),
             {&INFO_BACKUP_SECTION_DB => {&INFO_BACKUP_KEY_CATALOG => 197208141}});
 
         $oHostBackup->backup(
@@ -638,7 +638,7 @@ sub run
                 strOptionalParam => '--log-level-console=detail'});
 
         # Restore the file to its original condition
-        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
+        $oHostBackup->infoRestore($oFile->pathGet(PATH_REPO_BACKUP . qw{/} . FILE_BACKUP_INFO));
 
         # Test broken tablespace configuration
         #-----------------------------------------------------------------------------------------------------------------------

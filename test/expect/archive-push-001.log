@@ -79,11 +79,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000001, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000001, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000001
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -187,7 +187,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001
@@ -223,7 +223,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001
@@ -253,11 +253,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000001.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001.partial, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000001.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001.partial, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000001.partial
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -283,7 +283,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000001.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000001.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001.partial
@@ -319,7 +319,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000001.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000001\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000001.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000001.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000001.partial
@@ -349,11 +349,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000002
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000002-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000002-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000002, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000002, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000002, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000002, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000002
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -379,11 +379,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000003
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000003-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000003-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000003, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000003, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000003, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000003, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000003
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -409,11 +409,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000004
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000004-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000004-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000004, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000004, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000004, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000004, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000004
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -439,11 +439,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000005, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000005, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000005
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -513,7 +513,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000005-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000005-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005
@@ -549,7 +549,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000005-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000005-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005
@@ -579,11 +579,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000005.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005.partial, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000005.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005.partial, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000005.partial
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -609,7 +609,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000005.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000005.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005.partial
@@ -645,7 +645,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000005.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000005\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000005.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000005.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000005.partial
@@ -675,11 +675,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000006
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000006-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000006-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000006, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000006, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000006, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000006, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000006
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -705,11 +705,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000007
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000007-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000007-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000007, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000007, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000007, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000007, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000007
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -735,11 +735,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000008
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000008-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000008-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000008, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000008, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000008, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000008, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000008
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -765,11 +765,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000009, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = true, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000009, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000009
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -839,7 +839,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000009-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000009-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009
@@ -875,7 +875,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000009-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000009-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009
@@ -905,11 +905,11 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = ()
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushCheck=>: strArchiveId = 9.4-1, strChecksum = [undef], strWarning = [undef]
-P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <repo:archive>/9.4-1/000000010000000100000009.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009.partial, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = true, bDestinationCompress = false, bDestinationPathCreate = true, bIgnoreMissingSource = <false>, bPathSync = false, bSourceCompressed = false, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationPathExp = <REPO:ARCHIVE>/9.4-1/000000010000000100000009.partial, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourcePathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009.partial, strUser = [undef]
 P00  DEBUG:     Archive::ArchivePushFile::archivePushFile=>: strWarning = [undef]
 P00   INFO: pushed WAL segment 000000010000000100000009.partial
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
@@ -935,7 +935,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000009.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000009.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009.partial
@@ -971,7 +971,7 @@ P00  DEBUG:     Archive::ArchiveInfo->check(): bRequired = <true>, strDbVersion 
 P00  DEBUG:     Archive::ArchiveInfo->archiveId=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveInfo->check=>: strArchiveId = 9.4-1
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind(): iWaitSeconds = [undef], oFile = [object], strArchiveId = 9.4-1, strWalSegment = 000000010000000100000009.partial
-P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <repo:archive>/9.4-1/0000000100000001, strSortOrder = <forward>
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = true, strExpression = ^000000010000000100000009\.partial-[0-f]{40}(\.gz){0,1}$, strPathExp = <REPO:ARCHIVE>/9.4-1/0000000100000001, strSortOrder = <forward>
 P00  DEBUG:     Storage::Storage->list=>: stryFileList = (000000010000000100000009.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7)
 P00  DEBUG:     Archive::ArchiveCommon::walSegmentFind=>: strWalFileName = 000000010000000100000009.partial-72b9da071c13957fb4ca31f05dbd5c644297c2f7
 P00  DEBUG:     Storage::Storage->hash(): bCompressed = [undef], strHashType = [undef], strPathExp = [TEST_PATH]/db-master/db/base/pg_xlog/000000010000000100000009.partial

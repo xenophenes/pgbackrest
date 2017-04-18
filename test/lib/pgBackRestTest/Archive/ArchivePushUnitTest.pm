@@ -173,7 +173,7 @@ sub run
         #---------------------------------------------------------------------------------------------------------------------------
         $self->testException(sub {archivePushCheck(
             $self->{oFile}, $strWalSegment, PG_VERSION_94, WAL_VERSION_94_SYS_ID)},
-            ERROR_ASSERT, "strFile is required in Storage::Storage->hash");
+            ERROR_ASSERT, "strPathExp is required in Storage::Storage->hash");
 
         #---------------------------------------------------------------------------------------------------------------------------
         my $strHistoryFile = "00000001.history";
@@ -527,11 +527,11 @@ sub run
             "${strHistoryFile}, ${strBackupFile} pushed");
 
         $self->testResult(
-            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE . "/$self->{strArchiveId}/${strHistoryFile}")}, true,
+            sub {$self->{oFile}->exists(PATH_REPO_ARCHIVE . "/$self->{strArchiveId}/${strHistoryFile}")}, true,
             "${strHistoryFile} in archive");
 
         $self->testResult(
-            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE . "/$self->{strArchiveId}/${strBackupFile}")}, true,
+            sub {$self->{oFile}->exists(PATH_REPO_ARCHIVE . "/$self->{strArchiveId}/${strBackupFile}")}, true,
             "${strBackupFile} in archive");
 
         # Remove history and backup files

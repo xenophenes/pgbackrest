@@ -299,7 +299,7 @@ sub walSegmentFind
         else
         {
             @stryTimelineMajor = $oFile->list(
-                PATH_BACKUP_ARCHIVE . "${strArchiveId}",
+                PATH_REPO_ARCHIVE . "/${strArchiveId}",
                 {strExpression => '[0-F]{8}' . substr($strWalSegment, 0, 8), bIgnoreMissing => true});
         }
 
@@ -311,7 +311,7 @@ sub walSegmentFind
 
             # Get the name of the requested WAL segment (may have hash info and compression extension)
             push(@stryWalFileName, $oFile->list(
-                PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strTimelineMajor}",
+                PATH_REPO_ARCHIVE . "/${strArchiveId}/${strTimelineMajor}",
                 {strExpression =>
                     "^${strWalSegmentFind}" . (walIsPartial($strWalSegment) ? "\\.partial" : '') .
                     "-[0-f]{40}(\\." . COMPRESS_EXT . "){0,1}\$",

@@ -137,19 +137,19 @@ sub run
         my $lTime = time();
 
         my $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
-        $oFile->pathCreate(PATH_BACKUP_CLUSTER . "/${strFullLabel}", undef, undef, true);
+        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strFullLabel}", undef, undef, true);
 
         my $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
 
         $self->testResult(sub {$strFullLabel ne $strNewFullLabel}, true, 'new full label <> existing full backup dir');
 
         #---------------------------------------------------------------------------------------------------------------------------
-        executeTest('rmdir ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . "/${strFullLabel}"));
+        executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strFullLabel}"));
 
         $oFile->pathCreate(
-            PATH_BACKUP_CLUSTER . qw(/) . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, undef, true);
+            PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, undef, true);
         fileStringWrite($oFile->pathGet(
-            PATH_BACKUP_CLUSTER . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
+            PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
                 "/${strFullLabel}.manifest.$oFile->{strCompressExtension}"));
 
         $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
@@ -169,20 +169,19 @@ sub run
 
         $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
         my $strDiffLabel = backupLabelFormat(BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
-        $oFile->pathCreate(PATH_BACKUP_CLUSTER . "/${strDiffLabel}", undef, undef, true);
+        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strDiffLabel}", undef, undef, true);
 
         my $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
         $self->testResult(sub {$strDiffLabel ne $strNewDiffLabel}, true, 'new diff label <> existing diff backup dir');
 
         #---------------------------------------------------------------------------------------------------------------------------
-        executeTest('rmdir ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . "${strDiffLabel}"));
+        executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strDiffLabel}"));
 
         $oFile->pathCreate(
-            PATH_BACKUP_CLUSTER . qw(/) .  PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, true, true);
+            PATH_REPO_BACKUP . qw(/) .  PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, true, true);
         fileStringWrite($oFile->pathGet(
-            PATH_BACKUP_CLUSTER,
-            PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
+            PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
                 "/${strDiffLabel}.manifest.$oFile->{strCompressExtension}"));
 
         $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);

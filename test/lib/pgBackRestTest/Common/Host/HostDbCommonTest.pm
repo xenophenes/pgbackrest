@@ -370,7 +370,7 @@ sub restore
         # Load the manifest
         my $oExpectedManifest = new pgBackRest::Manifest(
             $self->{oFile}->pathGet(
-                PATH_BACKUP_CLUSTER . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) . qw{/} .
+                PATH_REPO_BACKUP . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) . qw{/} .
                     FILE_MANIFEST),
                 true);
 
@@ -483,14 +483,14 @@ sub restoreCompare
         my $oExpectedManifest =
             new pgBackRest::Manifest(
                 $self->{oFile}->pathGet(
-                    PATH_BACKUP_CLUSTER . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) .
+                    PATH_REPO_BACKUP . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) .
                         '/'. FILE_MANIFEST),
                 true);
 
         $oLastManifest =
             new pgBackRest::Manifest(
                 $self->{oFile}->pathGet(
-                    PATH_BACKUP_CLUSTER . qw{/} .
+                    PATH_REPO_BACKUP . qw{/} .
                         ${$oExpectedManifestRef}{&MANIFEST_SECTION_BACKUP}{&MANIFEST_KEY_PRIOR} . qw{/} . FILE_MANIFEST),
                 true);
     }

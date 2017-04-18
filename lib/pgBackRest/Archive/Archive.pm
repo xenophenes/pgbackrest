@@ -88,7 +88,7 @@ sub getCheck
         ($strDbVersion, my $iControlVersion, my $iCatalogVersion, $ullDbSysId) = dbMasterGet()->info();
     }
 
-    if ($oFile->isRemote(PATH_BACKUP_ARCHIVE))
+    if ($oFile->isRemote(PATH_REPO_ARCHIVE))
     {
         ($strArchiveId, $strArchiveFile) = $oFile->{oProtocol}->cmdExecute(
             OP_ARCHIVE_GET_CHECK, [$strDbVersion, $ullDbSysId, $strWalFile], true);
@@ -97,7 +97,7 @@ sub getCheck
     {
         # check that the archive info is compatible with the database
         $strArchiveId =
-            (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_BACKUP_ARCHIVE), true))->check($strDbVersion, $ullDbSysId);
+            (new pgBackRest::Archive::ArchiveInfo($oFile->pathGet(PATH_REPO_ARCHIVE), true))->check($strDbVersion, $ullDbSysId);
 
         if (defined($strWalFile))
         {
