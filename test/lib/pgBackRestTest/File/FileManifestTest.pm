@@ -17,8 +17,8 @@ use IO::Socket::UNIX;
 
 use pgBackRest::Common::Log;
 use pgBackRest::Common::Exception;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 use pgBackRestTest::Common::ExecuteTest;
 
@@ -35,7 +35,7 @@ sub run
         #---------------------------------------------------------------------------------------------------------------------------
         my $strFile = $self->testPath() . '/test.txt';
 
-        $self->testResult(sub {pgBackRest::FileCommon::fileManifestStat($strFile)}, '[undef]', 'ignore missing file');
+        $self->testResult(sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestStat($strFile)}, '[undef]', 'ignore missing file');
 
         #---------------------------------------------------------------------------------------------------------------------------
         fileStringWrite($strFile, "TEST");
@@ -43,7 +43,7 @@ sub run
         executeTest('chmod 1640 ' . $strFile);
 
         $self->testResult(
-            sub {pgBackRest::FileCommon::fileManifestStat($strFile)},
+            sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestStat($strFile)},
             '{group => ' . $self->group() .
                 ', mode => 1640, modification_time => 1111111111, size => 4, type => f, user => ' . $self->pgUser() . '}',
             'stat file');
@@ -55,7 +55,7 @@ sub run
         my $oSocket = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Local => $strSocketFile, Listen => 1);
 
         $self->testException(
-            sub {pgBackRest::FileCommon::fileManifestStat($strSocketFile)}, ERROR_FILE_INVALID,
+            sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestStat($strSocketFile)}, ERROR_FILE_INVALID,
             "${strSocketFile} is not of type directory, file, or link");
 
         # Cleanup socket
@@ -67,7 +67,7 @@ sub run
         filePathCreate($strTestPath, '0750');
 
         $self->testResult(
-            sub {pgBackRest::FileCommon::fileManifestStat($strTestPath)},
+            sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestStat($strTestPath)},
             '{group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}',
             'stat directory');
 
@@ -78,7 +78,7 @@ sub run
             or confess &log(ERROR, "unable to create symlink from ${strTestPath} to ${strTestLink}");
 
         $self->testResult(
-            sub {pgBackRest::FileCommon::fileManifestStat($strTestLink)},
+            sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestStat($strTestLink)},
             '{group => ' . $self->group() . ", link_destination => ${strTestPath}, type => l, user => " . $self->pgUser() . '}',
             'stat link');
     }
@@ -90,7 +90,7 @@ sub run
         my @stryFile = ('.', 'test.txt');
 
         $self->testResult(
-            sub {pgBackRest::FileCommon::fileManifestList($self->testPath(), \@stryFile)},
+            sub {pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestList($self->testPath(), \@stryFile)},
             '{. => {group => ' . $self->group() . ', mode => 0770, type => d, user => ' . $self->pgUser() . '}}',
             'skip missing file');
     }
@@ -103,14 +103,14 @@ sub run
         my $strTestFile = "${strTestPath}/test.txt";
 
         $self->testException(
-            sub {my $hManifest = {}; pgBackRest::FileCommon::fileManifestRecurse($strTestFile, undef, 0, $hManifest); $hManifest},
+            sub {my $hManifest = {}; pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestRecurse($strTestFile, undef, 0, $hManifest); $hManifest},
             ERROR_FILE_MISSING, "unable to stat ${strTestFile}: No such file or directory");
 
         #---------------------------------------------------------------------------------------------------------------------------
         filePathCreate($strTestPath, '0750');
 
         $self->testResult(
-            sub {my $hManifest = {}; pgBackRest::FileCommon::fileManifestRecurse($strTestPath, undef, 0, $hManifest); $hManifest},
+            sub {my $hManifest = {}; pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestRecurse($strTestPath, undef, 0, $hManifest); $hManifest},
             '{. => {group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}}',
             'empty directory manifest');
 
@@ -122,7 +122,7 @@ sub run
         filePathCreate("${strTestPath}/sub", '0750');
 
         $self->testResult(
-            sub {my $hManifest = {}; pgBackRest::FileCommon::fileManifestRecurse(
+            sub {my $hManifest = {}; pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestRecurse(
                 $self->testPath(), basename($strTestPath), 1, $hManifest); $hManifest},
             '{public_dir => {group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}, ' .
             'public_dir/sub => {group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}, ' .
@@ -132,7 +132,7 @@ sub run
 
         #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
-            sub {my $hManifest = {}; pgBackRest::FileCommon::fileManifestRecurse($strTestFile, undef, 0, $hManifest); $hManifest},
+            sub {my $hManifest = {}; pgBackRest::Storage::Posix::StoragePosixCommon::fileManifestRecurse($strTestFile, undef, 0, $hManifest); $hManifest},
             '{' . basename($strTestFile) . ' => {group => ' . $self->group() .
                 ', mode => 0750, modification_time => 1111111111, size => 4, type => f, user => ' . $self->pgUser() . '}}',
             'single file manifest');
@@ -144,7 +144,7 @@ sub run
         if (!$self->begin('File->manifest() => ' . ($bRemote ? 'remote' : 'local'))) {next}
 
         # Create the file object
-        my $oFile = new pgBackRest::File
+        my $oFile = new pgBackRest::Storage::Storage
         (
             $self->stanza(),
             $self->testPath(),

@@ -20,8 +20,8 @@ use pgBackRest::Archive::ArchiveInfo;
 use pgBackRest::BackupInfo;
 use pgBackRest::Db;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::InfoCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
@@ -107,7 +107,7 @@ sub stanzaCreate
     my ($strOperation) = logDebugParam(__PACKAGE__ . '->stanzaCreate');
 
     # Initialize default file object with protocol set to NONE meaning strictly local
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),
@@ -181,7 +181,7 @@ sub stanzaUpgrade
     my ($strOperation) = logDebugParam(__PACKAGE__ . '->stanzaUpgrade');
 
     # Initialize default file object with protocol set to NONE meaning strictly local
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

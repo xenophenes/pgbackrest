@@ -27,8 +27,8 @@ use pgBackRest::Common::String;
 use pgBackRest::Config::Config;
 use pgBackRest::Db;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Manifest;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::LocalProcess;
@@ -458,7 +458,7 @@ sub process
     my $lTimestampStart = time();
 
     # Initialize the local file object
-    my $oFileLocal = new pgBackRest::File
+    my $oFileLocal = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),
@@ -497,7 +497,7 @@ sub process
     }
 
     # Initialize the master file object
-    my $oFileMaster = new pgBackRest::File
+    my $oFileMaster = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

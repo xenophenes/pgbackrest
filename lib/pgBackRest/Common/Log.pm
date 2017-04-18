@@ -170,8 +170,8 @@ sub logLevelSet
     my $bLogTimestampParam = shift;
 
     # Load FileCommon module
-    require pgBackRest::FileCommon;
-    pgBackRest::FileCommon->import();
+    require pgBackRest::Storage::Posix::StoragePosixCommon;
+    pgBackRest::Storage::Posix::StoragePosixCommon->import();
 
     if (defined($strLevelFileParam))
     {

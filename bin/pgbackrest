@@ -23,7 +23,7 @@ use pgBackRest::Common::Exit;
 use pgBackRest::Common::Lock;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 

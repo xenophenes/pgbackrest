@@ -33,7 +33,7 @@ use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Version;
 
 use BackRestDoc::Custom::DocCustomRelease;

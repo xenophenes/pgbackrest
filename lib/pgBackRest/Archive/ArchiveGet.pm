@@ -25,8 +25,8 @@ use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
 use pgBackRest::Db;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 
@@ -87,7 +87,7 @@ sub get
     lockStopTest();
 
     # Create the file object
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

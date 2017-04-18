@@ -20,8 +20,8 @@ use pgBackRest::Common::Lock;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 
@@ -79,7 +79,7 @@ sub process
     if (optionGet(OPTION_ARCHIVE_ASYNC))
     {
         # Get the spool path
-        $self->{strSpoolPath} = (new pgBackRest::File(
+        $self->{strSpoolPath} = (new pgBackRest::Storage::Storage(
             optionGet(OPTION_STANZA), optionGet(OPTION_SPOOL_PATH), protocolGet(NONE)))->pathGet(PATH_BACKUP_ARCHIVE_OUT);
 
         # Loop to check for status files and launch async process
@@ -120,7 +120,7 @@ sub process
         pgBackRest::Archive::ArchivePushFile->import();
 
         # Create the file object
-        my $oFile = new pgBackRest::File
+        my $oFile = new pgBackRest::Storage::Storage
         (
             optionGet(OPTION_STANZA),
             optionGet(OPTION_REPO_PATH),

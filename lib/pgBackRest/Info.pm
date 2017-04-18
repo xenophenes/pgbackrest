@@ -17,8 +17,8 @@ use pgBackRest::Common::String;
 use pgBackRest::BackupCommon;
 use pgBackRest::BackupInfo;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::InfoCommon;
 use pgBackRest::Manifest;
 use pgBackRest::Protocol::Common;
@@ -100,7 +100,7 @@ sub process
     my $strStanza = optionTest(OPTION_STANZA) ? optionGet(OPTION_STANZA) : undef;
 
     # Create the file object
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         $strStanza,
         optionGet(OPTION_REPO_PATH),

@@ -15,7 +15,7 @@ use pgBackRest::Common::Ini;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
 use pgBackRest::Config::ConfigHelp;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 use BackRestDoc::Common::DocManifest;
 

@@ -19,7 +19,7 @@ use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Version;
 

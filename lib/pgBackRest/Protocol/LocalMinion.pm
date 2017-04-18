@@ -12,7 +12,7 @@ use pgBackRest::Archive::ArchivePushFile;
 use pgBackRest::BackupFile;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 use pgBackRest::Protocol::CommandMinion;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
@@ -62,7 +62,7 @@ sub init
     my ($strOperation) = logDebugParam(__PACKAGE__ . '->init');
 
     # Create the file object
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

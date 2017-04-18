@@ -15,7 +15,7 @@ use JSON::PP;
 
 use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 ####################################################################################################################################
 # File constants

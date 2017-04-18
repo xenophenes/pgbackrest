@@ -77,8 +77,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -91,38 +91,38 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 16384, iCompressLev
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/pg_stat, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_stat
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/postgresql.conf, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_config/postgresql.conf
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <1>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/1, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/16384, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/32768, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/global, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_clog, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_stat, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/1, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/16384, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/32768, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/global, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_clog, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_stat, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, [undef], 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, [undef], 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, [undef], 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -201,18 +201,18 @@ P00  DEBUG:     Protocol::Protocol::protocolDestroy: found cached protocol: iRem
 P00  DEBUG:     Protocol::CommandMaster->close=>: iExitStatus = 0
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
 P00   INFO: new backup label = [BACKUP-FULL-1]
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/backup/repo/temp/db.tmp to [TEST_PATH]/backup/repo/backup/db/[BACKUP-FULL-1]
-P00  DEBUG:     File->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-FULL-1], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
-P00  DEBUG:     File->move(): bDestinationPathCreate = true, bPathSync = false, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-FULL-1].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-1]/backup.manifest.gz, strSourcePathType = backup:cluster
-P00  DEBUG:     File->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
-P00  DEBUG:     File->remove=>: bRemoved = false
-P00  DEBUG:     File->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-1], strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-FULL-1], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = false, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-FULL-1].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-1]/backup.manifest.gz, strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = false
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-1], strSourcePathType = backup:cluster
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --buffer-size=16384 --cmd-ssh=/usr/bin/ssh --no-compress --config=[TEST_PATH]/backup/pgbackrest.conf --db-cmd=[BACKREST-BIN] --db-config=[TEST_PATH]/db-master/pgbackrest.conf --db-host=db-master --db-timeout=1 --lock-path=[TEST_PATH]/backup/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/backup/repo/log --protocol-timeout=2 --repo-path=[TEST_PATH]/backup/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -221,8 +221,8 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     File->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
-P00  DEBUG:     File->list=>: stryFileList = ([BACKUP-FULL-1])
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-FULL-1])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00   INFO: option 'retention-archive' is not set - archive logs will not be expired
@@ -383,8 +383,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -399,24 +399,24 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/pg_stat, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_stat
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/postgresql.conf, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_config/postgresql.conf
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00   TEST:         PgBaCkReStTeSt-BACKUP-START-PgBaCkReStTeSt
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
@@ -452,8 +452,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -468,24 +468,24 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/pg_stat, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_stat
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/postgresql.conf, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_config/postgresql.conf
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00   TEST:         PgBaCkReStTeSt-BACKUP-START-PgBaCkReStTeSt
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
@@ -509,8 +509,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -525,9 +525,9 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  ERROR: [062]: remote process terminated on db-master host: stop file exists for all stanzas
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = [undef], oException = [object], strSignal = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = false, iRemoteIdx = [undef], strRemoteType = [undef]
@@ -570,8 +570,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -586,9 +586,9 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  ERROR: [062]: remote process terminated on db-master host: stop file exists for stanza db
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = [undef], oException = [object], strSignal = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = false, iRemoteIdx = [undef], strRemoteType = [undef]
@@ -654,8 +654,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -670,25 +670,25 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/pg_stat, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_stat
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/postgresql.conf, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_config/postgresql.conf
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00   WARN: aborted backup of same type exists, will be cleaned to remove invalid files and resumed
 P00 DETAIL: clean backup temp path: [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->fileNotInManifest=>: stryFile = ()
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00   TEST:         PgBaCkReStTeSt-BACKUP-START-PgBaCkReStTeSt
@@ -738,8 +738,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -754,27 +754,27 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00   WARN: --no-online passed and postmaster.pid exists but --force was passed so backup will continue though it looks like the postmaster is running and the backup will probably not be consistent
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/pg_stat, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_stat
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [undef], strLevel = pg_data/postgresql.conf, strParentPath = [TEST_PATH]/db-master/db/base, strPath = ../pg_config/postgresql.conf
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00   WARN: aborted backup of same type exists, will be cleaned to remove invalid files and resumed
 P00   TEST:         PgBaCkReStTeSt-BACKUP-RESUME-PgBaCkReStTeSt
 P00 DETAIL: clean backup temp path: [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->fileNotInManifest=>: stryFile = (file.tmp, pg_data/PG_VERSION)
 P00  DEBUG:     Backup->tmpClean: remove file [TEST_PATH]/backup/repo/temp/db.tmp/pg_data/PG_VERSION
 P00  DEBUG:     Backup->tmpClean: remove file [TEST_PATH]/backup/repo/temp/db.tmp/file.tmp
@@ -783,15 +783,15 @@ P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx 
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/1, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/16384, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/32768, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/global, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_clog, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_stat, strPathType = backup:tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/1, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/16384, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/base/32768, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/global, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_clog, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_stat, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, 6bf316f11d28c28914ea9be92c00de9bea6d9a6b, 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, 21e2c7c1a326682c07053b7d6a5a40dbd49c2ec5, 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, 4a383e4fb8b5cd2a4e8fab91ef63dce48e532a2f, 1, 0, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -855,32 +855,32 @@ P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemote
 P00  DEBUG:     Protocol::Protocol::protocolDestroy: found cached protocol: iRemoteIdx = 1, strRemoteType = db
 P00  DEBUG:     Protocol::CommandMaster->close=>: iExitStatus = 0
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     File->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/base, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/base/1, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/base/16384, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/base/32768, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/global, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/pg_clog, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/pg_stat, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/base, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/base/1, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/base/16384, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/base/32768, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/global, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/pg_clog, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/pg_stat, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data/pg_tblspc, strPathType = backup:tmp
 P00   INFO: new backup label = [BACKUP-FULL-2]
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/backup/repo/temp/db.tmp to [TEST_PATH]/backup/repo/backup/db/[BACKUP-FULL-2]
-P00  DEBUG:     File->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-FULL-2], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
-P00  DEBUG:     File->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-FULL-2].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-2]/backup.manifest.gz, strSourcePathType = backup:cluster
-P00  DEBUG:     File->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
-P00  DEBUG:     File->remove=>: bRemoved = true
-P00  DEBUG:     File->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-2], strSourcePathType = backup:cluster
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-FULL-2], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-FULL-2].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-2]/backup.manifest.gz, strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-FULL-2], strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --no-compress --config=[TEST_PATH]/backup/pgbackrest.conf --db-cmd=[BACKREST-BIN] --db-config=[TEST_PATH]/db-master/pgbackrest.conf --db-host=db-master --lock-path=[TEST_PATH]/backup/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/backup/repo/log --repo-path=[TEST_PATH]/backup/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -889,8 +889,8 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     File->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
-P00  DEBUG:     File->list=>: stryFileList = ([BACKUP-FULL-2])
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00   INFO: option 'retention-archive' is not set - archive logs will not be expired
@@ -1060,50 +1060,50 @@ P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx 
 P00  DEBUG:     Protocol::Protocol::protocolGet: create (cached) remote protocol
 P00  DEBUG:     Protocol::RemoteMaster->new(): iBufferMax = 4194304, iCompressLevel = 6, iCompressLevelNetwork = 3, iProtocolTimeout = 1830, strCommand = [BACKREST-BIN] --buffer-size=4194304 --command=restore --compress-level=6 --compress-level-network=3 --config=[TEST_PATH]/backup/pgbackrest.conf --protocol-timeout=1830 --repo-path=[TEST_PATH]/backup/repo --stanza=db --type=backup remote, strCommandSSH = /usr/bin/ssh, strHost = backup, strRemoteType = backup, strUser = [USER-2]
 P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressLevel = 6, iCompressLevelNetwork = 3, iProtocolTimeout = 1830, strCommand = /usr/bin/ssh -o LogLevel=error -o Compression=no -o PasswordAuthentication=no backrest@backup '[BACKREST-BIN] --buffer-size=4194304 --command=restore --compress-level=6 --compress-level-network=3 --config=[TEST_PATH]/backup/pgbackrest.conf --protocol-timeout=1830 --repo-path=[TEST_PATH]/backup/repo --stanza=db --type=backup remote', strId = backup, strName = remote, strRemoteType = backup
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/PG_VERSION, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = [TEST_PATH]/db-master/db/base/backup.info, strDestinationPathType = db:absolute, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.info, strSourcePathType = backup:cluster, strUser = [undef]
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/PG_VERSION, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = [TEST_PATH]/db-master/db/base/backup.info, strDestinationPathType = db:absolute, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.info, strSourcePathType = backup:cluster, strUser = [undef]
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = false, strBackupClusterPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->remove(): bIgnoreMissing = false, bPathSync = true, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/backup.info, strPathType = db:absolute
-P00  DEBUG:     File->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = false, bPathSync = true, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/backup.info, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00   INFO: restore backup set [BACKUP-FULL-2]
-P00  DEBUG:     File->exists(): strPath = [BACKUP-FULL-2], strPathType = backup:cluster
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = [TEST_PATH]/db-master/db/base/backup.manifest, strDestinationPathType = db:absolute, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = [BACKUP-FULL-2]/backup.manifest, strSourcePathType = backup:cluster, strUser = [undef]
+P00  DEBUG:     Storage::Storage->exists(): strPath = [BACKUP-FULL-2], strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = <false>, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = [TEST_PATH]/db-master/db/base/backup.manifest, strDestinationPathType = db:absolute, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = [BACKUP-FULL-2]/backup.manifest, strSourcePathType = backup:cluster, strUser = [undef]
 P00  DEBUG:     Restore->manifestOwnershipCheck(): oManifest = [object]
-P00  DEBUG:     File->remove(): bIgnoreMissing = true, bPathSync = <false>, bTemp = true, strPath = [TEST_PATH]/db-master/db/base/global/pg_control, strPathType = db:absolute
-P00  DEBUG:     File->remove=>: bRemoved = false
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = true, bPathSync = <false>, bTemp = true, strPath = [TEST_PATH]/db-master/db/base/global/pg_control, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = false
 P00  DEBUG:     Restore->clean(): oManifest = [object]
 P00 DETAIL: check [TEST_PATH]/db-master/db/base exists
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00 DETAIL: check [TEST_PATH]/db-master/db/pg_stat exists
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00 DETAIL: check [TEST_PATH]/db-master/db/pg_config exists
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_config/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00   INFO: remove invalid files/paths/links from [TEST_PATH]/db-master/db/pg_config
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
 P00   INFO: remove invalid files/paths/links from [TEST_PATH]/db-master/db/pg_stat
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
 P00   INFO: remove invalid files/paths/links from [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00 DETAIL: remove file [TEST_PATH]/db-master/db/base/recovery.done
 P00 DETAIL: preserve file [TEST_PATH]/db-master/db/base/recovery.conf
 P00 DETAIL: remove file [TEST_PATH]/db-master/db/base/deleteme/deleteme.txt
@@ -1112,31 +1112,31 @@ P00 DETAIL: set mode 0700 on [TEST_PATH]/db-master/db/base/base
 P00 DETAIL: remove file [TEST_PATH]/db-master/db/base/backup_label.old
 P00   INFO: cleanup removed 3 files, 1 path
 P00  DEBUG:     Restore->build(): oManifest = [object]
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/pg_config, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00  DEBUG:     build level 1 paths/links
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/base, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/global, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
-P00  DEBUG:     File->pathCreate(): bCreateParents = <false>, bIgnoreExists = <false>, strMode = 0700, strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_stat, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postgresql.conf, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/global, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = <false>, strMode = 0700, strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/pg_stat, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postgresql.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00  DEBUG:     build level 2 paths/links
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/base/1, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/base/16384, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/base/32768, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/base/1, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/base/16384, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/base/32768, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00  DEBUG:     build level 3 paths/links
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = backup
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
@@ -1209,25 +1209,25 @@ P00  DEBUG:     Protocol::CommandMaster->close=>: iExitStatus = 0
 P00  DEBUG:     RestoreFile::restoreLog(): bCopy = false, bForce = false, bZero = false, iLocalId = 1, lModificationTime = [MODIFICATION-TIME-1], lSize = 3, lSizeCurrent = 163875, lSizeTotal = 163878, strChecksum = 184473f470864e067ee3a22e64b47b0a1c356f29, strDbFile = [TEST_PATH]/db-master/db/base/PG_VERSION
 P01 DETAIL: restore file [TEST_PATH]/db-master/db/base/PG_VERSION - exists and matches backup (3B, 100%) checksum 184473f470864e067ee3a22e64b47b0a1c356f29
 P00  DEBUG:     Protocol::LocalProcess->process: all jobs complete
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/recovery.conf, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = true
-P00  DEBUG:     File->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/recovery.conf, strPathType = db:absolute
-P00  DEBUG:     File->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/recovery.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = true
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/recovery.conf, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
 P00   INFO: write [TEST_PATH]/db-master/db/base/recovery.conf
-P00  DEBUG:     File->pathSync(): bRecursive = true, strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/1, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/16384, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/32768, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/global, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = true, strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/1, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/16384, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/base/32768, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/global, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/pg_clog, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
 P00   INFO: restore global/pg_control (copied last to ensure aborted restores cannot be started)
-P00  DEBUG:     File->move(): bDestinationPathCreate = <false>, bPathSync = true, strDestinationFile = [TEST_PATH]/db-master/db/base/global/pg_control, strDestinationPathType = db:absolute, strSourceFile = [TEST_PATH]/db-master/db/base/global/pg_control.pgbackrest, strSourcePathType = db:absolute
-P00  DEBUG:     File->remove(): bIgnoreMissing = false, bPathSync = true, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/backup.manifest, strPathType = db:absolute
-P00  DEBUG:     File->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = true, strDestinationFile = [TEST_PATH]/db-master/db/base/global/pg_control, strDestinationPathType = db:absolute, strSourceFile = [TEST_PATH]/db-master/db/base/global/pg_control.pgbackrest, strSourcePathType = db:absolute
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = false, bPathSync = true, bTemp = [undef], strPath = [TEST_PATH]/db-master/db/base/backup.manifest, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
 P00  DEBUG:     Common::Exit::exitSafe(): iExitCode = 0, oException = [undef], strSignal = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemoteIdx = [undef], strRemoteType = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolDestroy: found cached protocol: iRemoteIdx = 1, strRemoteType = backup
@@ -1404,8 +1404,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1420,9 +1420,9 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
@@ -1435,18 +1435,18 @@ P00  DEBUG:     BackupInfo->last=>: strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->dbHistoryList=>: hDbHash = [hash]
 P00  DEBUG:     BackupInfo->confirmDb=>: bConfirmDb = true
 P00   INFO: last backup label = [BACKUP-FULL-2], version = [VERSION-1]
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00   WARN: incr backup cannot alter 'checksum-page' option to 'false', reset to 'true' from [BACKUP-FULL-2]
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [object], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
 P00  DEBUG:     Manifest->build: found tablespace 1 in offline mode
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [TS_PATH-1], strLevel = pg_tblspc/1, strParentPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPath = [TEST_PATH]/db-master/db/tablespace/ts1
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts1, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts1, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = incr
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
@@ -1488,28 +1488,28 @@ P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemote
 P00  DEBUG:     Protocol::Protocol::protocolDestroy: found cached protocol: iRemoteIdx = 1, strRemoteType = db
 P00  DEBUG:     Protocol::CommandMaster->close=>: iExitStatus = 0
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     File->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1]/16384, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1]/16384, strPathType = backup:tmp
 P00   INFO: new backup label = [BACKUP-INCR-1]
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/backup/repo/temp/db.tmp to [TEST_PATH]/backup/repo/backup/db/[BACKUP-INCR-1]
-P00  DEBUG:     File->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-INCR-1], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
-P00  DEBUG:     File->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-INCR-1].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-1]/backup.manifest.gz, strSourcePathType = backup:cluster
-P00  DEBUG:     File->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
-P00  DEBUG:     File->remove=>: bRemoved = true
-P00  DEBUG:     File->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-1], strSourcePathType = backup:cluster
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-INCR-1], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-INCR-1].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-1]/backup.manifest.gz, strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-1], strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --no-compress --config=[TEST_PATH]/backup/pgbackrest.conf --db-cmd=[BACKREST-BIN] --db-config=[TEST_PATH]/db-master/pgbackrest.conf --db-host=db-master --lock-path=[TEST_PATH]/backup/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/backup/repo/log --repo-path=[TEST_PATH]/backup/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1520,8 +1520,8 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     File->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
-P00  DEBUG:     File->list=>: stryFileList = ([BACKUP-INCR-1], [BACKUP-FULL-2])
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-INCR-1], [BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-1]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]
@@ -1690,8 +1690,8 @@ P00  DEBUG:     Common::Lock::lockAcquire(): bFailOnNoLock = <true>, bRemote = <
 P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
-P00  DEBUG:     File->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPath = backup.history, strPathType = backup:cluster
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1708,9 +1708,9 @@ P00  DEBUG:     Protocol::CommandMaster->new(): iBufferMax = 4194304, iCompressL
 P00  DEBUG:     Db::dbObjectGet=>: iDbMasterIdx = 1, iDbStandbyIdx = [undef], oDbMaster = [object], oDbStandby = [undef]
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: found cached protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info(): strDbPath = <[TEST_PATH]/db-master/db/base>
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     Db->info=>: iDbCatalogVersion = 201409291, iDbControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check(): bRequired = <true>, iCatalogVersion = 201409291, iControlVersion = 942, strDbVersion = 9.4, ullDbSysId = 6353949018581704918
 P00  DEBUG:     BackupInfo->check=>: iDbHistoryId = 1
@@ -1723,26 +1723,26 @@ P00  DEBUG:     BackupInfo->last=>: strBackup = [BACKUP-FULL-2]
 P00  DEBUG:     BackupInfo->dbHistoryList=>: hDbHash = [hash]
 P00  DEBUG:     BackupInfo->confirmDb=>: bConfirmDb = true
 P00   INFO: last backup label = [BACKUP-FULL-2], version = [VERSION-1]
-P00  DEBUG:     File->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
-P00  DEBUG:     File->exists=>: bExists = false
+P00  DEBUG:     Storage::Storage->exists(): strPath = [TEST_PATH]/db-master/db/base/postmaster.pid, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->exists=>: bExists = false
 P00   WARN: incr backup cannot alter 'checksum-page' option to 'false', reset to 'true' from [BACKUP-FULL-2]
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = [undef], hDatabaseMap = [undef], hTablespaceMap = [undef], oFile = [object], oLastManifest = [object], strDbVersion = 9.4, strFilter = [undef], strLevel = [undef], strParentPath = [undef], strPath = [TEST_PATH]/db-master/db/base
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPathType = db:absolute
 P00  DEBUG:     Manifest->build: found tablespace 1 in offline mode
 P00  DEBUG:     Manifest->build: found tablespace 11 in offline mode
 P00  DEBUG:     Manifest->build: found tablespace 2 in offline mode
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/base, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [TS_PATH-1], strLevel = pg_tblspc/1, strParentPath = [TEST_PATH]/db-master/db/base/pg_tblspc, strPath = [TEST_PATH]/db-master/db/tablespace/ts1
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts1, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts1, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [TS_PATH-1], strLevel = pg_tblspc/11, strParentPath = [TEST_PATH]/db-master/db/base/pg_tblspc/pg_tblspc, strPath = [TEST_PATH]/db-master/db/tablespace/ts11
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts11, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts11, strPathType = db:absolute
 P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabaseMap = [undef], hTablespaceMap = [hash], oFile = [object], oLastManifest = [undef], strDbVersion = 9.4, strFilter = [TS_PATH-1], strLevel = pg_tblspc/2, strParentPath = [TEST_PATH]/db-master/db/base/pg_tblspc/pg_tblspc/pg_tblspc, strPath = [TEST_PATH]/db-master/db/tablespace/ts2
-P00  DEBUG:     File->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts2, strPathType = db:absolute
-P00  DEBUG:     File->wait(): bWait = false, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [TEST_PATH]/db-master/db/tablespace/ts2, strPathType = db:absolute
+P00  DEBUG:     Storage::Storage->wait(): bWait = false, strPathType = db:absolute
 P00   WARN: aborted backup of same type exists, will be cleaned to remove invalid files and resumed
 P00   TEST:         PgBaCkReStTeSt-BACKUP-RESUME-PgBaCkReStTeSt
 P00 DETAIL: clean backup temp path: [TEST_PATH]/backup/repo/temp/db.tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
 P00  DEBUG:     Backup->fileNotInManifest=>: stryFile = ()
 P00  DEBUG:     Backup->processManifest(): bCompress = false, bHardLink = false, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = incr
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
@@ -1794,31 +1794,31 @@ P00  DEBUG:     Protocol::Protocol::protocolDestroy(): bComplete = true, iRemote
 P00  DEBUG:     Protocol::Protocol::protocolDestroy: found cached protocol: iRemoteIdx = 1, strRemoteType = db
 P00  DEBUG:     Protocol::CommandMaster->close=>: iExitStatus = 0
 P00  DEBUG:     Protocol::Protocol::protocolDestroy=>: iExitStatus = 0
-P00  DEBUG:     File->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->manifest(): strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1]/16384, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2, strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2/[TS_PATH-1], strPathType = backup:tmp
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2/[TS_PATH-1]/32768, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = true, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->manifest(): strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_data, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/1/[TS_PATH-1]/16384, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2, strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2/[TS_PATH-1], strPathType = backup:tmp
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = pg_tblspc/2/[TS_PATH-1]/32768, strPathType = backup:tmp
 P00   INFO: new backup label = [BACKUP-INCR-2]
-P00  DEBUG:     File->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
+P00  DEBUG:     Storage::Storage->copy(): bAppendChecksum = <false>, bDestinationCompress = true, bDestinationPathCreate = <false>, bIgnoreMissingSource = <false>, bPathSync = <false>, bSourceCompressed = <false>, bTempFile = <true>, lModificationTime = [undef], rExtraParam = [undef], strDestinationFile = backup.manifest.gz, strDestinationPathType = backup:tmp, strExtraFunction = [undef], strGroup = [undef], strMode = <0640>, strSourceFile = backup.manifest, strSourcePathType = backup:tmp, strUser = [undef]
 P00  DEBUG:     Backup->process: move [TEST_PATH]/backup/repo/temp/db.tmp to [TEST_PATH]/backup/repo/backup/db/[BACKUP-INCR-2]
-P00  DEBUG:     File->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-INCR-2], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
-P00  DEBUG:     File->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-INCR-2].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-2]/backup.manifest.gz, strSourcePathType = backup:cluster
-P00  DEBUG:     File->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
-P00  DEBUG:     File->remove=>: bRemoved = true
-P00  DEBUG:     File->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-2], strSourcePathType = backup:cluster
-P00  DEBUG:     File->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = <false>, bPathSync = <false>, strDestinationFile = [BACKUP-INCR-2], strDestinationPathType = backup:cluster, strSourceFile = [undef], strSourcePathType = backup:tmp
+P00  DEBUG:     Storage::Storage->move(): bDestinationPathCreate = true, bPathSync = true, strDestinationFile = backup.history/[YEAR-1]/[BACKUP-INCR-2].manifest.gz, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-2]/backup.manifest.gz, strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove(): bIgnoreMissing = <true>, bPathSync = <false>, bTemp = [undef], strPath = latest, strPathType = backup:cluster
+P00  DEBUG:     Storage::Storage->remove=>: bRemoved = true
+P00  DEBUG:     Storage::Storage->linkCreate(): bHard = <false>, bPathCreate = <true>, bRelative = true, strDestinationFile = latest, strDestinationPathType = backup:cluster, strSourceFile = [BACKUP-INCR-2], strSourcePathType = backup:cluster
+P00  DEBUG:     Storage::Storage->pathSync(): bRecursive = <false>, strPath = [undef], strPathType = backup:cluster
 P00   INFO: backup command end: completed successfully
 P00   INFO: expire command begin [BACKREST-VERSION]: --no-compress --config=[TEST_PATH]/backup/pgbackrest.conf --db-cmd=[BACKREST-BIN] --db-config=[TEST_PATH]/db-master/pgbackrest.conf --db-host=db-master --lock-path=[TEST_PATH]/backup/repo/lock --log-level-console=debug --log-level-file=trace --log-level-stderr=off --log-path=[TEST_PATH]/backup/repo/log --repo-path=[TEST_PATH]/backup/repo --stanza=db
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <expire>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
-P00  DEBUG:     File->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
+P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/backup/repo, strStanza = db
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/backup/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1829,8 +1829,8 @@ P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
 P00  DEBUG:     BackupCommon::backupRegExpGet=>: strRegExp = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$
-P00  DEBUG:     File->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
-P00  DEBUG:     File->list=>: stryFileList = ([BACKUP-INCR-2], [BACKUP-FULL-2])
+P00  DEBUG:     Storage::Storage->list(): bIgnoreMissing = <false>, strExpression = ^[0-9]{8}\-[0-9]{6}F(\_[0-9]{8}\-[0-9]{6}(D|I)){0,1}$, strPath = [undef], strPathType = backup:cluster, strSortOrder = reverse
+P00  DEBUG:     Storage::Storage->list=>: stryFileList = ([BACKUP-INCR-2], [BACKUP-FULL-2])
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-INCR-2]
 P00  DEBUG:     BackupInfo->current=>: bTest = true
 P00  DEBUG:     BackupInfo->current(): strBackup = [BACKUP-FULL-2]

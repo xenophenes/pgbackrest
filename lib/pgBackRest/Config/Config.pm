@@ -18,7 +18,7 @@ use pgBackRest::Common::Exception;
 use pgBackRest::Common::Ini;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::Wait;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Version;
 

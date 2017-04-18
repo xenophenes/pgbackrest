@@ -21,8 +21,8 @@ use pgBackRest::Common::Exception;
 use pgBackRest::Common::Ini;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Manifest;
 use pgBackRest::Version;
 
@@ -110,7 +110,7 @@ sub new
     $self->{bHardLink} = false;
 
     # Create the local file object
-    $self->{oFile} = new pgBackRest::File(
+    $self->{oFile} = new pgBackRest::Storage::Storage(
         $self->stanza(),
         $self->repoPath(),
         new pgBackRest::Protocol::Common

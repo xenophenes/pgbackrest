@@ -14,7 +14,7 @@ use English '-no_match_vars';
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 
 use pgBackRestTest::Common::ExecuteTest;
 use pgBackRestTest::Common::RunTest;
@@ -67,7 +67,7 @@ sub run
         # Remote operation not allowed
         if ($bRemote)
         {
-            $self->testException($strFunction, ERROR_ASSERT, "pgBackRest::File->owner: remote operation not supported");
+            $self->testException($strFunction, ERROR_ASSERT, "pgBackRest::Storage::Storage->owner: remote operation not supported");
         }
         # Error on not exists
         elsif (!$bExists)

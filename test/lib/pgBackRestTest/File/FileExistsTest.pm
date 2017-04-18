@@ -14,7 +14,7 @@ use English '-no_match_vars';
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 
 use pgBackRestTest::Common::ExecuteTest;
 

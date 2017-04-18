@@ -1,7 +1,7 @@
 ####################################################################################################################################
-# FILE MODULE
+# STORAGE MODULE
 ####################################################################################################################################
-package pgBackRest::File;
+package pgBackRest::Storage::Storage;
 
 use strict;
 use warnings FATAL => qw(all);
@@ -21,7 +21,7 @@ use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Version;
 
@@ -216,7 +216,7 @@ sub pathGet
     # Else process path types that require a stanza
     else
     {
-        # All paths in this section will in the repo path
+        # All paths in this section will be in the repo path
         $strPath = $self->{strRepoPath};
 
         # Make sure the stanza is defined since remaining path types require it

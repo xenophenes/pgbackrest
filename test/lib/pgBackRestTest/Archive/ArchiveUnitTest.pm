@@ -17,8 +17,8 @@ use pgBackRest::Archive::ArchiveCommon;
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 use pgBackRestTest::Common::Host::HostBackupTest;
 
@@ -96,7 +96,7 @@ sub run
     if ($self->begin("${strModule}::walSegmentFind()"))
     {
         my $strArchiveId = '9.4-1';
-        my $oFile = new pgBackRest::File(
+        my $oFile = new pgBackRest::Storage::Storage(
             $self->stanza(),
             $self->testPath(),
             new pgBackRest::Protocol::Common(

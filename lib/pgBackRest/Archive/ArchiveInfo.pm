@@ -25,8 +25,8 @@ use pgBackRest::Common::Log;
 use pgBackRest::Archive::ArchiveCommon;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::InfoCommon;
 use pgBackRest::Manifest;
 

@@ -17,7 +17,7 @@ use File::stat;
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 use pgBackRestTest::Common::ExecuteTest;
 use pgBackRestTest::Common::RunTest;

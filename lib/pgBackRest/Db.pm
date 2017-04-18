@@ -20,7 +20,7 @@ use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 use pgBackRest::Manifest;
 use pgBackRest::Version;
 use pgBackRest::Protocol::Common;
@@ -466,7 +466,7 @@ sub info
     if (!defined($self->{info}{$strDbPath}))
     {
         # Initialize file object
-        my $oFile = new pgBackRest::File
+        my $oFile = new pgBackRest::Storage::Storage
         (
             optionGet(OPTION_STANZA),
             optionGet(OPTION_REPO_PATH),

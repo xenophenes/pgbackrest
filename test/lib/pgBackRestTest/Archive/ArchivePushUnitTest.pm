@@ -24,8 +24,8 @@ use pgBackRest::Common::Lock    ;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 
@@ -51,7 +51,7 @@ sub initModule
 
     # Create the local file object
     $self->{oFile} =
-        new pgBackRest::File
+        new pgBackRest::Storage::Storage
         (
             $self->stanza(),
             $self->{strRepoPath},
@@ -173,7 +173,7 @@ sub run
         #---------------------------------------------------------------------------------------------------------------------------
         $self->testException(sub {archivePushCheck(
             $self->{oFile}, $strWalSegment, PG_VERSION_94, WAL_VERSION_94_SYS_ID)},
-            ERROR_ASSERT, "strFile is required in File->hash");
+            ERROR_ASSERT, "strFile is required in Storage::Storage->hash");
 
         #---------------------------------------------------------------------------------------------------------------------------
         my $strHistoryFile = "00000001.history";
@@ -197,7 +197,7 @@ sub run
         logDisable(); $self->configLoadExpect(dclone($oOption), CMD_ARCHIVE_PUSH); logEnable();
 
         # Create the file object
-        my $oRemoteFile = new pgBackRest::File(
+        my $oRemoteFile = new pgBackRest::Storage::Storage(
             $self->stanza(), $self->{strRepoPath}, protocolGet(BACKUP, undef, {strBackRestBin => $self->backrestExe()}));
 
         # Generate a normal segment

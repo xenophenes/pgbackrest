@@ -21,8 +21,8 @@ use pgBackRest::Common::Lock;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Info;
 use pgBackRest::Manifest;
 use pgBackRest::Protocol::Common;
@@ -48,7 +48,7 @@ sub initModule
 
     # Create the local file object
     $self->{oFile} =
-        new pgBackRest::File
+        new pgBackRest::Storage::Storage
         (
             $self->stanza(),
             $self->{strRepoPath},

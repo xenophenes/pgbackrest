@@ -17,8 +17,8 @@ use pgBackRest::Common::Ini;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Manifest;
 use pgBackRest::RestoreFile;
 use pgBackRest::Protocol::Common;
@@ -44,7 +44,7 @@ sub new
     $self->{oProtocol} = protocolGet(BACKUP);
 
     # Initialize default file object
-    $self->{oFile} = new pgBackRest::File
+    $self->{oFile} = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

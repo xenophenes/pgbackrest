@@ -16,8 +16,8 @@ use Exporter qw(import);
 
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 use pgBackRestTest::Common::Host::HostBackupTest;
 use pgBackRestTest::Common::Host::HostBaseTest;
@@ -117,7 +117,7 @@ sub setup
 
     # Create the local file object
     my $oFile =
-        new pgBackRest::File
+        new pgBackRest::Storage::Storage
         (
             $oHostDbMaster->stanza(),
             $oHostDbMaster->repoPath(),

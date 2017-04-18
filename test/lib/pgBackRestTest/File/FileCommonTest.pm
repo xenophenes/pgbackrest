@@ -14,7 +14,7 @@ use English '-no_match_vars';
 
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::RemoteMaster;
 
@@ -105,7 +105,7 @@ sub setup
     }
 
     # Create the file object
-    my $oFile = new pgBackRest::File
+    my $oFile = new pgBackRest::Storage::Storage
     (
         $self->stanza(),
         $self->testPath(),

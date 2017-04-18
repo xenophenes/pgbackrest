@@ -16,7 +16,7 @@ use POSIX qw(ceil);
 use Time::HiRes qw(gettimeofday usleep);
 
 use pgBackRest::Common::Log;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 
 use pgBackRestTest::Common::ExecuteTest;
 

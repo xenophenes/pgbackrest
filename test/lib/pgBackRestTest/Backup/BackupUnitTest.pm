@@ -19,8 +19,8 @@ use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 use pgBackRest::Manifest;
@@ -120,7 +120,7 @@ sub run
         my $strRepoPath = $self->testPath() . '/repo';
 
         my $oFile =
-            new pgBackRest::File
+            new pgBackRest::Storage::Storage
             (
                 $self->stanza(),
                 $strRepoPath,

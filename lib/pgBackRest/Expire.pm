@@ -20,8 +20,8 @@ use pgBackRest::Archive::ArchiveInfo;
 use pgBackRest::BackupCommon;
 use pgBackRest::BackupInfo;
 use pgBackRest::Config::Config;
-use pgBackRest::File;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::InfoCommon;
 use pgBackRest::Manifest;
 use pgBackRest::Protocol::Common;
@@ -42,7 +42,7 @@ sub new
     my ($strOperation) = logDebugParam(__PACKAGE__ . '->new');
 
     # Initialize file object
-    $self->{oFile} = new pgBackRest::File
+    $self->{oFile} = new pgBackRest::Storage::Storage
     (
         optionGet(OPTION_STANZA),
         optionGet(OPTION_REPO_PATH),

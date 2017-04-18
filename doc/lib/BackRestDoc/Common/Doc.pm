@@ -14,7 +14,7 @@ use XML::Checker::Parser;
 
 use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
-use pgBackRest::FileCommon;
+use pgBackRest::Storage::Posix::StoragePosixCommon;
 
 ####################################################################################################################################
 # CONSTRUCTOR

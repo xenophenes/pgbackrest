@@ -14,7 +14,7 @@ use English '-no_match_vars';
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
-use pgBackRest::File;
+use pgBackRest::Storage::Storage;
 
 ####################################################################################################################################
 # run
@@ -78,7 +78,7 @@ sub run
 
         # Error when stanza not defined
         $self->testException(
-            sub {(new pgBackRest::File(undef, $self->testPath(), $self->local()))->pathGet(PATH_BACKUP_TMP)},
+            sub {(new pgBackRest::Storage::Storage(undef, $self->testPath(), $self->local()))->pathGet(PATH_BACKUP_TMP)},
             ERROR_ASSERT, "strStanza not defined");
 
         # Test backup tmp path
