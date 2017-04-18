@@ -39,6 +39,11 @@ use constant S3_HEADER_TRANSFER_ENCODING                            => 'transfer
 use constant S3_HEADER_ETAG                                         => 'etag';
     push @EXPORT, qw(S3_HEADER_ETAG);
 
+use constant S3_RESPONSE_TYPE_NONE                                  => 'none';
+    push @EXPORT, qw(S3_RESPONSE_TYPE_NONE);
+use constant S3_RESPONSE_TYPE_XML                                   => 'xml';
+    push @EXPORT, qw(S3_RESPONSE_TYPE_XML);
+
 ####################################################################################################################################
 # new
 ####################################################################################################################################
@@ -91,17 +96,19 @@ sub httpRequest
         $strVerb,
         $strUri,
         $hQuery,
-        $rstrContent,
         $hHeader,
+        $rstrBody,
+        $strResponseType,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->httpRequest', \@_,
             {name => 'strVerb', trace => true},
-            {name => 'strUri', default => '/', trace => true},
-            {name => 'hQuery', required => false, trace => true},
-            {name => 'rstrContent', required => false, trace => true},
-            {name => 'hHeader', required => false, trace => true},
+            {name => 'strUri', optional => true, default => '/', trace => true},
+            {name => 'hQuery', optional => true, trace => true},
+            {name => 'hHeader', optional => true, trace => true},
+            {name => 'rstrBody', optional => true, trace => true},
+            {name => 'strResponseType', optional => true, default => S3_RESPONSE_TYPE_NONE, trace => true},
         );
 
     my $strDateTime = s3DateTime();
@@ -109,10 +116,10 @@ sub httpRequest
     my $strContentHash = PAYLOAD_DEFAULT_HASH;
     my $iContentLength = 0;
 
-    if (defined($rstrContent))
+    if (defined($rstrBody))
     {
-        $iContentLength = length($$rstrContent);
-        $strContentHash = sha256_hex($$rstrContent);
+        $iContentLength = length($$rstrBody);
+        $strContentHash = sha256_hex($$rstrBody);
     }
 
     $hHeader->{&S3_HEADER_CONTENT_SHA256} = $strContentHash;
@@ -123,15 +130,25 @@ sub httpRequest
         $self->{strAccessKeyId}, $self->{strSecretAccessKey}, $strContentHash);
 
     my $oHttpClient = new pgBackRest::Protocol::Http::HttpClient(
-        $self->{strEndPoint}, $strVerb, $strUri, $hQuery, $hHeader, $rstrContent);
+        $self->{strEndPoint}, $strVerb,
+        {strUri => $strUri, hQuery => $hQuery, hRequestHeader => $hHeader, rstrRequestBody => $rstrBody});
+
+    $self->{hResponseHeader} = $oHttpClient->responseHeader();
 
     # Convert to XML if there is content
     my $oResponseXml;
 
-    if ($oHttpClient->contentLength() != 0)
+    if ($strResponseType eq S3_RESPONSE_TYPE_XML)
     {
-        $oResponseXml = xmlParse($oHttpClient->responseBody());
+        if ($oHttpClient->contentLength() == 0)
+        {
+            confess &log(ERROR, "response type '${strResponseType}' was requested but content length is zero", ERROR_PROTOCOL);
+        }
+
+        $oResponseXml = xmlParse(${$oHttpClient->responseBody()});
     }
+    #
+    # $oHttpClient->close();
 
     # Return from function and log return values if any
     return logDebugReturn

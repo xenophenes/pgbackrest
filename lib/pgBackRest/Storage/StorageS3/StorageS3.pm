@@ -65,7 +65,8 @@ sub put
 
     # Put a file
     my $oResponse = $self->httpRequest(
-        HTTP_VERB_PUT, $strFile, undef, defined($strContent) ? (ref($strContent) ? $strContent : \$strContent) : undef);
+        HTTP_VERB_PUT,
+        {strUri => $strFile, rstrBody => defined($strContent) ? (ref($strContent) ? $strContent : \$strContent) : undef});
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -94,7 +95,8 @@ sub putMultiInit
             {name => 'strFile'},
         );
 
-    my $oResponse = $self->httpRequest(HTTP_VERB_POST, $strFile, 'uploads=');
+    my $oResponse = $self->httpRequest(
+        HTTP_VERB_POST, {strUri => $strFile, hQuery => 'uploads=', strResponseType => S3_RESPONSE_TYPE_XML});
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -134,10 +136,13 @@ sub putMulti
 
     # Put a file
     $self->httpRequest(
-        HTTP_VERB_PUT, $strFile, {'partNumber' => $iPartNo, 'uploadId' => $strUploadId}, $rstrContent, $hHeader);
+        HTTP_VERB_PUT,
+        {strUri => $strFile, hQuery => {'partNumber' => $iPartNo, 'uploadId' => $strUploadId}, rstrBody => $rstrContent,
+            hHeader => $hHeader});
 
     # use Data::Dumper; confess Dumper($self->{hHeader});
-    my $strETag = $self->{hHeader}{&S3_HEADER_ETAG};
+    # !!! Fix this!
+    my $strETag = $self->{hResponseHeader}{&S3_HEADER_ETAG};
 
     if (!defined($strETag))
     {
@@ -190,7 +195,10 @@ sub putMultiComplete
     my $hHeader = {'content-md5' => md5_base64($strXml) . '=='};
 
     # Put a file
-    my $oResponse = $self->httpRequest(HTTP_VERB_POST, $strFile, {'uploadId' => $strUploadId}, \$strXml, $hHeader);
+    my $oResponse = $self->httpRequest(
+        HTTP_VERB_POST,
+        {strUri => $strFile, hQuery => {'uploadId' => $strUploadId}, rstrBody => \$strXml, hHeader => $hHeader,
+            strResponseType => S3_RESPONSE_TYPE_XML});
     my $strETag = xmlTagText($oResponse, "ETag");
 
     # Return from function and log return values if any
@@ -243,9 +251,9 @@ sub manifest
     {
         # Get the file list
         my $oResponse = $self->httpRequest(
-            HTTP_VERB_GET, undef,
+            HTTP_VERB_GET, {hQuery =>
             {&S3_QUERY_LIST_TYPE => 2, &S3_QUERY_PREFIX => $strPrefix, &S3_QUERY_DELIMITER => $strDelimiter,
-                &S3_QUERY_CONTINUATION_TOKEN => $strContinuationToken});
+                &S3_QUERY_CONTINUATION_TOKEN => $strContinuationToken}, strResponseType => S3_RESPONSE_TYPE_XML});
 
         foreach my $oFile (xmlTagChildren($oResponse, "Contents"))
         {
@@ -254,7 +262,6 @@ sub manifest
             $hManifest->{$strName}->{size} = xmlTagText($oFile, "Size");
             $iFileTotal++;
         }
-
 
         foreach my $oPath (xmlTagChildren($oResponse, "CommonPrefixes"))
         {
@@ -318,7 +325,9 @@ sub remove
         my $hHeader = {'content-md5' => md5_base64($strXml) . '=='};
 
         # Put a file
-        my $oResponse = $self->httpRequest(HTTP_VERB_POST, undef, 'delete=', \$strXml, $hHeader);
+        my $oResponse = $self->httpRequest(
+            HTTP_VERB_POST,
+            {hQuery => 'delete=', rstrBody => \$strXml, hHeader => $hHeader, strResponseType => S3_RESPONSE_TYPE_XML});
     }
     while (@{$rstryFileAll} > 0);
 

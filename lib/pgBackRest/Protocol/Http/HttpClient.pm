@@ -52,8 +52,10 @@ sub new
         $self->{strVerb},
         $self->{strUri},
         $self->{hQuery},
-        $self->{hHeader},
-        my $rstrContent,
+        $self->{hRequestHeader},
+        my $rstrRequestBody,
+        $self->{iProtocolTimeout},
+        $self->{iBufferSize},
     ) =
         logDebugParam
         (
@@ -62,8 +64,10 @@ sub new
             {name => 'strVerb', trace => true},
             {name => 'strUri', optional => true, default => qw(/), trace => true},
             {name => 'hQuery', optional => true, trace => true},
-            {name => 'hHeader', optional => true, trace => true},
-            {name => 'rstrContent', optional => true, trace => true},
+            {name => 'hRequestHeader', optional => true, trace => true},
+            {name => 'rstrRequestBody', optional => true, trace => true},
+            {name => 'iProtocolTimeout', optional => true, default => 30, trace => true},
+            {name => 'iBufferSize', optional => true, default => 32768, trace => true},
         );
 
     # Generate the query string
@@ -72,32 +76,36 @@ sub new
     # Construct the request headers
     $self->{strRequestHeader} = "$self->{strVerb} $self->{strUri}?${strQuery} HTTP/1.1" . "\r\n";
 
-    foreach my $strHeader (sort(keys(%{$hHeader})))
+    foreach my $strHeader (sort(keys(%{$self->{hRequestHeader}})))
     {
-        $self->{strRequestHeader} .= "${strHeader}: $hHeader->{$strHeader}\r\n";
+        $self->{strRequestHeader} .= "${strHeader}: $self->{hRequestHeader}->{$strHeader}\r\n";
     }
 
     $self->{strRequestHeader} .= "\r\n";
 
+    # &log(WARN, "REQUEST HEADER\n$self->{strRequestHeader}");
+
     # Connect to the server
-    my $oSocket = IO::Socket::SSL->new("$self->{strHost}:443");
+    $self->{oSocket} = IO::Socket::SSL->new("$self->{strHost}:443");
 
     # Create the buffered IO object
-    my $oSocketIO = new pgBackRest::Protocol::IO::IO($oSocket, $oSocket, undef, 30, 4 * 1024 * 1024);
+    my $oSocketIO = new pgBackRest::Protocol::IO::IO(
+        $self->{oSocket}, $self->{oSocket}, undef, $self->{iProtocolTimeout}, $self->{iBufferSize});
 
     # Write request headers
     $oSocketIO->bufferWrite(\$self->{strRequestHeader});
 
     # Write content
-    if (defined($rstrContent))
+    # !!! NEEDS TO BE OPTIMIZED
+    if (defined($rstrRequestBody))
     {
-        my $iTotalSize = length($$rstrContent);
+        my $iTotalSize = length($$rstrRequestBody);
         my $iTotalSent = 0;
 
         do
         {
             my $strBufferWrite = substr(
-                $$rstrContent, $iTotalSent, $iTotalSize - $iTotalSent > 16384 ? 16384 : $iTotalSize - $iTotalSent);
+                $$rstrRequestBody, $iTotalSent, $iTotalSize - $iTotalSent > 16384 ? 16384 : $iTotalSize - $iTotalSent);
 
             $iTotalSent += $oSocketIO->bufferWrite(\$strBufferWrite);
         } while ($iTotalSent < $iTotalSize);
@@ -127,9 +135,9 @@ sub new
         my $strHeaderValue = trim(substr($strHeader, $iColonPos + 1));
 
         # Store the header
-        $self->{hHeader}{$strHeaderKey} = $strHeaderValue;
+        $self->{hResponseHeader}{$strHeaderKey} = $strHeaderValue;
 
-        if ($strHeaderKey eq S3_HEADER_CONTENT_LENGTH)
+        if ($strHeaderKey eq HTTP_HEADER_CONTENT_LENGTH)
         {
             $self->{iContentLength} = $strHeaderValue + 0;
 
@@ -138,7 +146,7 @@ sub new
                 confess &log(ASSERT, "can't deal with content-length > 0");
             }
         }
-        elsif ($strHeaderKey eq S3_HEADER_TRANSFER_ENCODING)
+        elsif ($strHeaderKey eq HTTP_HEADER_TRANSFER_ENCODING)
         {
             if ($strHeaderValue eq 'chunked')
             {
@@ -153,12 +161,14 @@ sub new
         $strHeader = trim($oSocketIO->lineRead());
     }
 
+    # &log(WARN, "RESPONSE HEADER\n${strResponseHeader}");
+
     # Test response code
     if ($iResponseCode != 200)
     {
         confess &log(ERROR,
             "S3 request error [$iResponseCode]\n${strProtocol} ${iResponseCode} ${strResponseMessage}\r\n${strResponseHeader}" .
-            "\n" . $self->responseBody(), ERROR_PROTOCOL);
+            "\n" . ${$self->responseBody()}, ERROR_PROTOCOL);
     }
 
     # Content length should have been defined either by content-length or transfer encoding
@@ -175,6 +185,23 @@ sub new
         {name => 'self', value => $self}
     );
 }
+
+####################################################################################################################################
+# close/DESTROY - close the HTTP connection
+####################################################################################################################################
+sub close
+{
+    my $self = shift;
+
+    # Only close if the socket is open
+    if (defined($self->{oSocket}))
+    {
+        $self->{oSocket}->close();
+        undef($self->{oSocket});
+    }
+}
+
+sub DESTROY {shift->close()}
 
 ####################################################################################################################################
 # responseBody
@@ -199,18 +226,22 @@ sub responseBody
         confess &log(ERROR, 'content length is zero', ERROR_PROTOCOL);
     }
 
+    # Create the buffered IO object
+    my $oSocketIO = new pgBackRest::Protocol::IO::IO(
+        $self->{oSocket}, undef, undef, $self->{iProtocolTimeout}, $self->{iBufferSize});
+
     # Read response body
-    my $strResponseBody = '';
+    my $strResponseBody = undef;
     my $iSize = 0;
 
     while (1)
     {
         my $strChunkLength = trim($oSocketIO->lineRead());
         my $iChunkLength = hex($strChunkLength);
-        # &log(WARN, "READ CHUNK $strChunkLength - $iChunkLength");
 
         last if ($iChunkLength == 0);
 
+        # !!! NEEDS TO BE OPTIMIZED
         my $strResponseChunk;
         $oSocketIO->bufferRead(\$strResponseChunk, $iChunkLength, 0, true);
         $strResponseBody .= $strResponseChunk;
@@ -219,10 +250,7 @@ sub responseBody
         $iSize += $iChunkLength;
     };
 
-    if (defined($strResponseBody) && $strResponseBody ne '')
-    {
-        $strResponseBody = undef;
-    }
+    $self->close();
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -233,49 +261,10 @@ sub responseBody
 }
 
 ####################################################################################################################################
-# uriEncode
-#
-# Encode query values to conform with URI specs.
-####################################################################################################################################
-sub uriEncode
-{
-    my $strString = shift;
-
-    # Only encode if source string is defined
-    my $strEncodedString;
-
-    if (defined($strString))
-    {
-        # Iterate all characters in the string
-        for (my $iIndex = 0; $iIndex < length($strString); $iIndex++)
-        {
-            my $cChar = substr($strString, $iIndex, 1);
-
-            # These characters are reproduced verbatim
-            if (($cChar ge 'A' && $cChar le 'Z') || ($cChar ge 'a' && $cChar le 'z') || ($cChar ge '0' && $cChar le '9') ||
-                $cChar eq '_' || $cChar eq '-' || $cChar eq '~' || $cChar eq '.')
-            {
-                $strEncodedString .= $cChar;
-            }
-            # Forward slash is encoded
-            elsif ($cChar eq '/')
-            {
-                $strEncodedString .= '%2F';
-            }
-            # All other characters are hex-encoded
-            else
-            {
-                $strEncodedString .= sprintf('%%%02X', ord($cChar));
-            }
-        }
-    }
-
-    return $strEncodedString;
-}
-
-####################################################################################################################################
 # Properties.
 ####################################################################################################################################
 sub contentLength {shift->{iContentLength}}                         # Content length if available (-1 means not known yet)
+sub responseHeader {shift->{hResponseHeader}}                       # Response header
+sub requestHeader {shift->{hResponseHeader}}                        # Request header
 
 1;

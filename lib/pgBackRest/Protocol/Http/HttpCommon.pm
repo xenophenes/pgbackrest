@@ -45,7 +45,7 @@ sub httpQuery
             # Parameters may not be defined - this is OK
             if (defined($hQuery->{$strParam}))
             {
-                $strQuery .= ($strQuery eq '' ? '' : '&') . $strParam . '=' . uriEncode($hQuery->{$strParam});
+                $strQuery .= ($strQuery eq '' ? '' : '&') . $strParam . '=' . httpUriEncode($hQuery->{$strParam});
             }
         }
     }
@@ -64,5 +64,48 @@ sub httpQuery
 }
 
 push @EXPORT, qw(httpQuery);
+
+####################################################################################################################################
+# httpUriEncode
+#
+# Encode query values to conform with URI specs.
+####################################################################################################################################
+sub httpUriEncode
+{
+    my $strString = shift;
+
+    # Only encode if source string is defined
+    my $strEncodedString;
+
+    if (defined($strString))
+    {
+        # Iterate all characters in the string
+        for (my $iIndex = 0; $iIndex < length($strString); $iIndex++)
+        {
+            my $cChar = substr($strString, $iIndex, 1);
+
+            # These characters are reproduced verbatim
+            if (($cChar ge 'A' && $cChar le 'Z') || ($cChar ge 'a' && $cChar le 'z') || ($cChar ge '0' && $cChar le '9') ||
+                $cChar eq '_' || $cChar eq '-' || $cChar eq '~' || $cChar eq '.')
+            {
+                $strEncodedString .= $cChar;
+            }
+            # Forward slash is encoded
+            elsif ($cChar eq '/')
+            {
+                $strEncodedString .= '%2F';
+            }
+            # All other characters are hex-encoded
+            else
+            {
+                $strEncodedString .= sprintf('%%%02X', ord($cChar));
+            }
+        }
+    }
+
+    return $strEncodedString;
+}
+
+push @EXPORT, qw(httpUriEncode);
 
 1;

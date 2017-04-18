@@ -54,20 +54,20 @@ sub run
         #
         # &log(WARN, "STOP OBJECT CREATE");
 
-        # my $strFile = '/dude-big.bin';
-        # my $strUploadId = $oS3->putMultiInit($strFile);
-        # &log(WARN, "UPLOAD ID: " . $strUploadId);
-        #
-        # my $strRandomFile = $self->testPath() . '/random1mb.bin';
-        # executeTest("dd if=/dev/urandom of=${strRandomFile} bs=5M count=1", {bSuppressStdErr => true});
-        # my $strRandom = fileStringRead($strRandomFile);
-        #
-        # for (my $iIndex = 1; $iIndex <= 3; $iIndex++)
-        # {
-        #     &log(WARN, "UPLOAD PART: " . $iIndex . ' - ' . $oS3->putMulti($strFile, $strUploadId, $iIndex, \$strRandom));
-        # }
-        #
-        # &log(WARN, "COMPLETE PART: " . $oS3->putMultiComplete($strFile, $strUploadId));
+        my $strFile = '/dude-big.bin';
+        my $strUploadId = $oS3->putMultiInit($strFile);
+        &log(WARN, "UPLOAD ID: " . $strUploadId);
+
+        my $strRandomFile = $self->testPath() . '/random1mb.bin';
+        executeTest("dd if=/dev/urandom of=${strRandomFile} bs=3k count=1", {bSuppressStdErr => true});
+        my $strRandom = fileStringRead($strRandomFile);
+
+        for (my $iIndex = 1; $iIndex <= 1; $iIndex++)
+        {
+            &log(WARN, "UPLOAD PART: " . $iIndex . ' - ' . $oS3->putMulti($strFile, $strUploadId, $iIndex, \$strRandom));
+        }
+
+        &log(WARN, "COMPLETE PART: " . $oS3->putMultiComplete($strFile, $strUploadId));
 
         $oS3->put('/dude1.txt', 'DUDEMAN1');
         $oS3->put('/dude2.txt', 'DUDEMAN2');
@@ -92,7 +92,7 @@ sub run
         }
 
         # ---
-        # $oS3->remove(\@stryFile);
+        $oS3->remove(\@stryFile);
     }
 }
 
