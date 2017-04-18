@@ -800,7 +800,7 @@ sub build
             if (!$self->{oFile}->exists($strPath))
             {
                 $self->{oFile}->pathCreate(
-                    $strPath, $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_MODE));
+                    $strPath, {strMode => $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_MODE)});
 
                 # Set ownership (??? this could be done better inside the file functions)
                 my $strUser = $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_USER);
@@ -854,7 +854,8 @@ sub build
                         # Create a path
                         if ($strSection eq &MANIFEST_SECTION_TARGET_PATH)
                         {
-                            $self->{oFile}->pathCreate($strDbPath, $oManifest->get($strSection, $strName, MANIFEST_SUBKEY_MODE));
+                            $self->{oFile}->pathCreate(
+                                $strDbPath, {strMode => $oManifest->get($strSection, $strName, MANIFEST_SUBKEY_MODE)});
                         }
                         # Else create a link
                         else

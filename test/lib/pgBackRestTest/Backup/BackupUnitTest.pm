@@ -137,7 +137,7 @@ sub run
         my $lTime = time();
 
         my $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
-        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strFullLabel}", undef, undef, true);
+        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strFullLabel}", {bCreateParent => true});
 
         my $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
 
@@ -147,7 +147,7 @@ sub run
         executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strFullLabel}"));
 
         $oFile->pathCreate(
-            PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, undef, true);
+            PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), {bCreateParent => true});
         fileStringWrite($oFile->pathGet(
             PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
                 "/${strFullLabel}.manifest.$oFile->{strCompressExtension}"));
@@ -169,7 +169,7 @@ sub run
 
         $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
         my $strDiffLabel = backupLabelFormat(BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
-        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strDiffLabel}", undef, undef, true);
+        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strDiffLabel}", {bCreateParent => true});
 
         my $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
@@ -179,7 +179,8 @@ sub run
         executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strDiffLabel}"));
 
         $oFile->pathCreate(
-            PATH_REPO_BACKUP . qw(/) .  PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), undef, true, true);
+            PATH_REPO_BACKUP . qw(/) .  PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime),
+            {bIgnoreExists => true, bCreateParent => true});
         fileStringWrite($oFile->pathGet(
             PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
                 "/${strDiffLabel}.manifest.$oFile->{strCompressExtension}"));

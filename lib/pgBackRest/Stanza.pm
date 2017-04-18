@@ -266,7 +266,7 @@ sub parentPathGet
     if (!fileExists($strParentPath))
     {
         # Create the cluster repo path
-        $oFile->pathCreate($strPathType, undef, true, true);
+        $oFile->pathCreate($strPathType, {bIgnoreExists => true, bCreateParent => true});
     }
 
     # Return from function and log return values if any

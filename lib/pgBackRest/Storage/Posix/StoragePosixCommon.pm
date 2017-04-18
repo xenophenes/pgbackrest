@@ -1089,7 +1089,7 @@ sub filePathCreate
         $strPath,
         $strMode,
         $bIgnoreExists,
-        $bCreateParents,
+        $bCreateParent,
         $bPathSync,
     ) =
         logDebugParam
@@ -1098,7 +1098,7 @@ sub filePathCreate
             {name => 'strPath', trace => true},
             {name => 'strMode', default => $strPathModeDefault, trace => true},
             {name => 'bIgnoreExists', default => false, trace => true},
-            {name => 'bCreateParents', default => false, trace => true},
+            {name => 'bCreateParent', default => false, trace => true},
             {name => 'bPathSync', default => false, trace => true},
         );
 
@@ -1107,12 +1107,12 @@ sub filePathCreate
 
     if (!fileExists($strParentPath))
     {
-        if (!$bCreateParents)
+        if (!$bCreateParent)
         {
             confess &log(ERROR, "unable to create ${strPath} because parent path does not exist", ERROR_PATH_CREATE);
         }
 
-        filePathCreate($strParentPath, $strMode, $bIgnoreExists, $bCreateParents, $bPathSync);
+        filePathCreate($strParentPath, $strMode, $bIgnoreExists, $bCreateParent, $bPathSync);
     }
 
     # Create the path

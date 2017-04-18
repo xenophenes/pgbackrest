@@ -78,7 +78,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = true, bPathSync = false, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -106,21 +106,21 @@ P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = false, hDataba
 P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = [TEST_PATH]/db-master/db/pg_config/postgresql.conf
 P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = <false>, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->processManifest(): bCompress = true, bHardLink = true, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = full
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, [undef], 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -358,7 +358,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = true, bPathSync = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -400,15 +400,15 @@ P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx 
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33001, pg_data/base/32768/33001, 65536, 6bf316f11d28c28914ea9be92c00de9bea6d9a6b, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33001, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000.32767, pg_data/base/32768/33000.32767, 32768, 21e2c7c1a326682c07053b7d6a5a40dbd49c2ec5, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000.32767, strOp = backupFile, strQueue = pg_data
 P00  DEBUG:     Protocol::LocalProcess->queueJob(): iHostConfigIdx = 1, rParam = ([TEST_PATH]/db-master/db/base/base/32768/33000, pg_data/base/32768/33000, 32768, 4a383e4fb8b5cd2a4e8fab91ef63dce48e532a2f, 1, 1, [MODIFICATION-TIME-1], 1, {iWalId => 65535, iWalOffset => 65535}), strKey = pg_data/base/32768/33000, strOp = backupFile, strQueue = pg_data
@@ -694,7 +694,7 @@ P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/d
 P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/db/base/pg_clog
 P00  DEBUG:     Storage::Storage->exists=>: bExists = false
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = <false>, strMode = 0700, strPathExp = [TEST_PATH]/db-master/db/base/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = <false>, bPathSync = <false>, strMode = 0700, strPathExp = [TEST_PATH]/db-master/db/base/pg_clog
 P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/db/base/pg_tblspc
 P00  DEBUG:     Storage::Storage->exists=>: bExists = true
 P00  DEBUG:     Storage::Storage->exists(): strPathExp = [TEST_PATH]/db-master/db/base/pg_stat
@@ -974,7 +974,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = true, bPathSync = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1013,25 +1013,25 @@ P00  DEBUG:     Manifest->build(): bOnline = false, bTablespace = true, hDatabas
 P00  DEBUG:     Storage::Storage->manifest(): strPathEpr = [TEST_PATH]/db-master/db/tablespace/ts1
 P00  DEBUG:     Storage::Storage->wait(): bWait = false
 P00  DEBUG:     Backup->process: create temp backup path [TEST_PATH]/db-master/repo/temp/db.tmp
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = false, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = <false>, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>
 P00  DEBUG:     Backup->processManifest(): bCompress = true, bHardLink = true, oBackupManifest = [object], oFileMaster = [object], strDbCopyPath = [TEST_PATH]/db-master/db/base, strDbMasterPath = [TEST_PATH]/db-master/db/base, strDbVersion = 9.4, strLsnStart = [undef], strType = incr
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = 1, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = db
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]/16384
 P00  DEBUG:     Storage::Storage->linkCreate(): bHard = false, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc/1, strSourcePathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
 P00  DEBUG:     Backup->processManifest: hardlink pg_data/base/32768/33001 to [BACKUP-FULL-2]
 P00  DEBUG:     Storage::Storage->linkCreate(): bHard = true, bPathCreate = true, bRelative = false, strDestinationPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768/33001, strSourcePathExp = <REPO:BACKUP>/[BACKUP-FULL-2]/pg_data/base/32768/33001
@@ -1253,7 +1253,7 @@ P00  DEBUG:     Common::Lock::lockAcquire=>: bResult = true
 P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx = [undef], iRemoteIdx = <1>, strBackRestBin = [undef], strCommand = <backup>, strRemoteType = none
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Storage::Storage->new(): oProtocol = [object], strDefaultFileMode = <0640>, strDefaultPathMode = <0750>, strRepoPath = [TEST_PATH]/db-master/repo, strStanza = db
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = true, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = true, bIgnoreExists = true, bPathSync = true, strMode = <0750>, strPathExp = <REPO:BACKUP>/backup.history
 P00  DEBUG:     BackupInfo->new(): bRequired = <true>, bValidate = <true>, strBackupClusterPath = [TEST_PATH]/db-master/repo/backup/db
 P00  DEBUG:     BackupInfo->reconstruct(): bRequired = <true>, bSave = <true>, iCatalogVersion = [undef], iControlVersion = [undef], strDbVersion = [undef], ullDbSysId = [undef]
 P00  DEBUG:     BackupCommon::backupRegExpGet(): bAnchor = <true>, bDifferential = true, bFull = true, bIncremental = true
@@ -1319,22 +1319,22 @@ P00  DEBUG:     Protocol::Protocol::protocolGet(): bCache = <true>, iProcessIdx 
 P00  DEBUG:     Protocol::Protocol::protocolGet: create local protocol
 P00  DEBUG:     Protocol::LocalProcess->new(): bConfessError = <true>, iSelectTimeout = <915>, strBackRestBin = <[BACKREST-BIN]>, strHostType = db
 P00  DEBUG:     Protocol::LocalProcess->hostAdd(): iHostConfigIdx = 1, iProcessMax = 1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]/16384
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2/[TS_PATH-1]
-P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParents = <false>, bIgnoreExists = true, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2/[TS_PATH-1]/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/base/32768
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/global
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_clog
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_stat
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/1/[TS_PATH-1]/16384
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2/[TS_PATH-1]
+P00  DEBUG:     Storage::Storage->pathCreate(): bCreateParent = <false>, bIgnoreExists = true, bPathSync = <false>, strMode = <0750>, strPathExp = <REPO:BACKUP:TMP>/pg_tblspc/2/[TS_PATH-1]/32768
 P00  DEBUG:     Storage::Storage->linkCreate(): bHard = false, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc/1, strSourcePathExp = <REPO:BACKUP:TMP>/pg_tblspc/1
 P00  DEBUG:     Storage::Storage->linkCreate(): bHard = false, bPathCreate = <true>, bRelative = true, strDestinationPathExp = <REPO:BACKUP:TMP>/pg_data/pg_tblspc/2, strSourcePathExp = <REPO:BACKUP:TMP>/pg_tblspc/2
 P00  DEBUG:     Backup->processManifest: hardlink pg_data/base/32768/33001 to [BACKUP-FULL-2]

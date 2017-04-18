@@ -503,15 +503,17 @@ sub pathCreate
         $strPathExp,
         $strMode,
         $bIgnoreExists,
-        $bCreateParents
+        $bCreateParent,
+        $bPathSync,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->pathCreate', \@_,
             {name => 'strPathExp'},
-            {name => 'strMode', default => '0750'},
-            {name => 'bIgnoreExists', default => false},
-            {name => 'bCreateParents', default => false}
+            {name => 'strMode', optional => true, default => '0750'},
+            {name => 'bIgnoreExists', optional => true, default => false},
+            {name => 'bCreateParent', optional => true, default => false},
+            {name => 'bPathSync', optional => true, default => false},
         );
 
     # Set operation variables
@@ -520,12 +522,15 @@ sub pathCreate
     # Run remotely
     if ($self->isRemote())
     {
-        $self->{oProtocol}->cmdExecute(OP_FILE_PATH_CREATE, [$strPath, $strMode, $bIgnoreExists, $bCreateParents]);
+        $self->{oProtocol}->cmdExecute(
+            OP_FILE_PATH_CREATE,
+            [$strPath,
+                {strMode => $strMode, bIgnoreExists => $bIgnoreExists, bCreateParent => $bCreateParent, bPathSync => $bPathSync}]);
     }
     # Run locally
     else
     {
-        filePathCreate($strPath, $strMode, $bIgnoreExists, $bCreateParents);
+        filePathCreate($strPath, $strMode, $bIgnoreExists, $bCreateParent, $bPathSync);
     }
 
     # Return from function and log return values if any

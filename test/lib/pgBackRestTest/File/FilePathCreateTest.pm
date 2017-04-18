@@ -65,7 +65,7 @@ sub run
 
         eval
         {
-            $oFile->pathCreate(coalesce($strPathType, '') . $strPath, $strMode);
+            $oFile->pathCreate(coalesce($strPathType, '') . $strPath, {strMode => $strMode});
             return true;
         }
         # Check for errors

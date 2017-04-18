@@ -288,7 +288,7 @@ sub processManifest
         # Create paths
         foreach my $strPath ($oBackupManifest->keys(MANIFEST_SECTION_TARGET_PATH))
         {
-            $oFileMaster->pathCreate(PATH_REPO_BACKUP_TMP . "/${strPath}", undef, true);
+            $oFileMaster->pathCreate(PATH_REPO_BACKUP_TMP . "/${strPath}", {bIgnoreExists => true});
         }
 
         if (optionGet(OPTION_REPO_LINK))
@@ -473,7 +473,9 @@ sub process
     my $bHardLink = optionGet(OPTION_HARDLINK);
 
     # Create the cluster backup and history path
-    $oFileLocal->pathCreate(PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY, undef, true, true, optionGet(OPTION_REPO_SYNC));
+    $oFileLocal->pathCreate(
+        PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY,
+        {bIgnoreExists => true, bCreateParent => true, bPathSync => optionGet(OPTION_REPO_SYNC)});
 
     # Load the backup.info
     my $oBackupInfo = new pgBackRest::BackupInfo($oFileLocal->pathGet(PATH_REPO_BACKUP));
@@ -817,14 +819,14 @@ sub process
 
             remove_tree($oFileLocal->pathGet(PATH_REPO_BACKUP_TMP))
                 or confess &log(ERROR, "unable to delete tmp path: ${strBackupTmpPath}");
-            $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, undef, false, true);
+            $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, {bCreateParent => true});
         }
     }
     # Else create the backup tmp path
     else
     {
         logDebugMisc($strOperation, "create temp backup path ${strBackupTmpPath}");
-        $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, undef, false, true);
+        $oFileLocal->pathCreate(PATH_REPO_BACKUP_TMP, {bCreateParent => true});
     }
 
     # Save the backup manifest
