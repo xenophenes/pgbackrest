@@ -56,13 +56,13 @@ sub archiveCheck
 
     do
     {
-        $bFound = $oFile->exists(PATH_BACKUP_ARCHIVE, $strArchiveCheck);
+        $bFound = $oFile->exists(PATH_BACKUP_ARCHIVE . "/${strArchiveCheck}");
     }
     while (!$bFound && waitMore($oWait));
 
     if (!$bFound)
     {
-        confess 'unable to find ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE, $strArchiveCheck);
+        confess 'unable to find ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/${strArchiveCheck}");
     }
 
     if (defined($strSpoolPath))
@@ -205,7 +205,7 @@ sub run
                     &log(INFO, '        test db version mismatch error');
 
                     $oHostBackup->infoMunge(
-                        $oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+                        $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                         {&INFO_ARCHIVE_SECTION_DB => {&INFO_ARCHIVE_KEY_DB_VERSION => '8.0'}});
 
                     $oHostDbMaster->executeSimple(
@@ -217,7 +217,7 @@ sub run
                     &log(INFO, '        test db system-id mismatch error');
 
                     $oHostBackup->infoMunge(
-                        $oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+                        $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                         {&INFO_ARCHIVE_SECTION_DB => {&INFO_BACKUP_KEY_SYSTEM_ID => 5000900090001855000}});
 
                     $oHostDbMaster->executeSimple(
@@ -227,7 +227,7 @@ sub run
                     fileRemove($oHostDbMaster->spoolPath() . '/archive/' . $self->stanza() . "/out/${strSourceFile}.error") if $bArchiveAsync;;
 
                     # Restore the file to its original condition
-                    $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+                    $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
 
                     # Fail because the process was killed
                     if ($iBackup == 1 && !$bCompress)
@@ -319,7 +319,7 @@ sub run
 
         #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
-            sub {$oFile->list(PATH_BACKUP_ARCHIVE, PG_VERSION_94 . '-1/0000000100000001')},
+            sub {$oFile->list(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . '-1/0000000100000001')},
             '(' . join(', ', @stryExpectedWAL) . ')',
             'all WAL in archive', {iWaitSeconds => 5});
 
@@ -327,7 +327,7 @@ sub run
         if (defined($self->expect()))
         {
             sleep(1); # Ugly hack to ensure repo is stable before checking files - replace in new tests
-            $self->expect()->supplementalAdd($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+            $self->expect()->supplementalAdd($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         }
     }
     }

@@ -65,7 +65,7 @@ sub run
 
         eval
         {
-            $bRemoved = $oFile->remove(PATH_BACKUP_ABSOLUTE, $strFile, $bTemp, $bIgnoreMissing);
+            $bRemoved = $oFile->remove($strFile, $bTemp, $bIgnoreMissing);
             return true;
         }
         or do

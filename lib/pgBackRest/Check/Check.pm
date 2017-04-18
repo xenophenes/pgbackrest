@@ -146,7 +146,7 @@ sub process
         {
             &log(INFO,
             "WAL segment ${strWalSegment} successfully stored in the archive at '" .
-            $oFile->pathGet(PATH_BACKUP_ARCHIVE, "$strArchiveId/${strArchiveFile}") . "'");
+            $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/$strArchiveId/${strArchiveFile}") . "'");
         }
         else
         {

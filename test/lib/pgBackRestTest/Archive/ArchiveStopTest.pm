@@ -74,7 +74,7 @@ sub run
         if ($iError == 0)
         {
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+                $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                 {&INFO_ARCHIVE_SECTION_DB => {&INFO_ARCHIVE_KEY_DB_VERSION => '8.0'}});
         }
 
@@ -91,7 +91,7 @@ sub run
         # Fix the database version
         if ($iError == 0)
         {
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         }
 
         #---------------------------------------------------------------------------------------------------------------------------

@@ -102,7 +102,7 @@ sub get
         $oFile, undef, undef, walIsSegment($strSourceArchive) ? $strSourceArchive : undef);
 
     if (!defined($strArchiveFile) && !walIsSegment($strSourceArchive) &&
-        $oFile->exists(PATH_BACKUP_ARCHIVE, "${strArchiveId}/${strSourceArchive}"))
+        $oFile->exists(PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strSourceArchive}"))
     {
         $strArchiveFile = $strSourceArchive;
     }
@@ -125,10 +125,11 @@ sub get
         my $bSourceCompressed = $strArchiveFile =~ "^.*\.$oFile->{strCompressExtension}\$" ? true : false;
 
         # Copy the archive file to the requested location
-        $oFile->copy(PATH_BACKUP_ARCHIVE, "${strArchiveId}/${strArchiveFile}",  # Source file
-                     PATH_DB_ABSOLUTE, $strDestinationFile,                     # Destination file
-                     $bSourceCompressed,                                        # Source compression based on detection
-                     false);                                                    # Destination is not compressed
+        $oFile->copy(
+            PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strArchiveFile}", # Source file
+            $strDestinationFile,                                        # Destination file
+            $bSourceCompressed,                                         # Source compression based on detection
+            false);                                                     # Destination is not compressed
     }
 
     # Return from function and log return values if any

@@ -62,7 +62,7 @@ sub run
             }
         }
 
-        my $strFunction = sub {$oFile->owner(PATH_BACKUP_ABSOLUTE, $strFile, $strUser, $strGroup)};
+        my $strFunction = sub {$oFile->owner($strFile, $strUser, $strGroup)};
 
         # Remote operation not allowed
         if ($bRemote)

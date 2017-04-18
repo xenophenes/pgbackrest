@@ -220,15 +220,17 @@ sub backupLabel
     # already a wait after the manifest is built but it's still possible if the remote and local systems don't have synchronized
     # clocks.  In practice this is most useful for making offline testing faster since it allows the wait after manifest build to
     # be skipped by dealing with any backup label collisions here.
-    if (fileList($oFile->pathGet(PATH_BACKUP_CLUSTER),
-                 {strExpression =>
-                    ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
-                    ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)$')}) ||
-        fileList($oFile->pathGet(PATH_BACKUP_CLUSTER, PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTimestampStop)),
-                 {strExpression =>
-                    ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
-                    ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)\.manifest\.' . $oFile->{strCompressExtension}),
-                    bIgnoreMissing => true}))
+    if (fileList(
+        $oFile->pathGet(PATH_BACKUP_CLUSTER),
+        {strExpression =>
+            ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
+            ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)$')}) ||
+        fileList(
+            $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . PATH_BACKUP_HISTORY . qw{/} . timestampFormat('%4d', $lTimestampStop)),
+            {strExpression =>
+                ($strType eq BACKUP_TYPE_FULL ? '^' : '_') . timestampFileFormat(undef, $lTimestampStop) .
+                ($strType eq BACKUP_TYPE_FULL ? 'F' : '(D|I)\.manifest\.' . $oFile->{strCompressExtension}),
+                bIgnoreMissing => true}))
     {
         waitRemainder();
         $strBackupLabel = backupLabelFormat($strType, $strBackupLabelLast, time());

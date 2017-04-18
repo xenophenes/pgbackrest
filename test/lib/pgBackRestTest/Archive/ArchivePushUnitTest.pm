@@ -20,7 +20,7 @@ use pgBackRest::Archive::ArchivePush;
 use pgBackRest::Archive::ArchivePushAsync;
 use pgBackRest::Archive::ArchivePushFile;
 use pgBackRest::Common::Exception;
-use pgBackRest::Common::Lock    ;
+use pgBackRest::Common::Lock;
 use pgBackRest::Common::Log;
 use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
@@ -527,11 +527,11 @@ sub run
             "${strHistoryFile}, ${strBackupFile} pushed");
 
         $self->testResult(
-            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE, "$self->{strArchiveId}/${strHistoryFile}")}, true,
+            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE . "/$self->{strArchiveId}/${strHistoryFile}")}, true,
             "${strHistoryFile} in archive");
 
         $self->testResult(
-            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE, "$self->{strArchiveId}/${strBackupFile}")}, true,
+            sub {$self->{oFile}->exists(PATH_BACKUP_ARCHIVE . "/$self->{strArchiveId}/${strBackupFile}")}, true,
             "${strBackupFile} in archive");
 
         # Remove history and backup files

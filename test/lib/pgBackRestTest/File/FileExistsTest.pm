@@ -53,7 +53,7 @@ sub run
         # Execute in eval in case of error
         eval
         {
-            if ($oFile->exists(PATH_BACKUP_ABSOLUTE, $strFile) != $bExists)
+            if ($oFile->exists($strFile) != $bExists)
             {
                 confess "bExists is set to ${bExists}, but exists() returned " . !$bExists;
             }

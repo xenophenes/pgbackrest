@@ -144,11 +144,10 @@ sub run
         eval
         {
             ($bReturn, $strCopyHash, $iCopySize) =
-                $oFile->copy($strSourcePathType, $strSourceFile,
-                             $strDestinationPathType, $strDestinationFile,
-                             $bSourceCompressed, $bDestinationCompress,
-                             $bSourceIgnoreMissing, undef, '0770', false, undef, undef,
-                             $bChecksumAppend);
+                $oFile->copy(
+                    "${strSourcePathType}/${strSourceFile}", "${strDestinationPathType}/${strDestinationFile}",
+                    $bSourceCompressed, $bDestinationCompress, $bSourceIgnoreMissing, undef, '0770', false, undef, undef,
+                    $bChecksumAppend);
 
             return true;
         }
@@ -218,7 +217,7 @@ sub run
                 or die "could not decompress ${strDestinationFile}";
         }
 
-        my ($strDestinationHash, $iDestinationSize) = $oFile->hashSize(PATH_ABSOLUTE, $strDestinationTest);
+        my ($strDestinationHash, $iDestinationSize) = $oFile->hashSize($strDestinationTest);
 
         if ($strSourceHash ne $strDestinationHash || $strSourceHash ne $strCopyHash)
         {

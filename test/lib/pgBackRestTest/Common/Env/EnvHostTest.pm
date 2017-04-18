@@ -184,8 +184,8 @@ sub archiveGenerate
 
     my $strSourceFile = "${strXlogPath}/${strArchiveFile}";
 
-    $oFile->copy(PATH_DB_ABSOLUTE, $strArchiveTestFile, # Source file
-                 PATH_DB_ABSOLUTE, $strSourceFile,      # Destination file
+    $oFile->copy($strArchiveTestFile,                   # Source file
+                 $strSourceFile,                        # Destination file
                  false,                                 # Source is not compressed
                  false);                                # Destination is not compressed
 
@@ -225,8 +225,8 @@ sub walGenerate
     my $strWalFile = "${strWalPath}/${strWalSegment}" . (defined($bPartial) && $bPartial ? '.partial' : '');
     my $strArchiveTestFile = $self->dataPath() . "/backup.wal${iSourceNo}_${strPgVersion}.bin";
 
-    $oFile->copy(PATH_DB_ABSOLUTE, $strArchiveTestFile, # Source file
-                 PATH_DB_ABSOLUTE, $strWalFile,         # Destination file
+    $oFile->copy($strArchiveTestFile,                   # Source file
+                 $strWalFile,                           # Destination file
                  false,                                 # Source is not compressed
                  false);                                # Destination is not compressed
 

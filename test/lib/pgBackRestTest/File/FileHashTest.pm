@@ -57,7 +57,7 @@ sub run
 
             if ($bCompressed && !$bRemote)
             {
-                $oFile->compress(PATH_BACKUP_ABSOLUTE, $strFile);
+                $oFile->compress($strFile);
                 $strFile = $strFile . '.gz';
             }
         }
@@ -69,7 +69,7 @@ sub run
 
         eval
         {
-            ($strHash, $iSize) = $oFile->hashSize(PATH_BACKUP_ABSOLUTE, $strFile, $bCompressed);
+            ($strHash, $iSize) = $oFile->hashSize($strFile, $bCompressed);
             return true;
         }
         or do

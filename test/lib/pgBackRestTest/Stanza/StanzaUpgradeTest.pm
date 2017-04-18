@@ -79,7 +79,7 @@ sub run
 
         # Fail upgrade when backup.info missing
         #--------------------------------------------------------------------------------------------------------------------------
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER, FILE_BACKUP_INFO));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
         $oHostBackup->stanzaUpgrade('fail on stanza not initialized since backup.info is missing',
             {iExpectedExitStatus => ERROR_FILE_MISSING, strOptionalParam => '--no-' . OPTION_ONLINE});
 
@@ -111,20 +111,20 @@ sub run
         # Push a WAL segment so have a valid file in the latest DB archive dir only
         $oHostDbMaster->archivePush($strXlogPath, $strArchiveTestFile . WAL_VERSION_94 . '.bin', 1);
         $self->testResult(
-            sub {$oFile->list(PATH_BACKUP_ARCHIVE, PG_VERSION_94 . '-2/0000000100000001')},
+            sub {$oFile->list(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . '-2/0000000100000001')},
             "000000010000000100000001-1e34fa1c833090d94b9bb14f2a8d3153dca6ea27.$oFile->{strCompressExtension}",
             'check that WAL is in the archive at -2');
 
         # Create a DB history mismatch between the info files
         #--------------------------------------------------------------------------------------------------------------------------
         # Remove the archive info file and force reconstruction
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         $oHostBackup->stanzaCreate('use force to recreate the stanza producing mismatched info history but same current db-id',
             {strOptionalParam => '--no-' . OPTION_ONLINE . ' --' . OPTION_FORCE});
 
         # Create a DB-ID mismatch between the info files
         #--------------------------------------------------------------------------------------------------------------------------
-        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER, FILE_BACKUP_INFO));
+        $oHostBackup->executeSimple('rm ' . $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
         $oHostBackup->stanzaCreate('use force to recreate the stanza producing mismatched db-id',
             {strOptionalParam => '--no-' . OPTION_ONLINE . ' --' . OPTION_FORCE});
 

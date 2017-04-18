@@ -28,23 +28,17 @@ use pgBackRest::Version;
 ####################################################################################################################################
 # PATH_GET constants
 ####################################################################################################################################
-use constant PATH_ABSOLUTE                                          => 'absolute';
-    push @EXPORT, qw(PATH_ABSOLUTE);
-use constant PATH_DB                                                => 'db';
+use constant PATH_DB                                                => '<db>';
     push @EXPORT, qw(PATH_DB);
-use constant PATH_DB_ABSOLUTE                                       => 'db:absolute';
-    push @EXPORT, qw(PATH_DB_ABSOLUTE);
-use constant PATH_BACKUP                                            => 'backup';
+use constant PATH_BACKUP                                            => '<repo>';
     push @EXPORT, qw(PATH_BACKUP);
-use constant PATH_BACKUP_ABSOLUTE                                   => 'backup:absolute';
-    push @EXPORT, qw(PATH_BACKUP_ABSOLUTE);
-use constant PATH_BACKUP_CLUSTER                                    => 'backup:cluster';
+use constant PATH_BACKUP_CLUSTER                                    => '<repo:cluster>';
     push @EXPORT, qw(PATH_BACKUP_CLUSTER);
-use constant PATH_BACKUP_TMP                                        => 'backup:tmp';
+use constant PATH_BACKUP_TMP                                        => '<repo:tmp>';
     push @EXPORT, qw(PATH_BACKUP_TMP);
-use constant PATH_BACKUP_ARCHIVE                                    => 'backup:archive';
+use constant PATH_BACKUP_ARCHIVE                                    => '<repo:archive>';
     push @EXPORT, qw(PATH_BACKUP_ARCHIVE);
-use constant PATH_BACKUP_ARCHIVE_OUT                                => 'backup:archive:out';
+use constant PATH_BACKUP_ARCHIVE_OUT                                => '<spool:archive:out>';
     push @EXPORT, qw(PATH_BACKUP_ARCHIVE_OUT);
 
 ####################################################################################################################################
@@ -54,8 +48,6 @@ use constant PIPE_STDIN                                             => '<STDIN>'
     push @EXPORT, qw(PIPE_STDIN);
 use constant PIPE_STDOUT                                            => '<STDOUT>';
     push @EXPORT, qw(PIPE_STDOUT);
-use constant PIPE_STDERR                                            => '<STDERR>';
-    push @EXPORT, qw(PIPE_STDERR);
 
 ####################################################################################################################################
 # new
@@ -99,56 +91,6 @@ sub new
 }
 
 ####################################################################################################################################
-# pathTypeGet
-####################################################################################################################################
-sub pathTypeGet
-{
-    my $self = shift;
-
-    # Assign function parameters, defaults, and log debug info
-    my
-    (
-        $strOperation,
-        $strType
-    ) =
-        logDebugParam
-    (
-        __PACKAGE__ . '->pathTypeGet', \@_,
-        {name => 'strType', trace => true}
-    );
-
-    my $strPath;
-
-    # If absolute type
-    if ($strType eq PATH_ABSOLUTE)
-    {
-        $strPath = PATH_ABSOLUTE;
-    }
-    # If db type
-    elsif ($strType =~ /^db(\:.*){0,1}/)
-    {
-        $strPath = PATH_DB;
-    }
-    # Else if backup type
-    elsif ($strType =~ /^backup(\:.*){0,1}/)
-    {
-        $strPath = PATH_BACKUP;
-    }
-    # else error when path type not recognized
-    else
-    {
-        confess &log(ASSERT, "no known path types in '${strType}'");
-    }
-
-    # Return from function and log return values if any
-    return logDebugReturn
-    (
-        $strOperation,
-        {name => 'strPath', value => $strPath, trace => true}
-    );
-}
-
-####################################################################################################################################
 # pathGet
 ####################################################################################################################################
 sub pathGet
@@ -159,124 +101,147 @@ sub pathGet
     my
     (
         $strOperation,
-        $strType,                                   # Base type of the path to get (PATH_DB_ABSOLUTE, PATH_BACKUP_TMP, etc)
-        $strFile,                                   # File to append to the base path (can include a path as well)
-        $bTemp                                      # Return the temp file for this path type - only some types have temp files
+        $strPathExp,                                               # File that that needs to be translated to a path
+        $bTemp,                                                     # Return the temp file name
     ) =
         logDebugParam
     (
         __PACKAGE__ . '->pathGet', \@_,
-        {name => 'strType', trace => true},
-        {name => 'strFile', required => false, trace => true},
-        {name => 'bTemp', default => false, trace => true}
+        {name => 'strPathExp', trace => true},
+        {name => 'bTemp', optional => true, default => false, trace => true},
     );
 
     # Path to be returned
     my $strPath;
 
     # Is this an absolute path type?
-    my $bAbsolute = $strType =~ /.*absolute.*/;
+    my $strType;
+    my $strFile;
+    my $bAbsolute;
+
+    if (index($strPathExp, qw(/)) == 0)
+    {
+        $bAbsolute = true;
+        $strFile = $strPathExp;
+    }
+    else
+    {
+        $bAbsolute = false;
+
+        if (index($strPathExp, qw(<)) == 0)
+        {
+            my $iPos = index($strPathExp, qw(>));
+
+            if ($iPos == -1)
+            {
+                confess &log(ASSERT, "found < but not > in '${strPathExp}'");
+            }
+
+            $strType = substr($strPathExp, 0, $iPos + 1);
+
+            if ($iPos < length($strPathExp) - 1)
+            {
+                $strFile = substr($strPathExp, $iPos + 1);
+            }
+        }
+        else
+        {
+            confess &log(ASSERT, "relative files not supported");
+        }
+    }
 
     # Make sure a temp file is valid for this type and file
     if ($bTemp)
     {
         # Only allow temp files for PATH_BACKUP_ARCHIVE, PATH_BACKUP_ARCHIVE_OUT, PATH_BACKUP_TMP and any absolute path
-        if (!($strType eq PATH_BACKUP_ARCHIVE || $strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_TMP || $bAbsolute))
+        if (!($bAbsolute || $strType eq PATH_BACKUP_ARCHIVE || $strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_TMP))
         {
-            confess &log(ASSERT, "temp file not supported for path type '${strType}'");
+            confess &log(ASSERT, "temp file not supported for path type ${strType}");
         }
 
         # The file must be defined
         if (!defined($strFile))
         {
-            confess &log(ASSERT, 'strFile must be defined when temp file specified');
+            confess &log(ASSERT, "file part must be defined when temp file specified for path type ${strType}");
         }
     }
 
-    # Get absolute path
-    if ($bAbsolute)
+    if (!$bAbsolute)
     {
-        # File must defined when the path is absolute since in effect there is no path
-        if (!defined($strFile))
+        # Get backup path
+        if ($strType eq PATH_BACKUP)
         {
-            confess &log(ASSERT, 'strFile must be defined for absolute path');
-        }
+            $strPath = $self->{strRepoPath};
 
-        # Make sure that the file starts with /, otherwise it will actually be relative
-        if ($strFile !~ /^\/.*/)
-        {
-            confess &log(ASSERT, "absolute path ${strType}:${strFile} must start with /");
+            # !!! confess "strPathExp $strPathExp, strType = $strType, strFile $strFile";
         }
-    }
-    # Else get backup path
-    elsif ($strType eq PATH_BACKUP)
-    {
-        $strPath = $self->{strRepoPath};
-    }
-    # Else process path types that require a stanza
-    else
-    {
-        # All paths in this section will be in the repo path
-        $strPath = $self->{strRepoPath};
-
-        # Make sure the stanza is defined since remaining path types require it
-        if (!defined($self->{strStanza}))
+        # Else process path types that require a stanza
+        else
         {
-            confess &log(ASSERT, 'strStanza not defined');
-        }
+            # All paths in this section will be in the repo path
+            $strPath = $self->{strRepoPath};
 
-        # Get the backup tmp path
-        if ($strType eq PATH_BACKUP_TMP)
-        {
-            $strPath .= "/temp/$self->{strStanza}.tmp";
-        }
-        # Else get archive paths
-        elsif ($strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_ARCHIVE)
-        {
-            $strPath .= "/archive/$self->{strStanza}";
-
-            # Get archive path
-            if ($strType eq PATH_BACKUP_ARCHIVE)
+            # Make sure the stanza is defined since remaining path types require it
+            if (!defined($self->{strStanza}))
             {
-                # If file is not defined nothing further to do
-                if (defined($strFile))
+                confess &log(ASSERT, 'strStanza not defined');
+            }
+
+            # Get the backup tmp path
+            if ($strType eq PATH_BACKUP_TMP)
+            {
+                $strPath .= "/temp/$self->{strStanza}.tmp";
+            }
+            # Else get archive paths
+            elsif ($strType eq PATH_BACKUP_ARCHIVE_OUT || $strType eq PATH_BACKUP_ARCHIVE)
+            {
+                $strPath .= "/archive/$self->{strStanza}";
+
+                # Get archive path
+                if ($strType eq PATH_BACKUP_ARCHIVE)
                 {
-                    my $strArchiveId = (split('/', $strFile))[0];
-
-                    # If file is defined after archive id path is split out
-                    if (defined((split('/', $strFile))[1]))
+                    # If file is not defined nothing further to do
+                    if (defined($strFile))
                     {
-                        $strPath .= "/${strArchiveId}";
-                        $strFile = (split('/', $strFile))[1];
+                        my $strArchiveId = (split('/', $strFile))[1];
 
-                        # If this is a WAL segment then put it into a subdirectory
-                        if (substr(basename($strFile), 0, 24) =~ /^([0-F]){24}$/)
+                        # If file is defined after archive id path is split out
+                        if (defined((split('/', $strFile))[2]))
                         {
-                            $strPath .= '/' . substr($strFile, 0, 16);
+                            $strPath .= "/${strArchiveId}";
+                            $strFile = (split('/', $strFile))[2];
+
+                            # If this is a WAL segment then put it into a subdirectory
+                            if (substr(basename($strFile), 0, 24) =~ /^([0-F]){24}$/)
+                            {
+                                $strPath .= '/' . substr($strFile, 0, 16);
+                            }
+
+                            $strFile = "/${strFile}";
                         }
                     }
                 }
+                # Else get archive out path
+                else
+                {
+                    $strPath .= '/out';
+                }
             }
-            # Else get archive out path
+            # Else get backup cluster
+            elsif ($strType eq PATH_BACKUP_CLUSTER)
+            {
+                $strPath .= "/backup/$self->{strStanza}";
+            }
+            # Else error when path type not recognized
             else
             {
-                $strPath .= '/out';
+                confess &log(ASSERT, "invalid path type ${strType}");
             }
-        }
-        # Else get backup cluster
-        elsif ($strType eq PATH_BACKUP_CLUSTER)
-        {
-            $strPath .= "/backup/$self->{strStanza}";
-        }
-        # Else error when path type not recognized
-        else
-        {
-            confess &log(ASSERT, "no known path types in '${strType}'");
         }
     }
 
     # Combine path and file
-    $strPath .= (defined($strFile) ? (defined($strPath) ? '/' : '') . $strFile : '');
+    $strPath .= (defined($strFile) ? $strFile : '');
 
     # Add temp extension
     $strPath .= $bTemp ? '.' . BACKREST_EXE . '.tmp' : '';
@@ -302,21 +267,17 @@ sub isRemote
     my
     (
         $strOperation,
-        $strPathType
     ) =
         logDebugParam
     (
         __PACKAGE__ . '->isRemote', \@_,
-        {name => 'strPathType', trace => true}
     );
-
-    my $bRemote = $self->{oProtocol}->isRemote() && $self->{oProtocol}->remoteTypeTest($self->pathTypeGet($strPathType));
 
     # Return from function and log return values if any
     return logDebugReturn
     (
         $strOperation,
-        {name => 'bRemote', value => $bRemote, trace => true}
+        {name => 'bRemote', value => $self->{oProtocol}->isRemote(), trace => true}
     );
 }
 
@@ -331,10 +292,8 @@ sub linkCreate
     my
     (
         $strOperation,
-        $strSourcePathType,
-        $strSourceFile,
-        $strDestinationPathType,
-        $strDestinationFile,
+        $strSourcePathExp,
+        $strDestinationPathExp,
         $bHard,
         $bRelative,
         $bPathCreate
@@ -342,27 +301,25 @@ sub linkCreate
         logDebugParam
         (
             __PACKAGE__ . '->linkCreate', \@_,
-            {name => 'strSourcePathType'},
-            {name => 'strSourceFile'},
-            {name => 'strDestinationPathType'},
-            {name => 'strDestinationFile'},
+            {name => 'strSourcePathExp'},
+            {name => 'strDestinationPathExp'},
             {name => 'bHard', default => false},
             {name => 'bRelative', default => false},
             {name => 'bPathCreate', default => true}
         );
 
     # Source and destination path types must be the same (e.g. both PATH_DB or both PATH_BACKUP, etc.)
-    if ($self->pathTypeGet($strSourcePathType) ne $self->pathTypeGet($strDestinationPathType))
-    {
-        confess &log(ASSERT, 'path types must be equal in link create');
-    }
+    # if ($self->pathTypeGet($strSourcePathType) ne $self->pathTypeGet($strDestinationPathType))
+    # {
+    #     confess &log(ASSERT, 'path types must be equal in link create');
+    # }
 
     # Generate source and destination files
-    my $strSource = $self->pathGet($strSourcePathType, $strSourceFile);
-    my $strDestination = $self->pathGet($strDestinationPathType, $strDestinationFile);
+    my $strSource = $self->pathGet($strSourcePathExp);
+    my $strDestination = $self->pathGet($strDestinationPathExp);
 
     # Run remotely
-    if ($self->isRemote($strSourcePathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
@@ -371,7 +328,7 @@ sub linkCreate
     {
         # If the destination path is backup and does not exist, create it
         # ??? This should only happen when the link create errors
-        if ($bPathCreate && $self->pathTypeGet($strDestinationPathType) eq PATH_BACKUP)
+        if ($bPathCreate)
         {
             filePathCreate(dirname($strDestination), undef, true);
         }
@@ -453,43 +410,33 @@ sub move
     my
     (
         $strOperation,
-        $strSourcePathType,
-        $strSourceFile,
-        $strDestinationPathType,
-        $strDestinationFile,
+        $strSourcePathExp,
+        $strDestinationPathExp,
         $bDestinationPathCreate,
         $bPathSync,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->move', \@_,
-            {name => 'strSourcePathType'},
-            {name => 'strSourceFile', required => false},
-            {name => 'strDestinationPathType'},
-            {name => 'strDestinationFile'},
+            {name => 'strSourcePathExp'},
+            {name => 'strDestinationPathExp'},
             {name => 'bDestinationPathCreate', default => false},
             {name => 'bPathSync', default => false},
         );
 
-    # Source and destination path types must be the same
-    if ($self->pathTypeGet($strSourcePathType) ne $self->pathTypeGet($strSourcePathType))
-    {
-        confess &log(ASSERT, 'source and destination path types must be equal');
-    }
-
     # Set operation variables
-    my $strPathOpSource = $self->pathGet($strSourcePathType, $strSourceFile);
-    my $strPathOpDestination = $self->pathGet($strDestinationPathType, $strDestinationFile);
+    my $strPathSource = $self->pathGet($strSourcePathExp);
+    my $strPathDestination = $self->pathGet($strDestinationPathExp);
 
     # Run remotely
-    if ($self->isRemote($strSourcePathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
     # Run locally
     else
     {
-        fileMove($strPathOpSource, $strPathOpDestination, $bDestinationPathCreate, $bPathSync);
+        fileMove($strPathSource, $strPathDestination, $bDestinationPathCreate, $bPathSync);
     }
 
     # Return from function and log return values if any
@@ -510,23 +457,21 @@ sub compress
     my
     (
         $strOperation,
-        $strPathType,
-        $strFile,
+        $strPathExp,
         $bRemoveSource
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->compress', \@_,
-            {name => 'strPathType'},
-            {name => 'strFile'},
+            {name => 'strPathExp'},
             {name => 'bRemoveSource', default => true}
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strFile);
+    my $strFile = $self->pathGet($strPathExp);
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
@@ -534,12 +479,12 @@ sub compress
     else
     {
         # Use copy to compress the file
-        $self->copy($strPathType, $strFile, $strPathType, "${strFile}.gz", false, true);
+        $self->copy($strFile, "${strFile}.gz", false, true);
 
         # Remove the old file
         if ($bRemoveSource)
         {
-            fileRemove($strPathOp);
+            fileRemove($strFile);
         }
     }
 
@@ -563,8 +508,7 @@ sub pathCreate
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath,
+        $strPathExp,
         $strMode,
         $bIgnoreExists,
         $bCreateParents
@@ -572,25 +516,24 @@ sub pathCreate
         logDebugParam
         (
             __PACKAGE__ . '->pathCreate', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath', required => false},
+            {name => 'strPathExp'},
             {name => 'strMode', default => '0750'},
             {name => 'bIgnoreExists', default => false},
             {name => 'bCreateParents', default => false}
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strPath);
+    my $strPath = $self->pathGet($strPathExp);
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
-        $self->{oProtocol}->cmdExecute(OP_FILE_PATH_CREATE, [$strPathOp, $strMode, $bIgnoreExists, $bCreateParents]);
+        $self->{oProtocol}->cmdExecute(OP_FILE_PATH_CREATE, [$strPath, $strMode, $bIgnoreExists, $bCreateParents]);
     }
     # Run locally
     else
     {
-        filePathCreate($strPathOp, $strMode, $bIgnoreExists, $bCreateParents);
+        filePathCreate($strPath, $strMode, $bIgnoreExists, $bCreateParents);
     }
 
     # Return from function and log return values if any
@@ -611,20 +554,18 @@ sub pathSync
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath,
+        $strPathExp,
         $bRecursive,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->pathSync', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath', required => false},
+            {name => 'strPathExp'},
             {name => 'bRecursive', default => false},
         );
 
     # Remote not implemented
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
@@ -632,7 +573,7 @@ sub pathSync
     # Sync all paths in the tree
     if ($bRecursive)
     {
-        my $oManifest = $self->manifest($strPathType, $strPath);
+        my $oManifest = $self->manifest($strPathExp);
 
         # Iterate all files in the manifest
         foreach my $strFile (sort(keys(%{$oManifest})))
@@ -643,12 +584,12 @@ sub pathSync
                 # If current directory
                 if ($strFile eq '.')
                 {
-                    $self->pathSync($strPathType, $strPath);
+                    $self->pathSync($strPathExp);
                 }
                 # Else a subdirectory
                 else
                 {
-                    $self->pathSync($strPathType, (defined($strPath) ? "${strPath}/" : '') . $strFile);
+                    $self->pathSync("${strPathExp}/${strFile}");
                 }
             }
         }
@@ -656,7 +597,7 @@ sub pathSync
     # Only sync the specified path
     else
     {
-        filePathSync($self->pathGet($strPathType, $strPath));
+        filePathSync($self->pathGet($strPathExp));
     }
 
     # Return from function and log return values if any
@@ -678,29 +619,27 @@ sub exists
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath
+        $strPathExp,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->exists', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath', required => false}
+            {name => 'strPathExp'},
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strPath);
+    my $strPath = $self->pathGet($strPathExp);
     my $bExists;
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
-        $bExists = $self->{oProtocol}->cmdExecute(OP_FILE_EXISTS, [$strPathOp], true);
+        $bExists = $self->{oProtocol}->cmdExecute(OP_FILE_EXISTS, [$strPath], true);
     }
     # Run locally
     else
     {
-        $bExists = fileExists($strPathOp);
+        $bExists = fileExists($strPath);
     }
 
     # Return from function and log return values if any
@@ -722,8 +661,7 @@ sub remove
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath,
+        $strPathExp,
         $bTemp,
         $bIgnoreMissing,
         $bPathSync,
@@ -731,26 +669,25 @@ sub remove
         logDebugParam
         (
             __PACKAGE__ . '->remove', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath'},
+            {name => 'strPathExp'},
             {name => 'bTemp', required => false},
             {name => 'bIgnoreMissing', default => true},
             {name => 'bPathSync', default => false},
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strPath, $bTemp);
+    my $strPath = $self->pathGet($strPathExp, {bTemp => $bTemp});
     my $bRemoved = true;
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
     # Run locally
     else
     {
-        $bRemoved = fileRemove($strPathOp, $bIgnoreMissing, $bPathSync);
+        $bRemoved = fileRemove($strPath, $bIgnoreMissing, $bPathSync);
     }
 
     # Return from function and log return values if any
@@ -772,21 +709,19 @@ sub hash
     my
     (
         $strOperation,
-        $strPathType,
-        $strFile,
+        $strPathExp,
         $bCompressed,
         $strHashType
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->hash', \@_,
-            {name => 'strPathType'},
-            {name => 'strFile'},
+            {name => 'strPathExp'},
             {name => 'bCompressed', required => false},
             {name => 'strHashType', required => false}
         );
 
-    my ($strHash) = $self->hashSize($strPathType, $strFile, $bCompressed, $strHashType);
+    my ($strHash) = $self->hashSize($strPathExp, $bCompressed, $strHashType);
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -807,32 +742,30 @@ sub hashSize
     my
     (
         $strOperation,
-        $strPathType,
-        $strFile,
+        $strPathExp,
         $bCompressed,
         $strHashType
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->hashSize', \@_,
-            {name => 'strPathType'},
-            {name => 'strFile'},
+            {name => 'strPathExp'},
             {name => 'bCompressed', default => false},
             {name => 'strHashType', default => 'sha1'}
         );
 
     # Set operation variables
-    my $strFileOp = $self->pathGet($strPathType, $strFile);
+    my $strFile = $self->pathGet($strPathExp);
     my $strHash;
     my $iSize = 0;
 
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
     else
     {
-        ($strHash, $iSize) = fileHashSize($strFileOp, $bCompressed, $strHashType, $self->{oProtocol});
+        ($strHash, $iSize) = fileHashSize($strFile, $bCompressed, $strHashType, $self->{oProtocol});
     }
 
     # Return from function and log return values if any
@@ -855,25 +788,23 @@ sub owner
     my
     (
         $strOperation,
-        $strPathType,
-        $strFile,
+        $strPathExp,
         $strUser,
         $strGroup
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->owner', \@_,
-            {name => 'strPathType'},
-            {name => 'strFile'},
+            {name => 'strPathExp'},
             {name => 'strUser', required => false},
             {name => 'strGroup', required => false}
         );
 
     # Set operation variables
-    my $strFileOp = $self->pathGet($strPathType, $strFile);
+    my $strFileOp = $self->pathGet($strPathExp);
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         confess &log(ASSERT, "${strOperation}: remote operation not supported");
     }
@@ -933,7 +864,7 @@ sub owner
                     "unable to set ownership for '${strFileOp}'" . (defined($strError) ? ": $strError" : ''), ERROR_FILE_OWNER);
             }
 
-            confess &log(ERROR, "${strFile} does not exist", ERROR_FILE_MISSING);
+            confess &log(ERROR, "${strFileOp} does not exist", ERROR_FILE_MISSING);
         }
     }
 
@@ -955,8 +886,7 @@ sub list
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath,
+        $strPathExp,
         $strExpression,
         $strSortOrder,
         $bIgnoreMissing
@@ -964,29 +894,28 @@ sub list
         logDebugParam
         (
             __PACKAGE__ . '->list', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath', required => false},
+            {name => 'strPathExp'},
             {name => 'strExpression', optional => true},
             {name => 'strSortOrder', optional => true, default => 'forward'},
             {name => 'bIgnoreMissing', optional => true, default => false}
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strPath);
+    my $strPath = $self->pathGet($strPathExp);
     my @stryFileList;
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         @stryFileList = $self->{oProtocol}->cmdExecute(
             OP_FILE_LIST,
-            [$strPathOp, {strExpression => $strExpression, strSortOrder => $strSortOrder, bIgnoreMissing => $bIgnoreMissing}]);
+            [$strPath, {strExpression => $strExpression, strSortOrder => $strSortOrder, bIgnoreMissing => $bIgnoreMissing}]);
     }
     # Run locally
     else
     {
         @stryFileList = fileList(
-            $strPathOp, {strExpression => $strExpression, strSortOrder => $strSortOrder, bIgnoreMissing => $bIgnoreMissing});
+            $strPath, {strExpression => $strExpression, strSortOrder => $strSortOrder, bIgnoreMissing => $bIgnoreMissing});
     }
 
     # Return from function and log return values if any
@@ -1013,13 +942,11 @@ sub wait
     my
     (
         $strOperation,
-        $strPathType,
         $bWait
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->wait', \@_,
-            {name => 'strPathType'},
             {name => 'bWait', default => true}
         );
 
@@ -1027,7 +954,7 @@ sub wait
     my $lTimeBegin;
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
         $lTimeBegin = $self->{oProtocol}->cmdExecute(OP_FILE_WAIT, [$bWait], true);
     }
@@ -1060,29 +987,27 @@ sub manifest
     my
     (
         $strOperation,
-        $strPathType,
-        $strPath,
+        $strPathExp,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->manifest', \@_,
-            {name => 'strPathType'},
-            {name => 'strPath', required => false},
+            {name => 'strPathEpr'},
         );
 
     # Set operation variables
-    my $strPathOp = $self->pathGet($strPathType, $strPath);
+    my $strPath = $self->pathGet($strPathExp);
     my $hManifest;
 
     # Run remotely
-    if ($self->isRemote($strPathType))
+    if ($self->isRemote())
     {
-        $hManifest = $self->{oProtocol}->cmdExecute(OP_FILE_MANIFEST, [$strPathOp], true);
+        $hManifest = $self->{oProtocol}->cmdExecute(OP_FILE_MANIFEST, [$strPath], true);
     }
     # Run locally
     else
     {
-        $hManifest = fileManifest($strPathOp);
+        $hManifest = fileManifest($strPath);
     }
 
     # Return from function and log return values if any
@@ -1112,10 +1037,8 @@ sub copy
     my
     (
         $strOperation,
-        $strSourcePathType,
-        $strSourceFile,
-        $strDestinationPathType,
-        $strDestinationFile,
+        $strSourcePathExp,
+        $strDestinationPathExp,
         $bSourceCompressed,
         $bDestinationCompress,
         $bIgnoreMissingSource,
@@ -1133,10 +1056,8 @@ sub copy
         logDebugParam
         (
             __PACKAGE__ . '->copy', \@_,
-            {name => 'strSourcePathType'},
-            {name => 'strSourceFile', required => false},
-            {name => 'strDestinationPathType'},
-            {name => 'strDestinationFile', required => false},
+            {name => 'strSourcePathExp'},
+            {name => 'strDestinationPathExp'},
             {name => 'bSourceCompressed', default => false},
             {name => 'bDestinationCompress', default => false},
             {name => 'bIgnoreMissingSource', default => false},
@@ -1153,18 +1074,15 @@ sub copy
         );
 
     # Set working variables
-    my $bSourceRemote = $self->isRemote($strSourcePathType) || $strSourcePathType eq PIPE_STDIN;
-    my $bDestinationRemote = $self->isRemote($strDestinationPathType) || $strDestinationPathType eq PIPE_STDOUT;
-    my $strSourceOp = $strSourcePathType eq PIPE_STDIN ?
-        $strSourcePathType : $self->pathGet($strSourcePathType, $strSourceFile);
-    my $strDestinationOp = $strDestinationPathType eq PIPE_STDOUT ?
-        $strDestinationPathType : $self->pathGet($strDestinationPathType, $strDestinationFile);
+    my $bSourceRemote = $self->isRemote() || $strSourcePathExp eq PIPE_STDIN;
+    my $bDestinationRemote = $self->isRemote() || $strDestinationPathExp eq PIPE_STDOUT;
+    my $strSourceOp = $strSourcePathExp eq PIPE_STDIN ? $strSourcePathExp : $self->pathGet($strSourcePathExp);
+    my $strDestinationOp = $strDestinationPathExp eq PIPE_STDOUT ? $strDestinationPathExp : $self->pathGet($strDestinationPathExp);
     my $strDestinationTmpOp =
-        $strDestinationPathType eq PIPE_STDOUT ? undef :
-            ($bTempFile ? $self->pathGet($strDestinationPathType, $strDestinationFile, true) :
-                $self->pathGet($strDestinationPathType, $strDestinationFile));
-    my $fnExtra = defined($strExtraFunction) ?
-        eval("\\&${strExtraFunction}") : undef;                     ## no critic (BuiltinFunctions::ProhibitStringyEval)
+        $strDestinationPathExp eq PIPE_STDOUT ? undef :
+            ($bTempFile ? $self->pathGet($strDestinationPathExp, {bTemp => true}) : $self->pathGet($strDestinationPathExp));
+    my $fnExtra =
+        defined($strExtraFunction) ? eval("\\&${strExtraFunction}") : undef; ## no critic (BuiltinFunctions::ProhibitStringyEval)
 
     # Checksum and size variables
     my $strChecksum = undef;
@@ -1194,7 +1112,7 @@ sub copy
                 # $strError = 'file is missing';
                 $iErrorCode = ERROR_FILE_MISSING;
 
-                if ($bIgnoreMissingSource && $strDestinationPathType ne PIPE_STDOUT)
+                if ($bIgnoreMissingSource && $strDestinationPathExp ne PIPE_STDOUT)
                 {
                     return false, undef, undef;
                 }
@@ -1202,13 +1120,13 @@ sub copy
 
             $strError = "cannot open source file ${strSourceOp}: " . $strError;
 
-            if ($strSourcePathType eq PATH_ABSOLUTE)
-            {
-                if ($strDestinationPathType eq PIPE_STDOUT)
+            # if ($strSourcePathType eq PATH_ABSOLUTE)
+            # {
+                if ($strDestinationPathExp eq PIPE_STDOUT)
                 {
                     $self->{oProtocol}->binaryXferAbort();
                 }
-            }
+            # }
 
             confess &log(ERROR, $strError, $iErrorCode);
         }
@@ -1253,7 +1171,7 @@ sub copy
         # Set user and/or group if required
         if (defined($strUser) || defined($strGroup))
         {
-            $self->owner(PATH_ABSOLUTE, $strDestinationTmpOp, $strUser, $strGroup);
+            $self->owner($strDestinationTmpOp, $strUser, $strGroup);
         }
     }
 
@@ -1274,7 +1192,7 @@ sub copy
             $strRemoteOp = OP_FILE_COPY_OUT;
             $strRemote = 'in';
 
-            if ($strSourcePathType ne PIPE_STDIN)
+            if ($strSourcePathExp ne PIPE_STDIN)
             {
                 $self->{oProtocol}->cmdWrite($strRemoteOp,
                     [$strSourceOp, undef, $bSourceCompressed, $bDestinationCompress, undef, undef, undef, undef, undef, undef,
@@ -1290,7 +1208,7 @@ sub copy
             $strRemoteOp = OP_FILE_COPY_IN;
             $strRemote = 'out';
 
-            if ($strDestinationPathType ne PIPE_STDOUT)
+            if ($strDestinationPathExp ne PIPE_STDOUT)
             {
                 $self->{oProtocol}->cmdWrite(
                     $strRemoteOp,

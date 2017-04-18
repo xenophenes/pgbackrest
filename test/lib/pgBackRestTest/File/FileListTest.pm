@@ -75,8 +75,7 @@ sub run
         eval
         {
             @stryFileList = $oFile->list(
-                PATH_BACKUP_ABSOLUTE, $strPath,
-                {strExpression => $strExpression, strSortOrder => $strSort, bIgnoreMissing => $bIgnoreMissing});
+                $strPath, {strExpression => $strExpression, strSortOrder => $strSort, bIgnoreMissing => $bIgnoreMissing});
             return true;
         }
         or do

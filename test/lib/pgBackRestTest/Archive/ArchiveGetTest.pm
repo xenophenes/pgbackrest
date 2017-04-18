@@ -107,20 +107,20 @@ sub run
                 }
 
                 # Change the directory permissions to enable file creation
-                executeTest('sudo chmod 770 ' . dirname($oFile->pathGet(PATH_BACKUP_ARCHIVE, PG_VERSION_94 . "-1")));
+                executeTest('sudo chmod 770 ' . dirname($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . '-1')));
                 filePathCreate(
                     dirname(
-                        $oFile->pathGet(PATH_BACKUP_ARCHIVE, PG_VERSION_94 . "-1/${strSourceFile}")), '0770', true, true);
+                        $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 . "-1/${strSourceFile}")), '0770', true, true);
 
                 $oFile->copy(
-                    PATH_DB_ABSOLUTE, $strArchiveTestFile,  # Source file $strArchiveTestFile
-                    PATH_BACKUP_ARCHIVE, PG_VERSION_94 .    # Destination file
+                    $strArchiveTestFile,                            # Source file $strArchiveTestFile
+                    PATH_BACKUP_ARCHIVE . qw{/} . PG_VERSION_94 .   # Destination file
                         "-1/${strSourceFile}",
-                    false,                                  # Source is not compressed
-                    $bCompress,                             # Destination compress based on test
-                    undef, undef,                           # Unused params
-                    '0660',                                 # Mode
-                    true);                                  # Create path if it does not exist
+                    false,                                          # Source is not compressed
+                    $bCompress,                                     # Destination compress based on test
+                    undef, undef,                                   # Unused params
+                    '0660',                                         # Mode
+                    true);                                          # Create path if it does not exist
 
                 my $strDestinationFile = "${strXlogPath}/${strArchiveFile}";
 
@@ -130,9 +130,9 @@ sub run
                     {oLogTest => $self->expect()});
 
                 # Check that the destination file exists
-                if ($oFile->exists(PATH_DB_ABSOLUTE, $strDestinationFile))
+                if ($oFile->exists($strDestinationFile))
                 {
-                    if ($oFile->hash(PATH_DB_ABSOLUTE, $strDestinationFile) ne $strArchiveChecksum)
+                    if ($oFile->hash($strDestinationFile) ne $strArchiveChecksum)
                     {
                         confess "archive file hash does not match ${strArchiveChecksum}";
                     }

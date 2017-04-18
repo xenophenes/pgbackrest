@@ -49,13 +49,13 @@ sub run
         elsif ($bExists)
         {
             executeTest("echo 'TESTDATA' > ${strFile}");
-            ($strSourceHash, $iSourceSize) = $oFile->hashSize(PATH_BACKUP_ABSOLUTE, $strFile);
+            ($strSourceHash, $iSourceSize) = $oFile->hashSize($strFile);
         }
 
         # Execute in eval in case of error
         eval
         {
-            $oFile->compress(PATH_BACKUP_ABSOLUTE, $strFile);
+            $oFile->compress($strFile);
             return true;
         }
         or do
@@ -87,7 +87,7 @@ sub run
 
         executeTest("gzip -d ${strDestinationFile}");
 
-        my ($strDestinationHash, $iDestinationSize) = $oFile->hashSize(PATH_BACKUP_ABSOLUTE, $strFile);
+        my ($strDestinationHash, $iDestinationSize) = $oFile->hashSize($strFile);
 
         if ($strSourceHash ne $strDestinationHash)
         {

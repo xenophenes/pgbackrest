@@ -144,8 +144,8 @@ sub archivePush
         $strSourceFile = "${strXlogPath}/" . uc(sprintf('0000000100000001%08x', $iArchiveNo));
 
         $self->{oFile}->copy(
-            PATH_DB_ABSOLUTE, $strArchiveTestFile,                      # Source file
-            PATH_DB_ABSOLUTE, $strSourceFile,                           # Destination file
+            $strArchiveTestFile,                                        # Source file
+            $strSourceFile,                                             # Destination file
             false,                                                      # Source is not compressed
             false,                                                      # Destination is not compressed
             undef, undef, undef,                                        # Unused params
@@ -370,8 +370,9 @@ sub restore
         # Load the manifest
         my $oExpectedManifest = new pgBackRest::Manifest(
             $self->{oFile}->pathGet(
-                PATH_BACKUP_CLUSTER, ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) . '/' . FILE_MANIFEST),
-            true);
+                PATH_BACKUP_CLUSTER . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) . qw{/} .
+                    FILE_MANIFEST),
+                true);
 
         $oExpectedManifestRef = $oExpectedManifest->{oContent};
 
@@ -482,16 +483,16 @@ sub restoreCompare
         my $oExpectedManifest =
             new pgBackRest::Manifest(
                 $self->{oFile}->pathGet(
-                    PATH_BACKUP_CLUSTER,
-                    ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) .
-                    '/'. FILE_MANIFEST), true);
+                    PATH_BACKUP_CLUSTER . qw{/} . ($strBackup eq 'latest' ? $oHostBackup->backupLast() : $strBackup) .
+                        '/'. FILE_MANIFEST),
+                true);
 
         $oLastManifest =
             new pgBackRest::Manifest(
                 $self->{oFile}->pathGet(
-                    PATH_BACKUP_CLUSTER,
-                    ${$oExpectedManifestRef}{&MANIFEST_SECTION_BACKUP}{&MANIFEST_KEY_PRIOR} .
-                    '/' . FILE_MANIFEST), true);
+                    PATH_BACKUP_CLUSTER . qw{/} .
+                        ${$oExpectedManifestRef}{&MANIFEST_SECTION_BACKUP}{&MANIFEST_KEY_PRIOR} . qw{/} . FILE_MANIFEST),
+                true);
     }
 
     # Generate the tablespace map for real backups
@@ -620,7 +621,7 @@ sub restoreCompare
             {
                 $oActualManifest->set(
                     MANIFEST_SECTION_TARGET_FILE, $strName, MANIFEST_SUBKEY_CHECKSUM,
-                    $self->{oFile}->hash(PATH_DB_ABSOLUTE, $oActualManifest->dbPathGet($strSectionPath, $strName)));
+                    $self->{oFile}->hash($oActualManifest->dbPathGet($strSectionPath, $strName)));
             }
             else
             {

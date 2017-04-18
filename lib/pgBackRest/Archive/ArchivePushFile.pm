@@ -89,7 +89,7 @@ sub archivePushCheck
 
     if (defined($strChecksum) && !commandTest(CMD_REMOTE))
     {
-        my $strChecksumNew = $oFile->hash(PATH_DB_ABSOLUTE, $strWalFile);
+        my $strChecksumNew = $oFile->hash($strWalFile);
 
         if ($strChecksumNew ne $strChecksum)
         {
@@ -169,8 +169,8 @@ sub archivePushFile
 
         # Copy the WAL segment
         $oFile->copy(
-            PATH_DB_ABSOLUTE, "${strWalPath}/${strWalFile}",        # Source type/file
-            PATH_BACKUP_ARCHIVE, $strArchiveFile,                   # Destination type/file
+            "${strWalPath}/${strWalFile}",                          # Source type/file
+            PATH_BACKUP_ARCHIVE . "/${strArchiveFile}",             # Destination type/file
             false,                                                  # Source is not compressed
             walIsSegment($strWalFile) && $bCompress,                # Destination compress is configurable
             undef, undef, undef,                                    # Unused params

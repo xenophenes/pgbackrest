@@ -97,9 +97,9 @@ sub restoreFile
             or confess &log(ERROR, "unable to set time for ${strDbFile}");
 
         # Set file ownership
-        $oFile->owner(PATH_DB_ABSOLUTE, $strDbFile, $strUser, $strGroup);
+        $oFile->owner($strDbFile, $strUser, $strGroup);
     }
-    elsif ($oFile->exists(PATH_DB_ABSOLUTE, $strDbFile))
+    elsif ($oFile->exists($strDbFile))
     {
         # Perform delta if requested
         if ($bDelta)
@@ -118,7 +118,7 @@ sub restoreFile
             }
             else
             {
-                my ($strActualChecksum, $lActualSize) = $oFile->hashSize(PATH_DB_ABSOLUTE, $strDbFile);
+                my ($strActualChecksum, $lActualSize) = $oFile->hashSize($strDbFile);
 
                 if ($lActualSize == $lSize && ($lSize == 0 || $strActualChecksum eq $strChecksum))
                 {
@@ -137,9 +137,9 @@ sub restoreFile
     if ($bCopy)
     {
         my ($bCopyResult, $strCopyChecksum, $lCopySize) = $oFile->copy(
-            PATH_BACKUP_CLUSTER, (defined($strReference) ? $strReference : $strBackupPath) .
+            PATH_BACKUP_CLUSTER . qw(/) . (defined($strReference) ? $strReference : $strBackupPath) .
                 "/${strRepoFile}" . ($bSourceCompressed ? '.' . $oFile->{strCompressExtension} : ''),
-            PATH_DB_ABSOLUTE, $strDbFile,
+            $strDbFile,
             $bSourceCompressed,
             undef, undef,
             $lModificationTime, $strMode,

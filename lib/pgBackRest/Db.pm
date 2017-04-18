@@ -475,7 +475,7 @@ sub info
 
         # Get info from remote
         #---------------------------------------------------------------------------------------------------------------------------
-        if ($oFile->isRemote(PATH_DB_ABSOLUTE))
+        if ($oFile->isRemote())
         {
             # Execute the command
             ($self->{info}{$strDbPath}{strDbVersion}, $self->{info}{$strDbPath}{iDbControlVersion},

@@ -266,7 +266,7 @@ sub parentPathGet
     if (!fileExists($strParentPath))
     {
         # Create the cluster repo path
-        $oFile->pathCreate($strPathType, undef, undef, true, true);
+        $oFile->pathCreate($strPathType, undef, true, true);
     }
 
     # Return from function and log return values if any
@@ -351,7 +351,6 @@ sub infoFileCreate
             if (optionGet(OPTION_REPO_SYNC))
             {
                 $oFile->pathSync(
-                    PATH_BACKUP_ABSOLUTE,
                     defined($oInfo->{strArchiveClusterPath}) ? $oInfo->{strArchiveClusterPath} : $oInfo->{strBackupClusterPath});
             }
         }

@@ -158,7 +158,7 @@ sub process
 
                 foreach my $strPath ($oBackupInfo->list('^' . $stryPath[$iFullIdx] . '.*'))
                 {
-                    $oFile->remove(PATH_BACKUP_CLUSTER, "${strPath}/" . FILE_MANIFEST);
+                    $oFile->remove(PATH_BACKUP_CLUSTER . "/${strPath}/" . FILE_MANIFEST);
                     $oBackupInfo->delete($strPath);
 
                     if ($strPath ne $stryPath[$iFullIdx])
@@ -204,7 +204,7 @@ sub process
                     # Remove all differential and incremental backups before the oldest valid differential
                     if ($strPath lt $stryPath[$iDiffIdx + 1])
                     {
-                        $oFile->remove(PATH_BACKUP_CLUSTER, "/${strPath}" . FILE_MANIFEST);
+                        $oFile->remove(PATH_BACKUP_CLUSTER . "/${strPath}" . FILE_MANIFEST);
                         $oBackupInfo->delete($strPath);
 
                         if ($strPath ne $stryPath[$iDiffIdx])
@@ -224,7 +224,7 @@ sub process
 
     # Remove backups from disk
     foreach my $strBackup ($oFile->list(
-        PATH_BACKUP_CLUSTER, undef, {strExpression => backupRegExpGet(true, true, true), strSortOrder => 'reverse'}))
+        PATH_BACKUP_CLUSTER, {strExpression => backupRegExpGet(true, true, true), strSortOrder => 'reverse'}))
     {
         if (!$oBackupInfo->current($strBackup))
         {
@@ -301,7 +301,7 @@ sub process
                     if (!defined($iDbHistoryId) || !$oBackupInfo->test(INFO_BACKUP_SECTION_DB, INFO_BACKUP_KEY_HISTORY_ID, undef,
                         $iDbHistoryId))
                     {
-                        my $strFullPath = $oFile->pathGet(PATH_BACKUP_ARCHIVE, $strArchiveId);
+                        my $strFullPath = $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/${strArchiveId}");
 
                         remove_tree($strFullPath) > 0
                             or confess &log(ERROR, "unable to remove archive path ${strFullPath}", ERROR_PATH_REMOVE);
@@ -401,7 +401,7 @@ sub process
 
                         # Get all major archive paths (timeline and first 32 bits of LSN)
                         foreach my $strPath ($oFile->list(
-                            PATH_BACKUP_ARCHIVE, $strArchiveId, {strExpression => REGEX_ARCHIVE_DIR_WAL}))
+                            PATH_BACKUP_ARCHIVE . "/${strArchiveId}", {strExpression => REGEX_ARCHIVE_DIR_WAL}))
                         {
                             logDebugMisc($strOperation, "found major WAL path: ${strPath}");
                             $bRemove = true;
@@ -420,7 +420,7 @@ sub process
                             # Remove the entire directory if all archive is expired
                             if ($bRemove)
                             {
-                                my $strFullPath = $oFile->pathGet(PATH_BACKUP_ARCHIVE, $strArchiveId) . "/${strPath}";
+                                my $strFullPath = $oFile->pathGet(PATH_BACKUP_ARCHIVE . "/${strArchiveId}") . "/${strPath}";
 
                                 remove_tree($strFullPath) > 0
                                     or confess &log(ERROR, "unable to remove ${strFullPath}", ERROR_PATH_REMOVE);
@@ -436,7 +436,7 @@ sub process
                             {
                                 # Look for files in the archive directory
                                 foreach my $strSubPath ($oFile->list(
-                                    PATH_BACKUP_ARCHIVE, "${strArchiveId}/${strPath}", {strExpression => "^[0-F]{24}.*\$"}))
+                                    PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strPath}", {strExpression => "^[0-F]{24}.*\$"}))
                                 {
                                     $bRemove = true;
 
@@ -454,7 +454,7 @@ sub process
                                     # Remove archive log if it is not used in a backup
                                     if ($bRemove)
                                     {
-                                        fileRemove($oFile->pathGet(PATH_BACKUP_ARCHIVE, "${strArchiveId}/${strSubPath}"));
+                                        fileRemove($oFile->pathGet(PATH_BACKUP_ARCHIVE . "/${strArchiveId}/${strSubPath}"));
 
                                         logDebugMisc($strOperation, "remove WAL segment: ${strArchiveId}/${strSubPath}");
 

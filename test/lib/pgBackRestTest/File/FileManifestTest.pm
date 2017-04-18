@@ -155,7 +155,7 @@ sub run
         my $strMissingFile = $self->testPath() . '/missing';
 
         $self->testException(
-            sub {$oFile->manifest(PATH_BACKUP_ABSOLUTE, $strMissingFile)},
+            sub {$oFile->manifest($strMissingFile)},
             ERROR_FILE_MISSING, "unable to stat ${strMissingFile}: No such file or directory");
 
         #---------------------------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ sub run
         executeTest('chmod 0770 ' . $self->testPath());
 
         $self->testResult(
-            sub {$oFile->manifest(PATH_BACKUP_ABSOLUTE, $self->testPath())},
+            sub {$oFile->manifest($self->testPath())},
             '{. => {group => ' . $self->group() . ', mode => 0770, type => d, user => ' . $self->pgUser() . '}, ' .
             'sub1 => {group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}, ' .
             'sub1/sub2 => {group => ' . $self->group() . ', mode => 0750, type => d, user => ' . $self->pgUser() . '}, ' .

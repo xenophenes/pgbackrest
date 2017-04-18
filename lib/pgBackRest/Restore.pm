@@ -226,18 +226,17 @@ sub manifestLoad
     my ($strOperation) = logDebugParam (__PACKAGE__ . '->manifestLoad');
 
     # Error if the backup set does not exist
-    if (!$self->{oFile}->exists(PATH_BACKUP_CLUSTER, $self->{strBackupSet}))
+    if (!$self->{oFile}->exists(PATH_BACKUP_CLUSTER . "/$self->{strBackupSet}"))
     {
         confess &log(ERROR, 'backup ' . $self->{strBackupSet} . ' does not exist');
     }
 
     # Copy the backup manifest to the db cluster path
-    $self->{oFile}->copy(PATH_BACKUP_CLUSTER, "$self->{strBackupSet}/" . FILE_MANIFEST,
-                         PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . FILE_MANIFEST);
+    $self->{oFile}->copy(
+        PATH_BACKUP_CLUSTER . "/$self->{strBackupSet}/" . FILE_MANIFEST, $self->{strDbClusterPath} . '/' . FILE_MANIFEST);
 
     # Load the manifest into a hash
-    my $oManifest = new pgBackRest::Manifest($self->{oFile}->pathGet(PATH_DB_ABSOLUTE,
-                                                                   $self->{strDbClusterPath} . '/' . FILE_MANIFEST));
+    my $oManifest = new pgBackRest::Manifest($self->{oFile}->pathGet($self->{strDbClusterPath} . '/' . FILE_MANIFEST));
 
     # If backup is latest then set it equal to backup label, else verify that requested backup and label match
     my $strBackupLabel = $oManifest->get(MANIFEST_SECTION_BACKUP, MANIFEST_KEY_LABEL);
@@ -528,7 +527,7 @@ sub clean
         &log(DETAIL, "check ${strCheckPath} exists");
 
         # Check if the path exists
-        if (!$self->{oFile}->exists(PATH_DB_ABSOLUTE, $strCheckPath))
+        if (!$self->{oFile}->exists($strCheckPath))
         {
             confess &log(ERROR, "cannot restore to missing path ${strCheckPath}", ERROR_PATH_MISSING);
         }
@@ -541,7 +540,7 @@ sub clean
                                $oManifest->get(MANIFEST_SECTION_BACKUP_TARGET, $strTarget, MANIFEST_SUBKEY_FILE);
 
             # Check if the file exists
-            if ($self->{oFile}->exists(PATH_DB_ABSOLUTE, $strCheckFile))
+            if ($self->{oFile}->exists($strCheckFile))
             {
                 # If the file exists and this is not a delta then error
                 if (!$bDelta)
@@ -564,14 +563,14 @@ sub clean
                 ${$self->{oTargetPath}}{$strTarget} = "${$self->{oTargetPath}}{$strTarget}/" . $oManifest->tablespacePathGet();
 
                 # If this path does not exist then skip the rest of the checking - the path will be created later
-                if (!$self->{oFile}->exists(PATH_DB_ABSOLUTE, ${$self->{oTargetPath}}{$strTarget}))
+                if (!$self->{oFile}->exists(${$self->{oTargetPath}}{$strTarget}))
                 {
                     next;
                 }
             }
 
             # Build a manifest of the path to check for existing files
-            my $hTargetManifest = $self->{oFile}->manifest(PATH_DB_ABSOLUTE, ${$self->{oTargetPath}}{$strTarget});
+            my $hTargetManifest = $self->{oFile}->manifest(${$self->{oTargetPath}}{$strTarget});
 
             for my $strName (keys(%{$hTargetManifest}))
             {
@@ -605,14 +604,14 @@ sub clean
             &log(INFO, "remove invalid files/paths/links from ${$self->{oTargetPath}}{$strTarget}");
 
             # OK for the special tablespace path to not exist yet - it will be created later
-            if (!$self->{oFile}->exists(PATH_DB_ABSOLUTE, ${$self->{oTargetPath}}{$strTarget}) &&
+            if (!$self->{oFile}->exists(${$self->{oTargetPath}}{$strTarget}) &&
                 $oManifest->isTargetTablespace($strTarget))
             {
                 next;
             }
 
             # Load path manifest so it can be compared to deleted files/paths/links that are not in the backup
-            my $hTargetManifest = $self->{oFile}->manifest(PATH_DB_ABSOLUTE, ${$self->{oTargetPath}}{$strTarget});
+            my $hTargetManifest = $self->{oFile}->manifest(${$self->{oTargetPath}}{$strTarget});
 
             # If the target is a file it doesn't matter whether it already exists or not.
             if ($oManifest->isTargetFile($strTarget))
@@ -658,7 +657,7 @@ sub clean
                     {
                         &log(DETAIL, "set ownership ${strUser}:${strGroup} on ${strOsFile}");
 
-                        $self->{oFile}->owner(PATH_DB_ABSOLUTE, $strOsFile, $strUser, $strGroup);
+                        $self->{oFile}->owner($strOsFile, $strUser, $strGroup);
                     }
 
                     # If a link does not have the same destination, then delete it (it will be recreated later)
@@ -798,10 +797,10 @@ sub build
                 $strPath = dirname($strPath);
             }
 
-            if (!$self->{oFile}->exists(PATH_DB_ABSOLUTE, $strPath))
+            if (!$self->{oFile}->exists($strPath))
             {
-                $self->{oFile}->pathCreate(PATH_DB_ABSOLUTE, $strPath,
-                    $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_MODE));
+                $self->{oFile}->pathCreate(
+                    $strPath, $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_MODE));
 
                 # Set ownership (??? this could be done better inside the file functions)
                 my $strUser = $oManifest->get(MANIFEST_SECTION_TARGET_PATH, $strTarget, MANIFEST_SUBKEY_USER);
@@ -809,7 +808,7 @@ sub build
 
                 if ($strUser ne getpwuid($<) || $strGroup ne getgrgid($())
                 {
-                    $self->{oFile}->owner(PATH_DB_ABSOLUTE, $strPath, $strUser, $strGroup);
+                    $self->{oFile}->owner($strPath, $strUser, $strGroup);
                 }
             }
         }
@@ -850,13 +849,12 @@ sub build
 
                     # If the path/link does not already exist then create it.  The clean() method should have determined if the
                     # permissions, destinations, etc. are correct
-                    if (!$self->{oFile}->exists(PATH_DB_ABSOLUTE, $strDbPath))
+                    if (!$self->{oFile}->exists($strDbPath))
                     {
                         # Create a path
                         if ($strSection eq &MANIFEST_SECTION_TARGET_PATH)
                         {
-                            $self->{oFile}->pathCreate(PATH_DB_ABSOLUTE, $strDbPath,
-                                $oManifest->get($strSection, $strName, MANIFEST_SUBKEY_MODE));
+                            $self->{oFile}->pathCreate($strDbPath, $oManifest->get($strSection, $strName, MANIFEST_SUBKEY_MODE));
                         }
                         # Else create a link
                         else
@@ -867,8 +865,9 @@ sub build
                             # In order to create relative links they must be converted to absolute links and then made relative
                             # again by linkCreate().  It's possible to modify linkCreate() to accept relative paths but that could
                             # have an impact elsewhere and doesn't seem worth it.
-                            $self->{oFile}->linkCreate(PATH_DB_ABSOLUTE, pathAbsolute(dirname($strDbPath), $strDestination),
-                                                       PATH_DB_ABSOLUTE, $strDbPath, undef, (index($strDestination, '/') != 0));
+                            $self->{oFile}->linkCreate(
+                                pathAbsolute(dirname($strDbPath), $strDestination), $strDbPath, undef,
+                                (index($strDestination, '/') != 0));
                         }
 
                         # Set ownership (??? this could be done better inside the file functions)
@@ -877,7 +876,7 @@ sub build
 
                         if ($strUser ne getpwuid($<) || $strGroup ne getgrgid($())
                         {
-                            $self->{oFile}->owner(PATH_DB_ABSOLUTE, $strDbPath, $strUser, $strGroup);
+                            $self->{oFile}->owner($strDbPath, $strUser, $strGroup);
                         }
                     }
 
@@ -913,7 +912,7 @@ sub recovery
     my $strRecoveryConf = $self->{strDbClusterPath} . '/' . DB_FILE_RECOVERYCONF;
 
     # See if recovery.conf already exists
-    my $bRecoveryConfExists = $self->{oFile}->exists(PATH_DB_ABSOLUTE, $strRecoveryConf);
+    my $bRecoveryConfExists = $self->{oFile}->exists($strRecoveryConf);
 
     # If RECOVERY_TYPE_PRESERVE then warn if recovery.conf does not exist and return
     if (optionTest(OPTION_TYPE, RECOVERY_TYPE_PRESERVE))
@@ -928,7 +927,7 @@ sub recovery
         # In all other cases the old recovery.conf should be removed if it exists
         if ($bRecoveryConfExists)
         {
-            $self->{oFile}->remove(PATH_DB_ABSOLUTE, $strRecoveryConf);
+            $self->{oFile}->remove($strRecoveryConf);
         }
 
         # If RECOVERY_TYPE_NONE then return
@@ -1046,7 +1045,7 @@ sub process
     }
 
     # Make sure that Postgres is not running
-    if ($self->{oFile}->exists(PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . DB_FILE_POSTMASTERPID))
+    if ($self->{oFile}->exists($self->{strDbClusterPath} . '/' . DB_FILE_POSTMASTERPID))
     {
         confess &log(ERROR,
             "unable to restore while PostgreSQL is running\n" .
@@ -1057,8 +1056,8 @@ sub process
 
     # If the restore will be destructive attempt to verify that $PGDATA is valid
     if ((optionGet(OPTION_DELTA) || optionGet(OPTION_FORCE)) &&
-        !($self->{oFile}->exists(PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . DB_FILE_PGVERSION) ||
-          $self->{oFile}->exists(PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . FILE_MANIFEST)))
+        !($self->{oFile}->exists($self->{strDbClusterPath} . '/' . DB_FILE_PGVERSION) ||
+          $self->{oFile}->exists($self->{strDbClusterPath} . '/' . FILE_MANIFEST)))
     {
         &log(WARN, '--delta or --force specified but unable to find \'' . DB_FILE_PGVERSION . '\' or \'' . FILE_MANIFEST .
                    '\' in \'' . $self->{strDbClusterPath} . '\' to confirm that this is a valid $PGDATA directory.' .
@@ -1070,12 +1069,12 @@ sub process
     }
 
     # Copy backup info, load it, then delete
-    $self->{oFile}->copy(PATH_BACKUP_CLUSTER, FILE_BACKUP_INFO,
-                         PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO);
+    $self->{oFile}->copy(
+        PATH_BACKUP_CLUSTER . qw(/) . FILE_BACKUP_INFO, $self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO);
 
     my $oBackupInfo = new pgBackRest::BackupInfo($self->{strDbClusterPath}, false);
 
-    $self->{oFile}->remove(PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO, undef, false, true);
+    $self->{oFile}->remove($self->{strDbClusterPath} . '/' . FILE_BACKUP_INFO, undef, false, true);
 
     # If set to restore is latest then get the actual set
     if ($self->{strBackupSet} eq OPTION_DEFAULT_RESTORE_SET)
@@ -1104,9 +1103,12 @@ sub process
 
     # Delete pg_control file.  This will be copied from the backup at the very end to prevent a partially restored database
     # from being started by PostgreSQL.
-    $self->{oFile}->remove(PATH_DB_ABSOLUTE, $oManifest->dbPathGet(
-                           $oManifest->get(MANIFEST_SECTION_BACKUP_TARGET, MANIFEST_TARGET_PGDATA, MANIFEST_SUBKEY_PATH),
-                           MANIFEST_FILE_PGCONTROL), true, true);
+    $self->{oFile}->remove(
+        $oManifest->dbPathGet(
+            $oManifest->get(
+                MANIFEST_SECTION_BACKUP_TARGET, MANIFEST_TARGET_PGDATA, MANIFEST_SUBKEY_PATH),
+            MANIFEST_FILE_PGCONTROL),
+        true, true);
 
     # Clean the restore paths
     $self->clean($oManifest);
@@ -1279,7 +1281,7 @@ sub process
     $self->recovery($oManifest->get(MANIFEST_SECTION_BACKUP_DB, MANIFEST_KEY_DB_VERSION));
 
     # Sync db cluster path
-    $self->{oFile}->pathSync(PATH_DB_ABSOLUTE, $self->{strDbClusterPath}, true);
+    $self->{oFile}->pathSync($self->{strDbClusterPath}, true);
 
     # Copy pg_control last
     &log(INFO,
@@ -1287,11 +1289,11 @@ sub process
         ' (copied last to ensure aborted restores cannot be started)');
 
     $self->{oFile}->move(
-        PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . DB_FILE_PGCONTROL . '.' . BACKREST_EXE,
-        PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . DB_FILE_PGCONTROL, undef, true);
+        $self->{strDbClusterPath} . '/' . DB_FILE_PGCONTROL . '.' . BACKREST_EXE,
+        $self->{strDbClusterPath} . '/' . DB_FILE_PGCONTROL, undef, true);
 
     # Finally remove the manifest to indicate the restore is complete
-    $self->{oFile}->remove(PATH_DB_ABSOLUTE, $self->{strDbClusterPath} . '/' . FILE_MANIFEST, undef, false, true);
+    $self->{oFile}->remove($self->{strDbClusterPath} . '/' . FILE_MANIFEST, undef, false, true);
 
     # Return from function and log return values if any
     return logDebugReturn($strOperation);

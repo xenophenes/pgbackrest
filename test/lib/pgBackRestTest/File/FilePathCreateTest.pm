@@ -17,6 +17,7 @@ use File::stat;
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
+use pgBackRest::Common::String;
 use pgBackRest::Storage::Storage;
 use pgBackRest::Storage::Posix::StoragePosixCommon;
 
@@ -49,14 +50,14 @@ sub run
         filePathCreate($self->testPath() . '/backup', '770');
         filePathCreate($self->testPath() . '/backup/db', '770');
 
-        my $strPath = 'path';
+        my $strPath = '/path';
 
         # If not exists then set the path to something bogus
         if ($bError)
         {
             $strPath = $self->testPath() . '/' . ($bRemote ? 'user' : 'backrest') . "_private/path";
 
-            $strPathType = PATH_BACKUP_ABSOLUTE;
+            undef($strPathType);
         }
 
         # Execute in eval to catch errors
@@ -64,7 +65,7 @@ sub run
 
         eval
         {
-            $oFile->pathCreate($strPathType, $strPath, $strMode);
+            $oFile->pathCreate(coalesce($strPathType, '') . $strPath, $strMode);
             return true;
         }
         # Check for errors
@@ -85,7 +86,7 @@ sub run
         }
 
         # Make sure the path was actually created
-        my $strPathCheck = $oFile->pathGet($strPathType, $strPath);
+        my $strPathCheck = $oFile->pathGet(coalesce($strPathType, '') . $strPath);
 
         unless (-e $strPathCheck)
         {

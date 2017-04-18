@@ -297,7 +297,7 @@ sub backupCreate
     $$oStanza{oManifest} = $oManifest;
 
     # Create the compressed history manifest
-    $self->{oFile}->compress(PATH_BACKUP_ABSOLUTE, $strManifestFile, false);
+    $self->{oFile}->compress($strManifestFile, false);
 
     # Add the backup to info
     my $oBackupInfo = new pgBackRest::BackupInfo($$oStanza{strBackupClusterPath}, false);

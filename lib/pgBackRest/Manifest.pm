@@ -589,7 +589,7 @@ sub build
         # If not online then build the tablespace map from pg_tblspc path
         if (!$bOnline && !defined($hTablespaceMap))
         {
-            my $hTablespaceManifest = $oFile->manifest(PATH_DB_ABSOLUTE, $strPath . '/' . DB_PATH_PGTBLSPC);
+            my $hTablespaceManifest = $oFile->manifest($strPath . '/' . DB_PATH_PGTBLSPC);
             $hTablespaceMap = {};
 
             foreach my $strOid (sort(CORE::keys(%{$hTablespaceManifest})))
@@ -636,7 +636,7 @@ sub build
     }
 
     # Get the manifest for this level
-    my $hManifest = $oFile->manifest(PATH_DB_ABSOLUTE, $strPath);
+    my $hManifest = $oFile->manifest($strPath);
     my $strManifestType = MANIFEST_VALUE_LINK;
 
     # Loop though all paths/files/links in the manifest
@@ -820,7 +820,7 @@ sub build
         # lead to an invalid diff/incr backup later when using timestamps to determine which files have changed.  Offline backups do
         # not wait because it makes testing much faster and Postgres should not be running (if it is the backup will not be
         # consistent anyway and the one-second resolution problem is the least of our worries).
-        my $lTimeBegin = $oFile->wait(PATH_DB_ABSOLUTE, $bOnline);
+        my $lTimeBegin = $oFile->wait($bOnline);
 
         # Check that links are valid
         $self->linkCheck();

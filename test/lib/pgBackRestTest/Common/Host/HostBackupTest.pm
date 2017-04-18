@@ -249,7 +249,7 @@ sub backupEnd
     if ($strType eq BACKUP_TYPE_FULL || $self->hardLink())
     {
         my $hTablespaceManifest = $self->{oFile}->manifest(
-            PATH_BACKUP_CLUSTER, "${strBackup}/" . MANIFEST_TARGET_PGDATA . '/' . DB_PATH_PGTBLSPC);
+            PATH_BACKUP_CLUSTER . "/${strBackup}/" . MANIFEST_TARGET_PGDATA . '/' . DB_PATH_PGTBLSPC);
 
         # Remove . and ..
         delete($hTablespaceManifest->{'.'});
@@ -310,13 +310,13 @@ sub backupEnd
         }
     }
     # Else there should not be a tablespace directory at all
-    elsif ($self->{oFile}->exists(PATH_BACKUP_CLUSTER, "${strBackup}/" . MANIFEST_TARGET_PGDATA . '/' . DB_PATH_PGTBLSPC))
+    elsif ($self->{oFile}->exists(PATH_BACKUP_CLUSTER . "/${strBackup}/" . MANIFEST_TARGET_PGDATA . '/' . DB_PATH_PGTBLSPC))
     {
         confess &log(ERROR, 'backup must be full or hard-linked to have ' . DB_PATH_PGTBLSPC . ' directory');
     }
 
     # Check that latest link exists unless repo links are disabled
-    my $strLatestLink = $self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, LINK_LATEST);
+    my $strLatestLink = $self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . qw{/} . LINK_LATEST);
     my $bLatestLinkExists = fileExists($strLatestLink);
 
     if (!defined($oParam->{bRepoLink}) || $oParam->{bRepoLink})
@@ -368,7 +368,7 @@ sub backupEnd
 
         if ($self->synthetic() && $bManifestCompare)
         {
-            $self->{oLogTest}->supplementalAdd($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, "${strBackup}/" . FILE_MANIFEST));
+            $self->{oLogTest}->supplementalAdd($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . "/${strBackup}/" . FILE_MANIFEST));
             $self->{oLogTest}->supplementalAdd($self->repoPath() . '/backup/' . $self->stanza() . '/backup.info');
         }
     }
@@ -441,7 +441,7 @@ sub backupCompare
     ${$oExpectedManifest}{&MANIFEST_SECTION_BACKUP}{&MANIFEST_KEY_LABEL} = $strBackup;
 
     my $oActualManifest = new pgBackRest::Manifest(
-        $self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, "${strBackup}/" . FILE_MANIFEST));
+        $self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . "/${strBackup}/" . FILE_MANIFEST));
 
     ${$oExpectedManifest}{&MANIFEST_SECTION_BACKUP}{&MANIFEST_KEY_TIMESTAMP_START} =
         $oActualManifest->get(MANIFEST_SECTION_BACKUP, &MANIFEST_KEY_TIMESTAMP_START);
@@ -463,7 +463,7 @@ sub backupCompare
             my $lRepoSize =
                 $oActualManifest->test(MANIFEST_SECTION_TARGET_FILE, $strFileKey, MANIFEST_SUBKEY_REFERENCE) ?
                     $oActualManifest->numericGet(MANIFEST_SECTION_TARGET_FILE, $strFileKey, MANIFEST_SUBKEY_REPO_SIZE, false) :
-                    (fileStat($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, "${strBackup}/${strFileKey}.gz")))->size;
+                    (fileStat($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . "/${strBackup}/${strFileKey}.gz")))->size;
 
             if (defined($lRepoSize) &&
                 $lRepoSize != $oExpectedManifest->{&MANIFEST_SECTION_TARGET_FILE}{$strFileKey}{&MANIFEST_SUBKEY_SIZE})
@@ -588,8 +588,7 @@ sub backupLast
     my $self = shift;
 
     my @stryBackup = $self->{oFile}->list(
-        PATH_BACKUP_CLUSTER, undef,
-        {strExpression => '[0-9]{8}-[0-9]{6}F(_[0-9]{8}-[0-9]{6}(D|I)){0,1}', strSortOrder => 'reverse'});
+        PATH_BACKUP_CLUSTER, {strExpression => '[0-9]{8}-[0-9]{6}F(_[0-9]{8}-[0-9]{6}(D|I)){0,1}', strSortOrder => 'reverse'});
 
     if (!defined($stryBackup[0]))
     {
@@ -1065,7 +1064,7 @@ sub manifestMunge
             {name => 'bCache', default => true},
         );
 
-    $self->infoMunge($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, "${strBackup}/" . FILE_MANIFEST), $hParam, $bCache);
+    $self->infoMunge($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . "/${strBackup}/" . FILE_MANIFEST), $hParam, $bCache);
 
     # Return from function and log return values if any
     return logDebugReturn($strOperation);
@@ -1092,7 +1091,7 @@ sub manifestRestore
             {name => 'bSave', default => true},
         );
 
-    $self->infoRestore($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER, "${strBackup}/" . FILE_MANIFEST), $bSave);
+    $self->infoRestore($self->{oFile}->pathGet(PATH_BACKUP_CLUSTER . "/${strBackup}/" . FILE_MANIFEST), $bSave);
 
     # Return from function and log return values if any
     return logDebugReturn($strOperation);

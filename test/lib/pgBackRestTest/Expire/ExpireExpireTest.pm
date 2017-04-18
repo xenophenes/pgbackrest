@@ -226,7 +226,7 @@ sub run
         my $oExpire = new pgBackRest::Expire();
 
         # Mismatched version
-        $oHostBackup->infoMunge($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+        $oHostBackup->infoMunge($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
             {&INFO_ARCHIVE_SECTION_DB =>
                 {&INFO_ARCHIVE_KEY_DB_VERSION => PG_VERSION_93, &INFO_ARCHIVE_KEY_DB_SYSTEM_ID => WAL_VERSION_95_SYS_ID},
              &INFO_ARCHIVE_SECTION_DB_HISTORY =>
@@ -239,10 +239,10 @@ sub run
             "HINT: has a stanza-upgrade been performed?");
 
         # Restore the info file
-        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
 
         # Mismatched system ID
-        $oHostBackup->infoMunge($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+        $oHostBackup->infoMunge($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
             {&INFO_ARCHIVE_SECTION_DB =>
                 {&INFO_ARCHIVE_KEY_DB_SYSTEM_ID => 6999999999999999999},
              &INFO_ARCHIVE_SECTION_DB_HISTORY =>
@@ -255,7 +255,7 @@ sub run
             "HINT: has a stanza-upgrade been performed?");
 
         # Restore the info file
-        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+        $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
     }
 }
 

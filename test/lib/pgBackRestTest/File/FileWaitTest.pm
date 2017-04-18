@@ -50,7 +50,7 @@ sub run
         }
 
         # Run the test
-        my $lTimeBeginCheck = $oFile->wait(PATH_DB_ABSOLUTE);
+        my $lTimeBeginCheck = $oFile->wait();
 
         &log(DEBUG, "begin ${lTimeBegin}, check ${lTimeBeginCheck}, end " . time());
 

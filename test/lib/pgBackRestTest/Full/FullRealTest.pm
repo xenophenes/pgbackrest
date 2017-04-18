@@ -177,7 +177,7 @@ sub run
 
             # load the archive info file and munge it for testing by breaking the database version
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE),
+                $oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                 {&INFO_ARCHIVE_SECTION_DB => {&INFO_ARCHIVE_KEY_DB_VERSION => '8.0'}});
 
             $oHostDbMaster->check($strComment, {iTimeout => 0.1, iExpectedExitStatus => ERROR_ARCHIVE_MISMATCH});
@@ -189,7 +189,7 @@ sub run
             }
 
             # Restore the file to its original condition
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE, ARCHIVE_INFO_FILE));
+            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
 
             # Check archive_timeout error when WAL segment is not found
             $strComment = 'fail on archive timeout';
@@ -215,7 +215,7 @@ sub run
 
             # Load the backup.info file and munge it for testing by breaking the database version and system id
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_BACKUP_CLUSTER, FILE_BACKUP_INFO),
+                $oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO),
                 {&INFO_BACKUP_SECTION_DB =>
                     {&INFO_BACKUP_KEY_DB_VERSION => '8.0', &INFO_BACKUP_KEY_SYSTEM_ID => 6999999999999999999}});
 
@@ -229,7 +229,7 @@ sub run
             }
 
             # Restore the file to its original condition
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_CLUSTER, FILE_BACKUP_INFO));
+            $oHostBackup->infoRestore($oFile->pathGet(PATH_BACKUP_CLUSTER . qw{/} . FILE_BACKUP_INFO));
 
             # Providing a sufficient archive-timeout, verify that the check command runs successfully now with valid
             # archive.info and backup.info files
@@ -706,8 +706,7 @@ sub run
                 '--tablespace-map-all=../../tablespace', false);
 
             # Save recovery file to test so we can use it in the next test
-            $oFile->copy(PATH_ABSOLUTE, $oHostDbMaster->dbBasePath() . '/recovery.conf',
-                         PATH_ABSOLUTE, $self->testPath() . '/recovery.conf');
+            $oFile->copy($oHostDbMaster->dbBasePath() . qw{/} . DB_FILE_RECOVERYCONF, $self->testPath() . DB_FILE_RECOVERYCONF);
 
             $oHostDbMaster->clusterStart();
             $oHostDbMaster->sqlSelectOneTest('select message from test', $strXidMessage);
@@ -739,8 +738,7 @@ sub run
             executeTest('rm -rf ' . $oHostDbMaster->tablespacePath(1) . "/*");
 
             # Restore recovery file that was saved in last test
-            $oFile->move(PATH_ABSOLUTE, $self->testPath . '/recovery.conf',
-                         PATH_ABSOLUTE, $oHostDbMaster->dbBasePath() . '/recovery.conf');
+            $oFile->move($self->testPath . '/recovery.conf', $oHostDbMaster->dbBasePath() . '/recovery.conf');
 
             $oHostDbMaster->restore(
                 OPTION_DEFAULT_RESTORE_SET, undef, undef, $bDelta, $bForce, $strType, $strTarget, $bTargetExclusive,

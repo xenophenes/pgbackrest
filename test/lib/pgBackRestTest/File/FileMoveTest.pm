@@ -74,7 +74,7 @@ sub run
         # Execute in eval in case of error
         eval
         {
-            $oFile->move(PATH_BACKUP_ABSOLUTE, $strSourceFile, PATH_BACKUP_ABSOLUTE, $strDestinationFile, $bCreate);
+            $oFile->move($strSourceFile, $strDestinationFile, $bCreate);
             return true;
         }
         or do
