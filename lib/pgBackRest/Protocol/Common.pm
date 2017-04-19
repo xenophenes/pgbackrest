@@ -253,8 +253,8 @@ sub blockWrite
 sub binaryXfer
 {
     my $self = shift;
-    my $hIn = shift;
-    my $hOut = shift;
+    my $oIn = shift;
+    my $oOut = shift;
     my $strRemote = shift;
     my $bSourceCompressed = shift;
     my $bDestinationCompress = shift;
@@ -263,31 +263,19 @@ sub binaryXfer
     my $rExtraParam = shift;
 
     # The input stream must be defined
-    my $oIn;
-
-    if (!defined($hIn))
+    if (!defined($oIn))
     {
         $oIn = $self->{io};
     }
-    else
-    {
-        $oIn = new pgBackRest::Protocol::IO::ProcessIO(
-            $hIn, undef, $self->{io}->{hErr}, $self->{io}->{pid}, $self->{io}->{strId}, $self->{iProtocolTimeout},
-            $self->{iBufferMax});
-    }
 
     # The output stream must be defined unless 'none' is passed
-    my $oOut;
-
-    if (!defined($hOut))
+    if (!defined($oOut))
     {
         $oOut = $self->{io};
     }
-    elsif ($hOut ne 'none')
+    elsif ($oOut eq 'none')
     {
-        $oOut = new pgBackRest::Protocol::IO::ProcessIO(
-            undef, $hOut, $self->{io}->{hErr}, $self->{io}->{pid}, $self->{io}->{strId}, $self->{iProtocolTimeout},
-            $self->{iBufferMax});
+        undef($oOut);
     }
 
     # If no remote is defined then set to none
@@ -374,7 +362,7 @@ sub binaryXfer
                                     $oSHA->add($tUncompressedBuffer);
                                 }
 
-                                # Write data if hOut is defined
+                                # Write data if oOut is defined
                                 if (defined($oOut))
                                 {
                                     $oOut->bufferWrite(\$tUncompressedBuffer, $iUncompressedBufferSize);

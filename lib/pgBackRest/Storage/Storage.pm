@@ -1113,6 +1113,12 @@ sub copy
             {name => 'bTempFile', default => true},
         );
 
+    # Temp file is required if checksum will be appended
+    if ($bAppendChecksum && !$bTempFile)
+    {
+        confess &log(ASSERT, 'bTempFile must be true when bAppendChecksum is true');
+    }
+
     # Create/get source IO
     my $oSourceIO;
     my $bSourceRemote = false;
@@ -1124,14 +1130,15 @@ sub copy
     }
     elsif ($strSourcePathExp eq PIPE_STDIN || $self->isRemote())
     {
-        $oSourceIO = new pgBackRest::Protocol::IO::IO(*STDIN, undef, undef, 30, 4 * 1024 * 1024);
+        # $oSourceIO = new pgBackRest::Protocol::IO::IO(*STDIN, undef, undef, 30, 4 * 1024 * 1024);
         $bSourceRemote = true;
     }
     else
     {
-        my $strSourceFile = $self->pathGet($strSourcePathExp);
+        my $hSourceFile;
+        $strSourceFile = $self->pathGet($strSourcePathExp);
 
-        if (!sysopen(my $hSourceFile, $strSourceFile, O_RDONLY))
+        if (!sysopen($hSourceFile, $strSourceFile, O_RDONLY))
         {
             my $strError = $!;
             my $iErrorCode = ERROR_FILE_READ;
@@ -1147,7 +1154,7 @@ sub copy
                 }
             }
 
-            $strError = "cannot open source file ${strSourceOp}: " . $strError;
+            $strError = "cannot open source file ${strSourceFile}: " . $strError;
 
             # if ($strSourcePathType eq PATH_ABSOLUTE)
             # {
@@ -1163,58 +1170,44 @@ sub copy
         $oSourceIO = new pgBackRest::Protocol::IO::IO($hSourceFile, undef, undef, 30, 4 * 1024 * 1024);
     }
 
-    ?????? Need to do destination file like above
+    # Create/get destination IO
+    my $oDestinationIO;
+    my $bDestinationRemote = false;
+    my $strDestinationFile;
+    my $strDestinationFileTmp;
 
-    # Set working variables
-    my $bDestinationRemote = $self->isRemote() || $strDestinationPathExp eq PIPE_STDOUT;
-    my $strSourceOp = $strSourcePathExp eq PIPE_STDIN ? $strSourcePathExp : $self->pathGet($strSourcePathExp);
-    my $strDestinationOp = $strDestinationPathExp eq PIPE_STDOUT ? $strDestinationPathExp : $self->pathGet($strDestinationPathExp);
-    my $strDestinationTmpOp =
-        $strDestinationPathExp eq PIPE_STDOUT ? undef :
-            ($bTempFile ? $self->pathGet($strDestinationPathExp, {bTemp => true}) : $self->pathGet($strDestinationPathExp));
-    my $fnExtra =
-        defined($strExtraFunction) ? eval("\\&${strExtraFunction}") : undef; ## no critic (BuiltinFunctions::ProhibitStringyEval)
-
-    # Checksum and size variables
-    my $strChecksum = undef;
-    my $iFileSize = undef;
-    my $rExtra = undef;
-    my $bResult = true;
-
-    # Temp file is required if checksum will be appended
-    if ($bAppendChecksum && !$bTempFile)
+    if (ref($strDestinationPathExp))
     {
-        confess &log(ASSERT, 'bTempFile must be true when bAppendChecksum is true');
+        $oDestinationIO = $strDestinationPathExp;
     }
-
-    # Open the source and destination files (if needed)
-    my $hSourceFile;
-    my $hDestinationFile;
-
-    # if (!$bSourceRemote)
-    # {
-    # }
-
-    if (!$bDestinationRemote)
+    elsif ($strDestinationPathExp eq PIPE_STDIN || $self->isRemote())
     {
+        $bDestinationRemote = true;
+    }
+    else
+    {
+        my $hDestinationFile;
+        $strDestinationFile = $self->pathGet($strDestinationPathExp);
+        $strDestinationFileTmp = $self->pathGet($strDestinationPathExp, {bTemp => true});
+
         my $iCreateFlag = O_WRONLY | O_CREAT;
 
         # Open the destination temp file
-        if (!sysopen($hDestinationFile, $strDestinationTmpOp, $iCreateFlag, oct($strMode)))
+        if (!sysopen($hDestinationFile, $strDestinationFileTmp, $iCreateFlag, oct($strMode)))
         {
             if ($bDestinationPathCreate)
             {
-                filePathCreate(dirname($strDestinationTmpOp), undef, true, true);
+                filePathCreate(dirname($strDestinationFileTmp), undef, true, true);
             }
 
-            if (!$bDestinationPathCreate || !sysopen($hDestinationFile, $strDestinationTmpOp, $iCreateFlag, oct($strMode)))
+            if (!$bDestinationPathCreate || !sysopen($hDestinationFile, $strDestinationFileTmp, $iCreateFlag, oct($strMode)))
             {
-                my $strError = "unable to open ${strDestinationTmpOp}: " . $!;
+                my $strError = "unable to open ${strDestinationFileTmp}: " . $!;
                 my $iErrorCode = ERROR_FILE_READ;
 
-                if (!fileExists(dirname($strDestinationTmpOp)))
+                if (!fileExists(dirname($strDestinationFileTmp)))
                 {
-                    $strError = dirname($strDestinationTmpOp) . ' destination path does not exist';
+                    $strError = dirname($strDestinationFileTmp) . ' destination path does not exist';
                     $iErrorCode = ERROR_FILE_MISSING;
                 }
 
@@ -1228,22 +1221,34 @@ sub copy
         # Now lock the file to be sure nobody else is operating on it
         if (!flock($hDestinationFile, LOCK_EX | LOCK_NB))
         {
-            confess &log(ERROR, "unable to acquire exclusive lock on ${strDestinationTmpOp}", ERROR_LOCK_ACQUIRE);
+            confess &log(ERROR, "unable to acquire exclusive lock on ${strDestinationFileTmp}", ERROR_LOCK_ACQUIRE);
         }
 
         # Set user and/or group if required
         if (defined($strUser) || defined($strGroup))
         {
-            $self->owner($strDestinationTmpOp, $strUser, $strGroup);
+            $self->owner($strDestinationFileTmp, $strUser, $strGroup);
         }
+
+        $oDestinationIO = new pgBackRest::Protocol::IO::IO(undef, $hDestinationFile, undef, 30, 4 * 1024 * 1024);
     }
+
+    # Convert function name to a function reference
+    my $fnExtra =
+        defined($strExtraFunction) ? eval("\\&${strExtraFunction}") : undef;    ## no critic (BuiltinFunctions::ProhibitStringyEval)
+
+    # Checksum and size variables
+    my $strChecksum = undef;
+    my $iFileSize = undef;
+    my $rExtra = undef;
+    my $bResult = true;
 
     # If source or destination are remote
     if ($bSourceRemote || $bDestinationRemote)
     {
         # Build the command and open the local file
-        my $hIn,
-        my $hOut;
+        # my $hIn,
+        # my $hOut;
         my $strRemote;
         my $strRemoteOp;
         my $bController = false;
@@ -1251,15 +1256,15 @@ sub copy
         # If source is remote and destination is local
         if ($bSourceRemote && !$bDestinationRemote)
         {
-            $hOut = $hDestinationFile;
+            # $hOut = $hDestinationFile;
             $strRemoteOp = OP_FILE_COPY_OUT;
             $strRemote = 'in';
 
             if ($strSourcePathExp ne PIPE_STDIN)
             {
                 $self->{oProtocol}->cmdWrite($strRemoteOp,
-                    [$strSourceOp, undef, $bSourceCompressed, $bDestinationCompress, undef, undef, undef, undef, undef, undef,
-                        undef, undef, $strExtraFunction, $rExtraParam, $bTempFile]);
+                    [$strSourceFile, $bSourceCompressed, $bDestinationCompress, undef, undef, undef, undef, undef, undef, undef,
+                        undef, $strExtraFunction, $rExtraParam, $bTempFile]);
 
                 $bController = true;
             }
@@ -1267,7 +1272,7 @@ sub copy
         # Else if source is local and destination is remote
         elsif (!$bSourceRemote && $bDestinationRemote)
         {
-            $hIn = $hSourceFile;
+            # $hIn = $hSourceFile;
             $strRemoteOp = OP_FILE_COPY_IN;
             $strRemote = 'out';
 
@@ -1275,7 +1280,7 @@ sub copy
             {
                 $self->{oProtocol}->cmdWrite(
                     $strRemoteOp,
-                    [undef, $strDestinationOp, $bSourceCompressed, $bDestinationCompress, undef, undef, $strMode,
+                    [$strDestinationFile, $bSourceCompressed, $bDestinationCompress, undef, undef, $strMode,
                         $bDestinationPathCreate, $strUser, $strGroup, $bAppendChecksum, $bPathSync, $strExtraFunction,
                         $rExtraParam, $bTempFile]);
 
@@ -1289,9 +1294,10 @@ sub copy
 
             $self->{oProtocol}->cmdWrite(
                 $strRemoteOp,
-                [$strSourceOp, $strDestinationOp, $bSourceCompressed, $bDestinationCompress, $bIgnoreMissingSource, undef,
-                    $strMode, $bDestinationPathCreate, $strUser, $strGroup, $bAppendChecksum, $bPathSync, $strExtraFunction,
-                    $rExtraParam, $bTempFile]);
+                [defined($strSourceFile) ? $strSourceFile : $strSourcePathExp,
+                    defined($strDestinationFile) ? $strDestinationFile : $strDestinationPathExp, $bSourceCompressed,
+                    $bDestinationCompress, $bIgnoreMissingSource, undef, $strMode, $bDestinationPathCreate, $strUser, $strGroup,
+                    $bAppendChecksum, $bPathSync, $strExtraFunction, $rExtraParam, $bTempFile]);
 
             $bController = true;
         }
@@ -1300,8 +1306,9 @@ sub copy
         if ($strRemoteOp ne OP_FILE_COPY)
         {
             ($strChecksum, $iFileSize, $rExtra) =
-                $self->{oProtocol}->binaryXfer($hIn, $hOut, $strRemote, $bSourceCompressed, $bDestinationCompress, undef, $fnExtra,
-                $rExtraParam);
+                $self->{oProtocol}->binaryXfer(
+                    $oSourceIO, $oDestinationIO, $strRemote, $bSourceCompressed, $bDestinationCompress, undef, $fnExtra,
+                    $rExtraParam);
         }
 
         # If this is the controlling process then wait for OK from remote
@@ -1342,9 +1349,9 @@ sub copy
                 # Ignore error if source file was missing and missing file exception was returned and bIgnoreMissingSource is set
                 if ($bIgnoreMissingSource && $strRemote eq 'in' && exceptionCode($oException) == ERROR_FILE_MISSING)
                 {
-                    close($hDestinationFile)
-                        or confess &log(ERROR, "cannot close file ${strDestinationTmpOp}");
-                    fileRemove($strDestinationTmpOp);
+                    close($oDestinationIO->outputHandle())
+                        or confess &log(ERROR, "cannot close file ${strDestinationFileTmp}");
+                    fileRemove($strDestinationFileTmp);
 
                     $bResult = false;
                 }
@@ -1362,43 +1369,43 @@ sub copy
         if (!$bSourceCompressed && $bDestinationCompress)
         {
             ($strChecksum, $iFileSize, $rExtra) =
-                $self->{oProtocol}->binaryXfer($hSourceFile, $hDestinationFile, 'out', false, true, false, $fnExtra, $rExtraParam);
+                $self->{oProtocol}->binaryXfer($oSourceIO, $oDestinationIO, 'out', false, true, false, $fnExtra, $rExtraParam);
         }
         # If the source is compressed and the destination is not then decompress
         elsif ($bSourceCompressed && !$bDestinationCompress)
         {
             ($strChecksum, $iFileSize, $rExtra) =
-                $self->{oProtocol}->binaryXfer($hSourceFile, $hDestinationFile, 'in', true, false, false, $fnExtra, $rExtraParam);
+                $self->{oProtocol}->binaryXfer($oSourceIO, $oDestinationIO, 'in', true, false, false, $fnExtra, $rExtraParam);
         }
         # Else both sides are compressed, so copy capturing checksum
         elsif ($bSourceCompressed)
         {
             ($strChecksum, $iFileSize, $rExtra) =
-                $self->{oProtocol}->binaryXfer($hSourceFile, $hDestinationFile, 'out', true, true, false, $fnExtra, $rExtraParam);
+                $self->{oProtocol}->binaryXfer($oSourceIO, $oDestinationIO, 'out', true, true, false, $fnExtra, $rExtraParam);
         }
         else
         {
             ($strChecksum, $iFileSize, $rExtra) =
-                $self->{oProtocol}->binaryXfer($hSourceFile, $hDestinationFile, 'in', false, true, false, $fnExtra, $rExtraParam);
+                $self->{oProtocol}->binaryXfer($oSourceIO, $oDestinationIO, 'in', false, true, false, $fnExtra, $rExtraParam);
         }
     }
 
     if ($bResult)
     {
         # Close the source file (if local)
-        if (defined($hSourceFile))
+        if (defined($oSourceIO))
         {
-            close($hSourceFile) or confess &log(ERROR, "cannot close file ${strSourceOp}");
+            close($oSourceIO->inputHandle()) or confess &log(ERROR, "cannot close file ${strSourceFile}");
         }
 
         # Sync and close the destination file (if local)
-        if (defined($hDestinationFile))
+        if (defined($oDestinationIO))
         {
-            $hDestinationFile->sync()
-                or confess &log(ERROR, "unable to sync ${strDestinationTmpOp}", ERROR_FILE_SYNC);
+            $oDestinationIO->outputHandle()->sync()
+                or confess &log(ERROR, "unable to sync ${strDestinationFileTmp}", ERROR_FILE_SYNC);
 
-            close($hDestinationFile)
-                or confess &log(ERROR, "cannot close file ${strDestinationTmpOp}");
+            close($oDestinationIO->outputHandle())
+                or confess &log(ERROR, "cannot close file ${strDestinationFileTmp}");
         }
 
         # Checksum and file size should be set if the destination is not remote
@@ -1414,8 +1421,8 @@ sub copy
             # Set the file modification time if required
             if (defined($lModificationTime))
             {
-                utime($lModificationTime, $lModificationTime, $strDestinationTmpOp)
-                    or confess &log(ERROR, "unable to set time for local ${strDestinationTmpOp}");
+                utime($lModificationTime, $lModificationTime, $strDestinationFileTmp)
+                    or confess &log(ERROR, "unable to set time for local ${strDestinationFileTmp}");
             }
 
             # Replace checksum in destination filename (if exists)
@@ -1424,25 +1431,25 @@ sub copy
                 # Replace destination filename
                 if ($bDestinationCompress)
                 {
-                    $strDestinationOp =
-                        substr($strDestinationOp, 0, length($strDestinationOp) - length($self->{strCompressExtension}) - 1) .
+                    $strDestinationFile =
+                        substr($strDestinationFile, 0, length($strDestinationFile) - length($self->{strCompressExtension}) - 1) .
                         '-' . $strChecksum . '.' . $self->{strCompressExtension};
                 }
                 else
                 {
-                    $strDestinationOp .= '-' . $strChecksum;
+                    $strDestinationFile .= '-' . $strChecksum;
                 }
             }
 
             # Move the file from tmp to final destination
             if ($bTempFile)
             {
-                fileMove($strDestinationTmpOp, $strDestinationOp, $bDestinationPathCreate, $bPathSync);
+                fileMove($strDestinationFileTmp, $strDestinationFile, $bDestinationPathCreate, $bPathSync);
             }
             # Else sync path if requested
             elsif ($bPathSync)
             {
-                filePathSync(dirname($strDestinationTmpOp));
+                filePathSync(dirname($strDestinationFile));
             }
         }
     }

@@ -106,7 +106,7 @@ sub init
         # File commands
         &OP_FILE_COPY => sub {$oFile->copy(@{shift()})},
         &OP_FILE_COPY_IN => sub {$oFile->copy(PIPE_STDIN, @{shift()})},
-        &OP_FILE_COPY_OUT => sub {my $rParam = shift; $oFile->copy(shift(@{$rParam}), PIPE_STDOUT, @{$rParam}))},
+        &OP_FILE_COPY_OUT => sub {my $rParam = shift; $oFile->copy(shift(@{$rParam}), PIPE_STDOUT, @{$rParam})},
         &OP_FILE_EXISTS => sub {$oFile->exists(@{shift()})},
         &OP_FILE_LIST => sub {$oFile->list(@{shift()})},
         &OP_FILE_MANIFEST => sub {$oFile->manifest(@{shift()})},
