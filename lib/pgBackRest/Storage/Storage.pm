@@ -1016,6 +1016,49 @@ sub manifest
 }
 
 ####################################################################################################################################
+# put
+#
+# Writes a buffer out to storage all at once.  Useful for configuration files or other smallish data.
+####################################################################################################################################
+sub put
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFileExp,
+        $rtContent,
+        $bSync,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->put', \@_,
+            {name => 'strFileExp'},
+            {name => 'rtContent', optional => true},
+            {name => 'bSync', optional => true, default => true},
+        );
+
+    # Set operation variables
+    my $strFile = $self->pathGet($strFileExp);
+
+    # Run remotely
+    if ($self->isRemote())
+    {
+        confess &log(ASSERT, "${strOperation}: remote operation not supported");
+    }
+    # Run locally
+    else
+    {
+        fileStringWrite($strFile, ref($rtContent) ? $$rtContent : $rtContent, $bSync);
+    }
+
+    # Return from function and log return values if any
+    return logDebugReturn($strOperation);
+}
+
+####################################################################################################################################
 # copy
 #
 # Copies a file from one location to another:
