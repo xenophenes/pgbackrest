@@ -20,7 +20,7 @@ use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
 use pgBackRest::Storage::Storage;
-use pgBackRest::Storage::Posix::StoragePosixCommon;
+use pgBackRest::Storage::StorageHelper;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Protocol::Protocol;
 use pgBackRest::Manifest;
@@ -116,43 +116,28 @@ sub run
     ################################################################################################################################
     if ($self->begin('backupLabel()'))
     {
-        # Create the local file object
-        my $strRepoPath = $self->testPath() . '/repo';
-
-        my $oFile =
-            new pgBackRest::Storage::Storage
-            (
-                $self->stanza(),
-                $strRepoPath,
-                new pgBackRest::Protocol::Common
-                (
-                    OPTION_DEFAULT_BUFFER_SIZE,                 # Buffer size
-                    OPTION_DEFAULT_COMPRESS_LEVEL,              # Compress level
-                    OPTION_DEFAULT_COMPRESS_LEVEL_NETWORK,      # Compress network level
-                    HOST_PROTOCOL_TIMEOUT                       # Protocol timeout
-                )
-            );
+        my $oStorage = storageLocal($self->stanza(), $self->testPath() . '/repo');
 
         #---------------------------------------------------------------------------------------------------------------------------
         my $lTime = time();
 
         my $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
-        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strFullLabel}", {bCreateParent => true});
+        $oStorage->pathCreate(PATH_REPO_BACKUP . "/${strFullLabel}", {bCreateParent => true});
 
-        my $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
+        my $strNewFullLabel = backupLabel($oStorage, BACKUP_TYPE_FULL, undef, $lTime);
 
         $self->testResult(sub {$strFullLabel ne $strNewFullLabel}, true, 'new full label <> existing full backup dir');
 
         #---------------------------------------------------------------------------------------------------------------------------
-        executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strFullLabel}"));
+        executeTest('rmdir ' . $oStorage->pathGet(PATH_REPO_BACKUP . "/${strFullLabel}"));
 
-        $oFile->pathCreate(
+        $oStorage->pathCreate(
             PATH_REPO_BACKUP . qw(/) . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime), {bCreateParent => true});
-        fileStringWrite($oFile->pathGet(
+        $oStorage->put(
             PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
-                "/${strFullLabel}.manifest.$oFile->{strCompressExtension}"));
+                "/${strFullLabel}.manifest.$oStorage->{strCompressExtension}");
 
-        $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
+        $strNewFullLabel = backupLabel($oStorage, BACKUP_TYPE_FULL, undef, $lTime);
 
         $self->testResult(sub {$strFullLabel ne $strNewFullLabel}, true, 'new full label <> existing full history file');
 
@@ -160,7 +145,7 @@ sub run
         $lTime = time() + 1000;
         $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
 
-        $strNewFullLabel = backupLabel($oFile, BACKUP_TYPE_FULL, undef, $lTime);
+        $strNewFullLabel = backupLabel($oStorage, BACKUP_TYPE_FULL, undef, $lTime);
 
         $self->testResult(sub {$strFullLabel eq $strNewFullLabel}, true, 'new full label in future');
 
@@ -169,23 +154,23 @@ sub run
 
         $strFullLabel = backupLabelFormat(BACKUP_TYPE_FULL, undef, $lTime);
         my $strDiffLabel = backupLabelFormat(BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
-        $oFile->pathCreate(PATH_REPO_BACKUP . "/${strDiffLabel}", {bCreateParent => true});
+        $oStorage->pathCreate(PATH_REPO_BACKUP . "/${strDiffLabel}", {bCreateParent => true});
 
-        my $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
+        my $strNewDiffLabel = backupLabel($oStorage, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
         $self->testResult(sub {$strDiffLabel ne $strNewDiffLabel}, true, 'new diff label <> existing diff backup dir');
 
         #---------------------------------------------------------------------------------------------------------------------------
-        executeTest('rmdir ' . $oFile->pathGet(PATH_REPO_BACKUP . "/${strDiffLabel}"));
+        executeTest('rmdir ' . $oStorage->pathGet(PATH_REPO_BACKUP . "/${strDiffLabel}"));
 
-        $oFile->pathCreate(
+        $oStorage->pathCreate(
             PATH_REPO_BACKUP . qw(/) .  PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime),
             {bIgnoreExists => true, bCreateParent => true});
-        fileStringWrite($oFile->pathGet(
+        $oStorage->put(
             PATH_REPO_BACKUP . qw{/} . PATH_BACKUP_HISTORY . '/' . timestampFormat('%4d', $lTime) .
-                "/${strDiffLabel}.manifest.$oFile->{strCompressExtension}"));
+                "/${strDiffLabel}.manifest.$oStorage->{strCompressExtension}");
 
-        $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
+        $strNewDiffLabel = backupLabel($oStorage, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
         $self->testResult(sub {$strDiffLabel ne $strNewDiffLabel}, true, 'new full label <> existing diff history file');
 
@@ -193,7 +178,7 @@ sub run
         $lTime = time() + 1000;
         $strDiffLabel = backupLabelFormat(BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
-        $strNewDiffLabel = backupLabel($oFile, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
+        $strNewDiffLabel = backupLabel($oStorage, BACKUP_TYPE_DIFF, $strFullLabel, $lTime);
 
         $self->testResult(sub {$strDiffLabel eq $strNewDiffLabel}, true, 'new diff label in future');
     }

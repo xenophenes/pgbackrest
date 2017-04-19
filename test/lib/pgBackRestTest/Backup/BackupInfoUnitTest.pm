@@ -19,9 +19,10 @@ use pgBackRest::BackupInfo;
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Lock;
 use pgBackRest::Common::Log;
+use pgBackRest::Config::Config;
 use pgBackRest::DbVersion;
 use pgBackRest::Storage::Storage;
-use pgBackRest::Storage::Posix::StoragePosixCommon;
+use pgBackRest::Storage::StorageHelper;
 use pgBackRest::InfoCommon;
 use pgBackRest::Manifest;
 use pgBackRest::Protocol::Common;
@@ -39,11 +40,7 @@ sub initModule
 {
     my $self = shift;
 
-    $self->{strDbPath} = $self->testPath() . '/db';
     $self->{strRepoPath} = $self->testPath() . '/repo';
-    $self->{strArchivePath} = "$self->{strRepoPath}/archive/" . $self->stanza();
-    $self->{strBackupPath} = "$self->{strRepoPath}/backup/" . $self->stanza();
-    $self->{strSpoolPath} = "$self->{strArchivePath}/out";
 }
 
 ####################################################################################################################################
@@ -53,19 +50,11 @@ sub initTest
 {
     my $self = shift;
 
-    # Create archive info path
-    filePathCreate($self->{strArchivePath}, undef, true, true);
+    # Create the local file object
+    $self->{oStorage} = storageLocal($self->stanza(), $self->{strRepoPath});
 
     # Create backup info path
-    filePathCreate($self->{strBackupPath}, undef, true, true);
-
-    # Create pg_control path
-    filePathCreate(($self->{strDbPath} . '/' . DB_PATH_GLOBAL), undef, false, true);
-
-    # Copy a pg_control file into the pg_control path
-    executeTest(
-        'cp ' . $self->dataPath() . '/backup.pg_control_' . WAL_VERSION_94 . '.bin ' . $self->{strDbPath} . '/' .
-        DB_FILE_PGCONTROL);
+    $self->{oStorage}->pathCreate(PATH_REPO_BACKUP, {bCreateParent => true});
 }
 
 ####################################################################################################################################
@@ -79,7 +68,7 @@ sub run
     ################################################################################################################################
     if ($self->begin("BackupInfo::confirmDb()"))
     {
-        my $oBackupInfo = new pgBackRest::BackupInfo($self->{strBackupPath}, false, false);
+        my $oBackupInfo = new pgBackRest::BackupInfo($self->{oStorage}->pathGet(PATH_REPO_BACKUP), false, false);
         $oBackupInfo->create(PG_VERSION_93, WAL_VERSION_93_SYS_ID, '937', '201306121', true);
 
         my $strBackupLabel = "20170403-175647F";

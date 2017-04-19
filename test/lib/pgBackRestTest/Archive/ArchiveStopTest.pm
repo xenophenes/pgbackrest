@@ -22,7 +22,6 @@ use pgBackRest::Common::Log;
 use pgBackRest::Common::Wait;
 use pgBackRest::Config::Config;
 use pgBackRest::Storage::Storage;
-use pgBackRest::Storage::Posix::StoragePosixCommon;
 use pgBackRest::Manifest;
 
 use pgBackRestTest::Common::Env::EnvHostTest;
@@ -48,21 +47,21 @@ sub run
         if (!$self->begin("rmt ${bRemote}, cmp ${bCompress}, error " . ($iError ? 'connect' : 'version'))) {next}
 
         # Create hosts, file object, and config
-        my ($oHostDbMaster, $oHostDbStandby, $oHostBackup, $oFile) = $self->setup(
+        my ($oHostDbMaster, $oHostDbStandby, $oHostBackup, $oStorage) = $self->setup(
             true, $self->expect(), {bHostBackup => $bRemote, bCompress => $bCompress, bArchiveAsync => true});
 
         # Create compression extension
-        my $strCompressExt = $bCompress ? ".$oFile->{strCompressExtension}" : '';
+        my $strCompressExt = $bCompress ? ".$oStorage->{strCompressExtension}" : '';
 
         # Create the xlog path
         my $strXlogPath = $oHostDbMaster->dbBasePath() . '/pg_xlog';
-        filePathCreate($strXlogPath, undef, false, true);
+        $oStorage->pathCreate($strXlogPath, {bCreateParent => true});
 
         # Create the test path for pg_control and copy pg_control for stanza-create
-        filePathCreate(($oHostDbMaster->dbBasePath() . '/' . DB_PATH_GLOBAL), undef, false, true);
-        executeTest(
-            'cp ' . $self->dataPath() . '/backup.pg_control_' . WAL_VERSION_94 . '.bin ' . $oHostDbMaster->dbBasePath() . '/' .
-            DB_FILE_PGCONTROL);
+        $oStorage->pathCreate($oHostDbMaster->dbBasePath() . '/' . DB_PATH_GLOBAL, {bCreateParent => true});
+        $oStorage->copy(
+            $self->dataPath() . '/backup.pg_control_' . WAL_VERSION_94 . '.bin',
+            $oHostDbMaster->dbBasePath() . '/' . DB_FILE_PGCONTROL);
 
         # Create the archive info file
         $oHostBackup->stanzaCreate('create required data for stanza', {strOptionalParam => '--no-' . OPTION_ONLINE});
@@ -74,7 +73,7 @@ sub run
         if ($iError == 0)
         {
             $oHostBackup->infoMunge(
-                $oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
+                $oStorage->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE),
                 {&INFO_ARCHIVE_SECTION_DB => {&INFO_ARCHIVE_KEY_DB_VERSION => '8.0'}});
         }
 
@@ -91,12 +90,12 @@ sub run
         # Fix the database version
         if ($iError == 0)
         {
-            $oHostBackup->infoRestore($oFile->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
+            $oHostBackup->infoRestore($oStorage->pathGet(PATH_REPO_ARCHIVE . qw{/} . ARCHIVE_INFO_FILE));
         }
 
         #---------------------------------------------------------------------------------------------------------------------------
         $self->testResult(
-            sub {$oFile->list(
+            sub {$oStorage->list(
                 PATH_REPO_ARCHIVE . qw{/} . PG_VERSION_94 . '-1/0000000100000001',
                 {strExpression => '^(?!000000010000000100000002).+'})},
             "000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7${strCompressExt}",
@@ -106,7 +105,7 @@ sub run
         $oHostDbMaster->archivePush($strXlogPath, $strArchiveTestFile, 5);
 
         $self->testResult(
-            sub {$oFile->list(
+            sub {$oStorage->list(
                 PATH_REPO_ARCHIVE . qw{/} . PG_VERSION_94 . '-1/0000000100000001',
                 {strExpression => '^(?!000000010000000100000002).+'})},
             "(000000010000000100000001-72b9da071c13957fb4ca31f05dbd5c644297c2f7${strCompressExt}, " .
