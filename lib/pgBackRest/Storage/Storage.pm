@@ -1113,36 +1113,25 @@ sub copy
             {name => 'bTempFile', default => true},
         );
 
-    # Set working variables
-    my $bSourceRemote = $self->isRemote() || $strSourcePathExp eq PIPE_STDIN;
-    my $bDestinationRemote = $self->isRemote() || $strDestinationPathExp eq PIPE_STDOUT;
-    my $strSourceOp = $strSourcePathExp eq PIPE_STDIN ? $strSourcePathExp : $self->pathGet($strSourcePathExp);
-    my $strDestinationOp = $strDestinationPathExp eq PIPE_STDOUT ? $strDestinationPathExp : $self->pathGet($strDestinationPathExp);
-    my $strDestinationTmpOp =
-        $strDestinationPathExp eq PIPE_STDOUT ? undef :
-            ($bTempFile ? $self->pathGet($strDestinationPathExp, {bTemp => true}) : $self->pathGet($strDestinationPathExp));
-    my $fnExtra =
-        defined($strExtraFunction) ? eval("\\&${strExtraFunction}") : undef; ## no critic (BuiltinFunctions::ProhibitStringyEval)
+    # Create/get source IO
+    my $oSourceIO;
+    my $bSourceRemote = false;
+    my $strSourceFile;
 
-    # Checksum and size variables
-    my $strChecksum = undef;
-    my $iFileSize = undef;
-    my $rExtra = undef;
-    my $bResult = true;
-
-    # Temp file is required if checksum will be appended
-    if ($bAppendChecksum && !$bTempFile)
+    if (ref($strSourcePathExp))
     {
-        confess &log(ASSERT, 'bTempFile must be true when bAppendChecksum is true');
+        $oSourceIO = $strSourcePathExp;
     }
-
-    # Open the source and destination files (if needed)
-    my $hSourceFile;
-    my $hDestinationFile;
-
-    if (!$bSourceRemote)
+    elsif ($strSourcePathExp eq PIPE_STDIN || $self->isRemote())
     {
-        if (!sysopen($hSourceFile, $strSourceOp, O_RDONLY))
+        $oSourceIO = new pgBackRest::Protocol::IO::IO(*STDIN, undef, undef, 30, 4 * 1024 * 1024);
+        $bSourceRemote = true;
+    }
+    else
+    {
+        my $strSourceFile = $self->pathGet($strSourcePathExp);
+
+        if (!sysopen(my $hSourceFile, $strSourceFile, O_RDONLY))
         {
             my $strError = $!;
             my $iErrorCode = ERROR_FILE_READ;
@@ -1170,7 +1159,41 @@ sub copy
 
             confess &log(ERROR, $strError, $iErrorCode);
         }
+
+        $oSourceIO = new pgBackRest::Protocol::IO::IO($hSourceFile, undef, undef, 30, 4 * 1024 * 1024);
     }
+
+    ?????? Need to do destination file like above
+
+    # Set working variables
+    my $bDestinationRemote = $self->isRemote() || $strDestinationPathExp eq PIPE_STDOUT;
+    my $strSourceOp = $strSourcePathExp eq PIPE_STDIN ? $strSourcePathExp : $self->pathGet($strSourcePathExp);
+    my $strDestinationOp = $strDestinationPathExp eq PIPE_STDOUT ? $strDestinationPathExp : $self->pathGet($strDestinationPathExp);
+    my $strDestinationTmpOp =
+        $strDestinationPathExp eq PIPE_STDOUT ? undef :
+            ($bTempFile ? $self->pathGet($strDestinationPathExp, {bTemp => true}) : $self->pathGet($strDestinationPathExp));
+    my $fnExtra =
+        defined($strExtraFunction) ? eval("\\&${strExtraFunction}") : undef; ## no critic (BuiltinFunctions::ProhibitStringyEval)
+
+    # Checksum and size variables
+    my $strChecksum = undef;
+    my $iFileSize = undef;
+    my $rExtra = undef;
+    my $bResult = true;
+
+    # Temp file is required if checksum will be appended
+    if ($bAppendChecksum && !$bTempFile)
+    {
+        confess &log(ASSERT, 'bTempFile must be true when bAppendChecksum is true');
+    }
+
+    # Open the source and destination files (if needed)
+    my $hSourceFile;
+    my $hDestinationFile;
+
+    # if (!$bSourceRemote)
+    # {
+    # }
 
     if (!$bDestinationRemote)
     {
