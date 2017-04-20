@@ -200,7 +200,7 @@ my $oTestDef =
                 },
                 {
                     &TESTDEF_NAME => 'copy',
-                    &TESTDEF_TOTAL => 144,
+                    &TESTDEF_TOTAL => 1,
                 }
             ]
         },

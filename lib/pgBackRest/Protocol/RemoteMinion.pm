@@ -75,7 +75,6 @@ sub init
     # Create objects
     my $oFile = new pgBackRest::Storage::Storage
     (
-        optionGet(OPTION_STANZA, false),
         optionGet(OPTION_REPO_PATH, false),
         $self
     );

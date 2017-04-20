@@ -61,20 +61,20 @@ sub new
     # Assign function parameters, defaults, and log debug info
     (
         my $strOperation,
-        $self->{strStanza},
-        $self->{strRepoPath},
+        $self->{strBasePath},
         $self->{oProtocol},
+        $self->{bAllowTemp},
         $self->{strDefaultPathMode},
         $self->{strDefaultFileMode},
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->new', \@_,
-            {name => 'strStanza', required => false},
-            {name => 'strRepoPath'},
-            {name => 'oProtocol'},
-            {name => 'strDefaultPathMode', default => '0750'},
-            {name => 'strDefaultFileMode', default => '0640'},
+            {name => 'strBasePath'},
+            {name => 'oProtocol', optional => true},
+            {name => 'bAllowTemp', optional => true, default => false},
+            {name => 'strDefaultPathMode', optional => true, default => '0750'},
+            {name => 'strDefaultFileMode', optional => true, default => '0640'},
         );
 
     # Default compression extension to gz
@@ -144,7 +144,8 @@ sub pathGet
         }
         else
         {
-            confess &log(ASSERT, "relative files not supported");
+            $strPath = $self->{strBasePath};
+            $strFile = "/${strPathExp}";
         }
     }
 
@@ -152,9 +153,9 @@ sub pathGet
     if ($bTemp)
     {
         # Only allow temp files for PATH_REPO_ARCHIVE, PATH_SPOOL_ARCHIVE_OUT, PATH_REPO_BACKUP_TMP and any absolute path
-        if (!($bAbsolute || $strType eq PATH_REPO_ARCHIVE || $strType eq PATH_SPOOL_ARCHIVE_OUT || $strType eq PATH_REPO_BACKUP_TMP))
+        if (!$self->{bAllowTemp})
         {
-            confess &log(ASSERT, "temp file not supported for path type ${strType}");
+            confess &log(ASSERT, "temp file not supported for this storage type");
         }
 
         # The file must be defined
@@ -164,20 +165,18 @@ sub pathGet
         }
     }
 
-    if (!$bAbsolute)
+    if (!$bAbsolute && !defined($strPath))
     {
         # Get backup path
         if ($strType eq PATH_REPO)
         {
-            $strPath = $self->{strRepoPath};
-
-            # !!! confess "strPathExp $strPathExp, strType = $strType, strFile $strFile";
+            $strPath = $self->{strBasePath};
         }
         # Else process path types that require a stanza
         else
         {
-            # All paths in this section will be in the repo path
-            $strPath = $self->{strRepoPath};
+            # All paths in this section will be in the base path
+            $strPath = $self->{strBasePath};
 
             # Make sure the stanza is defined since remaining path types require it
             if (!defined($self->{strStanza}))
@@ -1029,14 +1028,14 @@ sub put
     (
         $strOperation,
         $strFileExp,
-        $rtContent,
+        $xContent,
         $bSync,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->put', \@_,
             {name => 'strFileExp'},
-            {name => 'rtContent', optional => true},
+            {name => 'xContent', optional => true},
             {name => 'bSync', optional => true, default => true},
         );
 
@@ -1051,11 +1050,83 @@ sub put
     # Run locally
     else
     {
-        fileStringWrite($strFile, ref($rtContent) ? $$rtContent : $rtContent, $bSync);
+        fileStringWrite($strFile, ref($xContent) ? $$xContent : $xContent, $bSync);
     }
 
     # Return from function and log return values if any
     return logDebugReturn($strOperation);
+}
+
+####################################################################################################################################
+# openRead - open a file for reading.
+####################################################################################################################################
+sub openRead
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFileExp,
+        $bIgnoreMissing,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->copy', \@_,
+            {name => 'strFileExp'},
+            {name => 'bIgnoreMissing', optional => true, default => false},
+        );
+
+    # Run remotely
+    if ($self->isRemote())
+    {
+        confess &log(ASSERT, "${strOperation}: remote operation not supported");
+    }
+    # Run locally
+    else
+    {
+        my $hSourceFile;
+        $strSourceFile = $self->pathGet($strSourcePathExp);
+
+        if (!sysopen($hSourceFile, $strSourceFile, O_RDONLY))
+        {
+            my $strError = $!;
+            my $iErrorCode = ERROR_FILE_READ;
+
+            if ($!{ENOENT})
+            {
+                # $strError = 'file is missing';
+                $iErrorCode = ERROR_FILE_MISSING;
+
+                if ($bIgnoreMissingSource && $strDestinationPathExp ne PIPE_STDOUT)
+                {
+                    return false, undef, undef;
+                }
+            }
+
+            $strError = "cannot open source file ${strSourceFile}: " . $strError;
+
+            # if ($strSourcePathType eq PATH_ABSOLUTE)
+            # {
+                # if ($strDestinationPathExp eq PIPE_STDOUT)
+                # {
+                #     $self->{oProtocol}->binaryXferAbort();
+                # }
+            # }
+
+            confess &log(ERROR, $strError, $iErrorCode);
+        }
+
+        $oFileIO = new pgBackRest::Protocol::IO::IO($hSourceFile, undef, undef, 30, 4 * 1024 * 1024);
+    }
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'oFileIO', value => $oFileIO, trace => true},
+    );
 }
 
 ####################################################################################################################################
@@ -1091,32 +1162,32 @@ sub copy
         $bPathSync,
         $strExtraFunction,
         $rExtraParam,
-        $bTempFile,
+        $bAtomic,
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->copy', \@_,
             {name => 'strSourcePathExp'},
             {name => 'strDestinationPathExp'},
-            {name => 'bSourceCompressed', default => false},
-            {name => 'bDestinationCompress', default => false},
-            {name => 'bIgnoreMissingSource', default => false},
-            {name => 'lModificationTime', required => false},
-            {name => 'strMode', default => fileModeDefaultGet()},
-            {name => 'bDestinationPathCreate', default => false},
-            {name => 'strUser', required => false},
-            {name => 'strGroup', required => false},
-            {name => 'bAppendChecksum', default => false},
-            {name => 'bPathSync', default => false},
-            {name => 'strExtraFunction', required => false},
-            {name => 'rExtraParam', required => false},
-            {name => 'bTempFile', default => true},
+            {name => 'bSourceCompressed', optional => true, default => false},
+            {name => 'bDestinationCompress', optional => true, default => false},
+            {name => 'bIgnoreMissingSource', optional => true, default => false},
+            {name => 'lModificationTime', optional => true},
+            {name => 'strMode', optional => true, default => fileModeDefaultGet()},
+            {name => 'bDestinationPathCreate', optional => true, default => false},
+            {name => 'strUser', optional => true},
+            {name => 'strGroup', optional => true},
+            {name => 'bAppendChecksum', optional => true, default => false},
+            {name => 'bPathSync', optional => true, default => false},
+            {name => 'strExtraFunction', optional => true},
+            {name => 'rExtraParam', optional => true},
+            {name => 'bAtomic', optional => true, default => true},
         );
 
     # Temp file is required if checksum will be appended
-    if ($bAppendChecksum && !$bTempFile)
+    if ($bAppendChecksum && !$bAtomic)
     {
-        confess &log(ASSERT, 'bTempFile must be true when bAppendChecksum is true');
+        confess &log(ASSERT, 'bAtomic must be true when bAppendChecksum is true');
     }
 
     # Create/get source IO
@@ -1188,7 +1259,7 @@ sub copy
     {
         my $hDestinationFile;
         $strDestinationFile = $self->pathGet($strDestinationPathExp);
-        $strDestinationFileTmp = $self->pathGet($strDestinationPathExp, {bTemp => true});
+        $strDestinationFileTmp = $bAtomic ? $self->pathGet($strDestinationPathExp, {bTemp => true}) : $strDestinationFile;
 
         my $iCreateFlag = O_WRONLY | O_CREAT;
 
@@ -1264,7 +1335,7 @@ sub copy
             {
                 $self->{oProtocol}->cmdWrite($strRemoteOp,
                     [$strSourceFile, $bSourceCompressed, $bDestinationCompress, undef, undef, undef, undef, undef, undef, undef,
-                        undef, $strExtraFunction, $rExtraParam, $bTempFile]);
+                        undef, $strExtraFunction, $rExtraParam, $bAtomic]);
 
                 $bController = true;
             }
@@ -1282,7 +1353,7 @@ sub copy
                     $strRemoteOp,
                     [$strDestinationFile, $bSourceCompressed, $bDestinationCompress, undef, undef, $strMode,
                         $bDestinationPathCreate, $strUser, $strGroup, $bAppendChecksum, $bPathSync, $strExtraFunction,
-                        $rExtraParam, $bTempFile]);
+                        $rExtraParam, $bAtomic]);
 
                 $bController = true;
             }
@@ -1297,7 +1368,7 @@ sub copy
                 [defined($strSourceFile) ? $strSourceFile : $strSourcePathExp,
                     defined($strDestinationFile) ? $strDestinationFile : $strDestinationPathExp, $bSourceCompressed,
                     $bDestinationCompress, $bIgnoreMissingSource, undef, $strMode, $bDestinationPathCreate, $strUser, $strGroup,
-                    $bAppendChecksum, $bPathSync, $strExtraFunction, $rExtraParam, $bTempFile]);
+                    $bAppendChecksum, $bPathSync, $strExtraFunction, $rExtraParam, $bAtomic]);
 
             $bController = true;
         }
@@ -1442,7 +1513,7 @@ sub copy
             }
 
             # Move the file from tmp to final destination
-            if ($bTempFile)
+            if ($bAtomic)
             {
                 fileMove($strDestinationFileTmp, $strDestinationFile, $bDestinationPathCreate, $bPathSync);
             }
