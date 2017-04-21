@@ -50,18 +50,19 @@ sub initModule
     mkdir($self->pathRemote())
         or confess &log(ERROR, "unable to create repo directory '" . $self->pathRemote() . qw{'});
 
+    # !!! REMOTE IS CURRENTLY BROKEN SO USING LOCAL FOR NOW
     # Create remote protocol
-    $self->{oProtocolRemote} = new pgBackRest::Protocol::RemoteMaster(
-        BACKUP,
-        OPTION_DEFAULT_CMD_SSH,
-        $self->backrestExeOriginal() . ' --stanza=' . $self->stanza() .
-            ' --type=backup --repo-path=' . $self->pathRemote() . ' --no-config --command=test remote',
-        262144,
-        OPTION_DEFAULT_COMPRESS_LEVEL,
-        OPTION_DEFAULT_COMPRESS_LEVEL_NETWORK,
-        $self->host(),
-        $self->backrestUser(),
-        HOST_PROTOCOL_TIMEOUT);
+    # $self->{oProtocolRemote} = new pgBackRest::Protocol::RemoteMaster(
+    #     BACKUP,
+    #     OPTION_DEFAULT_CMD_SSH,
+    #     $self->backrestExeOriginal() . ' --stanza=' . $self->stanza() .
+    #         ' --type=backup --repo-path=' . $self->pathRemote() . ' --no-config --command=test remote',
+    #     262144,
+    #     OPTION_DEFAULT_COMPRESS_LEVEL,
+    #     OPTION_DEFAULT_COMPRESS_LEVEL_NETWORK,
+    #     $self->host(),
+    #     $self->backrestUser(),
+    #     HOST_PROTOCOL_TIMEOUT);
 
     # Remove repo path now that the remote is created
     rmdir($self->{strPathRemote})
@@ -70,7 +71,8 @@ sub initModule
     # Create remote storage
     $self->{oStorageRemote} = new pgBackRest::Storage::Storage(
         '<REMOTE>', new pgBackRest::Storage::Posix::StoragePosix(), $self->pathRemote(),
-        {oProtocol => $self->protocolRemote(), bAllowTemp => true});
+        # !!! REMOTE IS CURRENTLY BROKEN SO USING LOCAL FOR NOW
+        {oProtocol => $self->protocolLocal(), bAllowTemp => true});
 }
 
 ####################################################################################################################################
@@ -93,7 +95,8 @@ sub cleanModule
 {
     my $self = shift;
 
-    $self->protocolRemote()->close();
+    # !!! FIX THIS WHEN REMOTE IS FIXED
+    # $self->protocolRemote()->close();
 }
 
 ####################################################################################################################################
