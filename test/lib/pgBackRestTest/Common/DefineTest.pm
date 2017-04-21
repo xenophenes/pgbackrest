@@ -58,11 +58,6 @@ use constant TESTDEF_COVERAGE_PARTIAL                               => false;
 ################################################################################################################################
 # Code modules
 ################################################################################################################################
-use constant TESTDEF_MODULE_FILE                                    => 'File';
-    push @EXPORT, qw(TESTDEF_MODULE_FILE);
-use constant TESTDEF_MODULE_FILE_COMMON                             => TESTDEF_MODULE_FILE . 'Common';
-    push @EXPORT, qw(TESTDEF_MODULE_FILE_COMMON);
-
 use constant TESTDEF_MODULE_ARCHIVE                                 => 'Archive';
     push @EXPORT, qw(TESTDEF_MODULE_ARCHIVE);
 use constant TESTDEF_MODULE_ARCHIVE_COMMON                          => TESTDEF_MODULE_ARCHIVE . '/ArchiveCommon';
@@ -87,6 +82,13 @@ use constant TESTDEF_MODULE_INFO                                    => 'Info';
 
 use constant TESTDEF_MODULE_STANZA                                  => 'Stanza';
     push @EXPORT, qw(TESTDEF_MODULE_STANZA);
+
+use constant TESTDEF_MODULE_STORAGE                                 => 'Storage/Storage';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE);
+use constant TESTDEF_MODULE_STORAGE_POSIX                           => 'Storage/Posix/StoragePosix';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE_POSIX);
+use constant TESTDEF_MODULE_STORAGE_POSIX_IO                        => TESTDEF_MODULE_STORAGE_POSIX . 'IO';
+    push @EXPORT, qw(TESTDEF_MODULE_STORAGE_POSIX_IO);
 
 use constant TESTDEF_MODULE_EXPIRE                                  => 'Expire';
     push @EXPORT, qw(TESTDEF_MODULE_EXPIRE);
@@ -133,75 +135,40 @@ my $oTestDef =
                 }
             ]
         },
-        # File tests
+        # Storage tests
         {
-            &TESTDEF_NAME => 'file',
+            &TESTDEF_NAME => 'storage',
             &TESTDEF_CONTAINER => true,
-
-            &TESTDEF_COVERAGE =>
-            {
-                &TESTDEF_MODULE_FILE => TESTDEF_COVERAGE_PARTIAL,
-                &TESTDEF_MODULE_FILE_COMMON => TESTDEF_COVERAGE_PARTIAL,
-            },
 
             &TESTDEF_TEST =>
             [
                 {
-                    &TESTDEF_NAME => 'unit',
-                    &TESTDEF_TOTAL => 1,
-                },
-                {
-                    &TESTDEF_NAME => 'owner',
-                    &TESTDEF_TOTAL => 8,
-                },
-                {
-                    &TESTDEF_NAME => 'path-create',
-                    &TESTDEF_TOTAL => 8,
-                },
-                {
-                    &TESTDEF_NAME => 'move',
-                    &TESTDEF_TOTAL => 24,
-                },
-                {
-                    &TESTDEF_NAME => 'compress',
+                    &TESTDEF_NAME => 'posix-io',
                     &TESTDEF_TOTAL => 4,
+
+                    &TESTDEF_COVERAGE =>
+                    {
+                        &TESTDEF_MODULE_STORAGE_POSIX_IO => TESTDEF_COVERAGE_FULL,
+                    },
                 },
                 {
-                    &TESTDEF_NAME => 'wait',
+                    &TESTDEF_NAME => 'posix',
                     &TESTDEF_TOTAL => 2,
+
+                    &TESTDEF_COVERAGE =>
+                    {
+                        &TESTDEF_MODULE_STORAGE_POSIX => TESTDEF_COVERAGE_FULL,
+                    },
                 },
                 {
-                    &TESTDEF_NAME => 'link',
+                    &TESTDEF_NAME => 'storage',
                     &TESTDEF_TOTAL => 1,
+
+                    &TESTDEF_COVERAGE =>
+                    {
+                        &TESTDEF_MODULE_STORAGE => TESTDEF_COVERAGE_PARTIAL,
+                    },
                 },
-                {
-                    &TESTDEF_NAME => 'stat',
-                    &TESTDEF_TOTAL => 1,
-                },
-                {
-                    &TESTDEF_NAME => 'manifest',
-                    &TESTDEF_TOTAL => 5,
-                },
-                {
-                    &TESTDEF_NAME => 'list',
-                    &TESTDEF_TOTAL => 72,
-                },
-                {
-                    &TESTDEF_NAME => 'remove',
-                    &TESTDEF_TOTAL => 32,
-                },
-                {
-                    &TESTDEF_NAME => 'hash',
-                    &TESTDEF_TOTAL => 16,
-                },
-                {
-                    &TESTDEF_NAME => 'exists',
-                    &TESTDEF_TOTAL => 6,
-                },
-                {
-                    &TESTDEF_NAME => 'copy',
-                    &TESTDEF_TOTAL => 2,
-                }
             ]
         },
         # Info tests

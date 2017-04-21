@@ -8,24 +8,11 @@ use warnings FATAL => qw(all);
 use Carp qw(confess);
 use English '-no_match_vars';
 
-# use Exporter qw(import);
-#     our @EXPORT = qw();
 use Fcntl qw(O_RDONLY O_WRONLY);
-# use File::Basename qw(dirname basename);
-# use File::Copy qw(cp);
-# use File::Path qw(make_path remove_tree);
-# use File::stat;
-# use IO::Handle;
 
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Storage::Posix::StoragePosixIO;
-# use pgBackRest::Common::String;
-# use pgBackRest::Common::Wait;
-# use pgBackRest::Storage::Posix::StoragePosixCommon;
-# use pgBackRest::Storage::Posix::StoragePosixIO;
-# use pgBackRest::Protocol::Common;
-# use pgBackRest::Version;
 
 ####################################################################################################################################
 # new
@@ -74,7 +61,7 @@ sub openRead
         {name => 'strFile', trace => true},
     );
 
-    my $oFileIO = new pgBackRest::Storage::Posix::StoragePosixIO($strFile, O_RDONLY);
+    my $oFileIO = new pgBackRest::Storage::Posix::StoragePosixIO($strFile);
 
     # Return from function and log return values if any
     return logDebugReturn

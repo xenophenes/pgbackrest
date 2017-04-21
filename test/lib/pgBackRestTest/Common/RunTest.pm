@@ -312,11 +312,13 @@ sub testResult
     # Clear the cache for this test
     logFileCacheClear();
 
+    my @stryResult;
+
     do
     {
         eval
         {
-            my @stryResult = ref($fnSub) eq 'CODE' ? $fnSub->() : $fnSub;
+            @stryResult = ref($fnSub) eq 'CODE' ? $fnSub->() : $fnSub;
 
             if (@stryResult <= 1)
             {
@@ -377,7 +379,11 @@ sub testResult
     }
 
     # Return from function and log return values if any
-    return logDebugReturn($strOperation);
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'result', value => \@stryResult, trace => true}
+    );
 }
 
 ####################################################################################################################################
@@ -414,9 +420,10 @@ sub testException
         }
 
         if (!($EVAL_ERROR->code() == $iCodeExpected &&
-            ($EVAL_ERROR->message() eq $strMessageExpected || $EVAL_ERROR->message() =~ $strMessageExpected)))
+            ($EVAL_ERROR->message() eq $strMessageExpected || $EVAL_ERROR->message() =~ "^${strMessageExpected}\$" ||
+             $EVAL_ERROR->message() =~ "^${strMessageExpected} at ")))
         {
-            confess "${strError} but actual was " . $EVAL_ERROR->code() . ", \"" . $EVAL_ERROR->message() . "\"";
+            confess "${strError} but actual was " . $EVAL_ERROR->code() . ', "' . $EVAL_ERROR->message() . qw{"};
         }
 
         $bError = true;

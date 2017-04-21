@@ -63,7 +63,7 @@ sub new
     (
         my $strOperation,
         $self->{oDriver},
-        $self->{strBasePath},
+        $self->{strPathBase},
         $self->{oProtocol},
         $self->{bAllowTemp},
         $self->{strDefaultPathMode},
@@ -147,7 +147,7 @@ sub pathGet
         }
         else
         {
-            $strPath = $self->{strBasePath};
+            $strPath = $self->{strPathBase};
             $strFile = "/${strPathExp}";
         }
     }
@@ -173,13 +173,13 @@ sub pathGet
         # Get backup path
         if ($strType eq PATH_REPO)
         {
-            $strPath = $self->{strBasePath};
+            $strPath = $self->{strPathBase};
         }
         # Else process path types that require a stanza
         else
         {
             # All paths in this section will be in the base path
-            $strPath = $self->{strBasePath};
+            $strPath = $self->{strPathBase};
 
             # Make sure the stanza is defined since remaining path types require it
             if (!defined($self->{strStanza}))
@@ -278,6 +278,64 @@ sub isRemote
     (
         $strOperation,
         {name => 'bRemote', value => $self->{oProtocol}->isRemote(), trace => true}
+    );
+}
+
+####################################################################################################################################
+# openRead - open a file for reading.
+####################################################################################################################################
+sub openRead
+{
+    my $self = shift;
+
+    # Assign function parameters, defaults, and log debug info
+    my
+    (
+        $strOperation,
+        $strFileExp,
+        $bIgnoreMissing,
+    ) =
+        logDebugParam
+        (
+            __PACKAGE__ . '->copy', \@_,
+            {name => 'strFileExp'},
+            {name => 'bIgnoreMissing', optional => true, default => false},
+        );
+
+    my $oFileIO;
+
+    # Run remotely
+    if ($self->isRemote())
+    {
+        confess &log(ASSERT, "${strOperation}: remote operation not supported");
+    }
+    # Run locally
+    else
+    {
+        # Open the file
+        eval
+        {
+            $oFileIO = $self->{oDriver}->openRead($self->pathGet($strFileExp));
+            return 1;
+        }
+        # On error check if missing file should be ignored, otherwise error
+        or do
+        {
+            if (exceptionCode($EVAL_ERROR) != ERROR_FILE_MISSING || !$bIgnoreMissing)
+            {
+                confess $EVAL_ERROR;
+            }
+
+            # Return true to indicate that the function was success but no file was opened
+            $oFileIO = true;
+        }
+    }
+
+    # Return from function and log return values if any
+    return logDebugReturn
+    (
+        $strOperation,
+        {name => 'oFileIO', value => $oFileIO, trace => true},
     );
 }
 
@@ -1061,48 +1119,6 @@ sub put
 }
 
 ####################################################################################################################################
-# openRead - open a file for reading.
-####################################################################################################################################
-sub openRead
-{
-    my $self = shift;
-
-    # Assign function parameters, defaults, and log debug info
-    my
-    (
-        $strOperation,
-        $strFileExp,
-        $bIgnoreMissing,
-    ) =
-        logDebugParam
-        (
-            __PACKAGE__ . '->copy', \@_,
-            {name => 'strFileExp'},
-            {name => 'bIgnoreMissing', optional => true, default => false},
-        );
-
-    my $oFileIO;
-
-    # Run remotely
-    if ($self->isRemote())
-    {
-        confess &log(ASSERT, "${strOperation}: remote operation not supported");
-    }
-    # Run locally
-    else
-    {
-        $oFileIO = $self->{oDriver}->openRead($self->pathGet($strFileExp));
-    }
-
-    # Return from function and log return values if any
-    return logDebugReturn
-    (
-        $strOperation,
-        {name => 'oFileIO', value => $oFileIO, trace => true},
-    );
-}
-
-####################################################################################################################################
 # copy
 #
 # Copies a file from one location to another:
@@ -1508,5 +1524,10 @@ sub copy
         {name => '$rExtra', value => $rExtra, trace => true},
     );
 }
+
+####################################################################################################################################
+# Getters
+####################################################################################################################################
+sub pathBase {shift->{strPathBase}}
 
 1;

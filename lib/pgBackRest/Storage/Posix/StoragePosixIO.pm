@@ -8,6 +8,8 @@ use warnings FATAL => qw(all);
 use Carp qw(confess);
 use English '-no_match_vars';
 
+use Fcntl qw(O_RDONLY O_WRONLY O_CREAT O_TRUNC);
+
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 
@@ -26,21 +28,24 @@ sub new
     (
         my $strOperation,
         $self->{strFile},
-        $self->{lFlag},
+        $self->{bWrite},
     ) =
         logDebugParam
         (
             __PACKAGE__ . '->new', \@_,
             {name => 'strFile', trace => true},
-            {name => 'lFlag', trace => true},
+            {name => 'bWrite', optional => true, default => false, trace => true},
         );
 
     # Attempt to open the file
-    if (!sysopen($self->{fhFile}, $self->{strFile}, $self->{lFlag}))
+    if (!sysopen($self->{fhFile}, $self->{strFile}, $self->{bWrite} ? O_WRONLY | O_CREAT | O_TRUNC : O_RDONLY))
     {
         logErrorResult(
             $OS_ERROR{ENOENT} ? ERROR_FILE_MISSING : ERROR_FILE_OPEN, "unable to open '$self->{strFile}'", $OS_ERROR);
     }
+
+    # Set file mode to binary
+    binmode($self->{fhFile});
 
     # Return from function and log return values if any
     return logDebugReturn
@@ -60,12 +65,23 @@ sub read
     my $iSize = shift;
     my $iOffset = shift;
 
-    my $iActualSize = sysread($self->handle(), $$rtBuffer, $iSize, defined($iOffset) ? $iOffset : 0);
+    # Read the block
+    my $iActualSize;
 
-    if (!defined($iActualSize))
+    eval
     {
-        logErrorResult(ERROR_FILE_READ, "unable to read !!![NEED FILENAME]", $OS_ERROR);
+        $iActualSize = sysread($self->handle(), $$rtBuffer, $iSize, defined($iOffset) ? $iOffset : 0);
+        return true;
     }
+    or do
+    {
+        logErrorResult(ERROR_FILE_READ, "unable to read '$self->{strFile}'", $EVAL_ERROR);
+    };
+
+    # Report any errors
+    # uncoverable branch true - all errors seem to be caught by the handler above but check for error here just in case
+    defined($iActualSize)
+        or logErrorResult(ERROR_FILE_READ, "unable to read '$self->{strFile}'", $OS_ERROR);
 
     return $iActualSize;
 }
@@ -81,15 +97,25 @@ sub write
     my $iOffset = shift;
 
     # Write the block
-    my $iActualSize = syswrite($self->handle(), $$rtBuffer, $iSize, defined($iOffset) ? $iOffset : 0);
+    my $iActualSize;
+
+    eval
+    {
+        $iActualSize = syswrite($self->handle(), $$rtBuffer, $iSize, defined($iOffset) ? $iOffset : 0);
+        return true;
+    }
+    or do
+    {
+        logErrorResult(ERROR_FILE_WRITE, "unable to write '$self->{strFile}'", $EVAL_ERROR);
+    };
 
     # Report any errors
-    if (!defined($iActualSize) || $iActualSize != $iSize)
-    {
-        $self->error(ERROR_FILE_WRITE, "unable to write ${iSize} bytes", $!);
-    }
-}
+    # uncoverable branch true - all errors seem to be caught by the handler above but check for error here just in case
+    defined($iActualSize)
+        or logErrorResult(ERROR_FILE_WRITE, "unable to write '$self->{strFile}'", $OS_ERROR);
 
+    return $iActualSize;
+}
 
 ####################################################################################################################################
 # close/DESTROY - close the file
@@ -101,7 +127,10 @@ sub close
     if (defined($self->handle()))
     {
         close($self->handle());
+        undef($self->{fhFile});
     }
+
+    return true;
 }
 
 sub DESTROY {shift->close()}
