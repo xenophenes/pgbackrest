@@ -22,6 +22,7 @@ use pgBackRest::Common::Log;
 use pgBackRest::Common::String;
 use pgBackRest::Common::Wait;
 use pgBackRest::Storage::Posix::StoragePosixCommon;
+use pgBackRest::Storage::Posix::StoragePosix;
 use pgBackRest::Protocol::Common;
 use pgBackRest::Version;
 
@@ -61,6 +62,7 @@ sub new
     # Assign function parameters, defaults, and log debug info
     (
         my $strOperation,
+        $self->{oDriver},
         $self->{strBasePath},
         $self->{oProtocol},
         $self->{bAllowTemp},
@@ -70,6 +72,7 @@ sub new
         logDebugParam
         (
             __PACKAGE__ . '->new', \@_,
+            {name => 'oDriver'},
             {name => 'strBasePath'},
             {name => 'oProtocol', optional => true},
             {name => 'bAllowTemp', optional => true, default => false},
@@ -1078,6 +1081,8 @@ sub openRead
             {name => 'bIgnoreMissing', optional => true, default => false},
         );
 
+    my $oFileIO;
+
     # Run remotely
     if ($self->isRemote())
     {
@@ -1086,39 +1091,7 @@ sub openRead
     # Run locally
     else
     {
-        my $hSourceFile;
-        $strSourceFile = $self->pathGet($strSourcePathExp);
-
-        if (!sysopen($hSourceFile, $strSourceFile, O_RDONLY))
-        {
-            my $strError = $!;
-            my $iErrorCode = ERROR_FILE_READ;
-
-            if ($!{ENOENT})
-            {
-                # $strError = 'file is missing';
-                $iErrorCode = ERROR_FILE_MISSING;
-
-                if ($bIgnoreMissingSource && $strDestinationPathExp ne PIPE_STDOUT)
-                {
-                    return false, undef, undef;
-                }
-            }
-
-            $strError = "cannot open source file ${strSourceFile}: " . $strError;
-
-            # if ($strSourcePathType eq PATH_ABSOLUTE)
-            # {
-                # if ($strDestinationPathExp eq PIPE_STDOUT)
-                # {
-                #     $self->{oProtocol}->binaryXferAbort();
-                # }
-            # }
-
-            confess &log(ERROR, $strError, $iErrorCode);
-        }
-
-        $oFileIO = new pgBackRest::Protocol::IO::IO($hSourceFile, undef, undef, 30, 4 * 1024 * 1024);
+        $oFileIO = $self->{oDriver}->openRead($self->pathGet($strFileExp));
     }
 
     # Return from function and log return values if any

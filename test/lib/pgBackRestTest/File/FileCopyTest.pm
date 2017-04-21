@@ -15,8 +15,31 @@ use English '-no_match_vars';
 use pgBackRest::Common::Exception;
 use pgBackRest::Common::Log;
 use pgBackRest::Storage::Storage;
+use pgBackRest::Storage::Posix::StoragePosix;
 
 use pgBackRestTest::Common::ExecuteTest;
+
+####################################################################################################################################
+# initTest
+####################################################################################################################################
+sub initTest
+{
+    my $self = shift;
+
+    $self->{strRemotePath} = $self->testPath() . '/remote';
+    $self->{strLocalPath} = $self->testPath() . '/local';
+
+    executeTest(
+        'ssh ' . $self->backrestUser() . '\@' . $self->host() . " mkdir -m 700 $self->{strRemotePath}", {bSuppressStdErr => true});
+
+    executeTest("mkdir -m 700 $self->{strLocalPath}");
+
+    $self->{oStorageRemote} = new pgBackRest::Storage::Storage(
+        new pgBackRest::Storage::Posix::StoragePosix(), $self->{strRemotePath},
+        {oProtocol => $self->remote(), bAllowTemp => true});
+    $self->{oStorageLocal} = new pgBackRest::Storage::Storage(
+        new pgBackRest::Storage::Posix::StoragePosix(), $self->{strLocalPath}, {oProtocol => $self->local()});
+}
 
 ####################################################################################################################################
 # run
@@ -25,37 +48,42 @@ sub run
 {
     my $self = shift;
 
+    # Define test file
+    my $strFile = 'file.txt';
+    my $strFileCopy = 'file.txt.copy';
+    my $strFileHash = 'bbbcf2c59433f68f22376cd2439d6cd309378df6';
+    my $iFileSize = 8;
+    my $strFileContent = 'TESTDATA';
+
+    ################################################################################################################################
+    if ($self->begin('openRead'))
+    {
+        my $tContent;
+
+        #---------------------------------------------------------------------------------------------------------------------------
+        executeTest("echo -n '${strFileContent}' | tee $self->{strLocalPath}/${strFile}");
+
+        $self->testResult(sub {$self->{oStorageLocal}->openRead($strFile)->read(\$tContent, $iFileSize)}, $iFileSize,
+            "read $iFileSize bytes");
+        $self->testResult($tContent, $strFileContent, 'test read content');
+    }
+
+    ################################################################################################################################
     if ($self->begin('copy'))
     {
-        my $strRepoPath = $self->testPath() . '/repo';
-        my $strDbPath = $self->testPath() . '/db';
-
-        executeTest(
-            'ssh ' . $self->backrestUser() . '\@' . $self->host() . " mkdir -m 700 ${strRepoPath}", {bSuppressStdErr => true});
-
-        executeTest("mkdir -m 700 ${strDbPath}");
-
-        my $oStorageRepo = new pgBackRest::Storage::Storage($strRepoPath, {oProtocol => $self->remote(), bAllowTemp => true});
-        my $oStorageDb = new pgBackRest::Storage::Storage($strDbPath, {oProtocol => $self->local()});
-
         #---------------------------------------------------------------------------------------------------------------------------
-        my $strFile = 'file.txt';
-        my $strFileCopy = 'file.txt.copy';
-        my $strFileHash = 'bbbcf2c59433f68f22376cd2439d6cd309378df6';
-        my $iFileSize = 8;
-
-        $oStorageDb->put($strFile, {xContent => 'TESTDATA'});
+        $self->{oStorageDb}->put($strFile, {xContent => 'TESTDATA'});
         $self->testResult(
-            sub {$oStorageDb->copy($strFile, $strFileCopy, {bAtomic => false})},
+            sub {$self->{oStorageDb}->copy($strFile, $strFileCopy, {bAtomic => false})},
             '(' . true . ", ${strFileHash}, ${iFileSize}, [undef])", 'copy within local storage');
         $self->testResult(
-            sub {$oStorageDb->hashSize($strFileCopy)}, "(${strFileHash}, ${iFileSize})", '    test copy hash and size');
-        $oStorageDb->remove($strFileCopy);
+            sub {$self->{oStorageDb}->hashSize($strFileCopy)}, "(${strFileHash}, ${iFileSize})", '    test copy hash and size');
+        $self->{oStorageDb}->remove($strFileCopy);
 
         #---------------------------------------------------------------------------------------------------------------------------
-        $self->testResult(
-            sub {$oStorageRepo->copy($oStorageDb->open($strFile), $strFile)},
-            '(' . true . ", ${strFileHash}, ${iFileSize}, [undef])", 'copy from local to remote storage');
+        # $self->testResult(
+        #     sub {$oStorageRepo->copy($oStorageDb->open($strFile), $strFile)},
+        #     '(' . true . ", ${strFileHash}, ${iFileSize}, [undef])", 'copy from local to remote storage');
         # $self->testResult(
         #     sub {$oStorageDb->hashSize($strFileCopy)}, "(${strFileHash}, ${iFileSize})",
         #     '    test copy hash and size');
