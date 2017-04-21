@@ -162,7 +162,7 @@ my $oTestDef =
                 },
                 {
                     &TESTDEF_NAME => 'storage',
-                    &TESTDEF_TOTAL => 1,
+                    &TESTDEF_TOTAL => 2,
 
                     &TESTDEF_COVERAGE =>
                     {

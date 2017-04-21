@@ -62,6 +62,7 @@ sub new
     # Assign function parameters, defaults, and log debug info
     (
         my $strOperation,
+        $self->{strType},
         $self->{oDriver},
         $self->{strPathBase},
         $self->{oProtocol},
@@ -72,6 +73,7 @@ sub new
         logDebugParam
         (
             __PACKAGE__ . '->new', \@_,
+            {name => 'strType'},
             {name => 'oDriver'},
             {name => 'strBasePath'},
             {name => 'oProtocol', optional => true},
@@ -158,7 +160,7 @@ sub pathGet
         # Only allow temp files for PATH_REPO_ARCHIVE, PATH_SPOOL_ARCHIVE_OUT, PATH_REPO_BACKUP_TMP and any absolute path
         if (!$self->{bAllowTemp})
         {
-            confess &log(ASSERT, "temp file not supported for this storage type");
+            confess &log(ASSERT, "temp file not supported for storage type $self->{strType}");
         }
 
         # The file must be defined

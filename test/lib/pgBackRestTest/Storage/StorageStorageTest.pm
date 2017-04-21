@@ -41,7 +41,7 @@ sub initModule
 
     # Create local storage
     $self->{oStorageLocal} = new pgBackRest::Storage::Storage(
-        new pgBackRest::Storage::Posix::StoragePosix(), $self->pathLocal(), {oProtocol => $self->protocolLocal()});
+        '<LOCAL>', new pgBackRest::Storage::Posix::StoragePosix(), $self->pathLocal(), {oProtocol => $self->protocolLocal()});
 
     # Remote path
     $self->{strPathRemote} = $self->testPath() . '/remote';
@@ -69,7 +69,7 @@ sub initModule
 
     # Create remote storage
     $self->{oStorageRemote} = new pgBackRest::Storage::Storage(
-        new pgBackRest::Storage::Posix::StoragePosix(), $self->pathRemote(),
+        '<REMOTE>', new pgBackRest::Storage::Posix::StoragePosix(), $self->pathRemote(),
         {oProtocol => $self->protocolRemote(), bAllowTemp => true});
 }
 
@@ -110,8 +110,98 @@ sub run
     my $strFileContent = 'TESTDATA';
     my $iFileSize = length($strFileContent);
 
+    # !!! LOTS OF WORK TO FIX THIS FUNCTION
+    # Test File->pathGet()
+    #---------------------------------------------------------------------------------------------------------------------------
+    if ($self->begin("pathGet()"))
+    {
+        # Test temp file errors
+        $self->testException(
+            sub {$self->storageLocal()->pathGet(PATH_REPO . '/test', {bTemp => true})},
+            ERROR_ASSERT, "temp file not supported for storage type <LOCAL>");
+        $self->testException(
+            sub {$self->storageRemote()->pathGet()},
+            ERROR_ASSERT, "strPathExp is required in Storage::Storage->pathGet");
+        # $self->testException(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE, {bTemp => true})},
+        #     ERROR_ASSERT, "file part must be defined when temp file specified for path type <REPO:ARCHIVE>");
+        # $self->testException(
+        #     sub {$self->storageRemote()->pathGet(PATH_SPOOL_ARCHIVE_OUT, {bTemp => true})},
+        #     ERROR_ASSERT, "file part must be defined when temp file specified for path type <SPOOL:ARCHIVE:OUT>");
+        # $self->testException(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP_TMP, {bTemp => true})},
+        #     ERROR_ASSERT, "file part must be defined when temp file specified for path type <REPO:BACKUP:TMP>");
+
+        # Test absolute path
+        $self->testResult(sub {$self->storageRemote()->pathGet('/file', {bTemp => true})}, "/file.pgbackrest.tmp", 'absolute path temp');
+        $self->testResult(sub {$self->storageRemote()->pathGet('/file')}, "/file", 'absolute path file');
+
+        # Test backup path
+        $self->testResult(
+            sub {$self->storageRemote()->pathGet(PATH_REPO . '/file')}, $self->storageRemote()->pathBase() . '/file',
+            'backup path file');
+        $self->testResult(sub {$self->storageRemote()->pathGet(PATH_REPO)}, $self->storageRemote()->pathBase(), 'backup path');
+
+        # Error when stanza not defined
+        # $self->testException(
+        #     sub {(new pgBackRest::Storage::Storage(undef, $self->storageRemote()->pathBase(), $self->local()))->pathGet(PATH_REPO_BACKUP_TMP)},
+        #     ERROR_ASSERT, "strStanza not defined");
+
+        # # Test backup tmp path
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP_TMP . '/file', {bTemp => true})},
+        #     $self->storageRemote()->pathBase() . '/temp/db.tmp/file.pgbackrest.tmp',
+        #     'backup temp path temp file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP_TMP . '/file')}, $self->storageRemote()->pathBase() . '/temp/db.tmp/file', 'backup temp path file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP_TMP)}, $self->storageRemote()->pathBase() . '/temp/db.tmp', 'backup temp path');
+        #
+        # # Test archive path
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE, undef)}, $self->storageRemote()->pathBase() . '/archive/db', 'archive path');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE . '/9.3-1')}, $self->storageRemote()->pathBase() . '/archive/db/9.3-1', 'archive id path');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE . '/9.3-1/000000010000000100000001')},
+        #     $self->storageRemote()->pathBase() . '/archive/db/9.3-1/0000000100000001/000000010000000100000001',
+        #     'archive path file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE . '/9.3-1/000000010000000100000001', {bTemp => true})},
+        #     $self->storageRemote()->pathBase() . '/archive/db/9.3-1/0000000100000001/000000010000000100000001.pgbackrest.tmp',
+        #     'archive path temp file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE . '/9.3-1/00000001.history')},
+        #     $self->storageRemote()->pathBase() . '/archive/db/9.3-1/00000001.history',
+        #     'archive path history file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_ARCHIVE . '/9.3-1/00000001.history', {bTemp => true})},
+        #     $self->storageRemote()->pathBase() . '/archive/db/9.3-1/00000001.history.pgbackrest.tmp',
+        #     'archive path history temp file');
+        #
+        # # Test archive out path
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_SPOOL_ARCHIVE_OUT . '/000000010000000100000001')},
+        #     $self->storageRemote()->pathBase() . '/archive/db/out/000000010000000100000001',
+        #     'archive out path file');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_SPOOL_ARCHIVE_OUT)}, $self->storageRemote()->pathBase() . '/archive/db/out', 'archive out path');
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_SPOOL_ARCHIVE_OUT . '/000000010000000100000001', {bTemp => true})},
+        #     $self->storageRemote()->pathBase() . '/archive/db/out/000000010000000100000001.pgbackrest.tmp',
+        #     'archive out path temp file');
+        #
+        # # Test backup cluster path
+        # $self->testResult(
+        #     sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP . '/file')}, $self->storageRemote()->pathBase() . '/backup/db/file', 'cluster path file');
+        # $self->testResult(sub {$self->storageRemote()->pathGet(PATH_REPO_BACKUP)}, $self->storageRemote()->pathBase() . '/backup/db', 'cluster path');
+        #
+        # # Test invalid path type
+        # $self->testException(sub {$self->storageRemote()->pathGet('<bogus>')}, ERROR_ASSERT, "invalid path type <bogus>");
+    }
+
     ################################################################################################################################
-    if ($self->begin('openRead'))
+    if ($self->begin('openRead()'))
     {
         my $tContent;
 
